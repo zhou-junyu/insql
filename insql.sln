@@ -3,7 +3,55 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql", "src\Insql\Insql.csproj", "{9A1D88D5-ABA2-41D7-9D55-7E975EE9C39D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.MySql", "src\Insql.MySql\Insql.MySql.csproj", "{88281EB3-686A-4151-B599-E9A005F81A60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.Oracle", "src\Insql.Oracle\Insql.Oracle.csproj", "{EE1C8F48-4ABE-4216-B318-16ED51B16923}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.PostgreSql", "src\Insql.PostgreSql\Insql.PostgreSql.csproj", "{899B1B2C-8B07-45EB-BA06-09D59AE0B634}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.Sqlite", "src\Insql.Sqlite\Insql.Sqlite.csproj", "{E22BB558-1FAA-4B04-9CE3-3C33FAB2E6B4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.Domain", "src\Example.Domain\Example.Domain.csproj", "{AD76EBB1-E197-4AD2-82E7-7A05C29173CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "src\Example\Example.csproj", "{EABC6842-F718-4378-AAC7-AB18DB96ABBA}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A1D88D5-ABA2-41D7-9D55-7E975EE9C39D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A1D88D5-ABA2-41D7-9D55-7E975EE9C39D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A1D88D5-ABA2-41D7-9D55-7E975EE9C39D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A1D88D5-ABA2-41D7-9D55-7E975EE9C39D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88281EB3-686A-4151-B599-E9A005F81A60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88281EB3-686A-4151-B599-E9A005F81A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88281EB3-686A-4151-B599-E9A005F81A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88281EB3-686A-4151-B599-E9A005F81A60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE1C8F48-4ABE-4216-B318-16ED51B16923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE1C8F48-4ABE-4216-B318-16ED51B16923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE1C8F48-4ABE-4216-B318-16ED51B16923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE1C8F48-4ABE-4216-B318-16ED51B16923}.Release|Any CPU.Build.0 = Release|Any CPU
+		{899B1B2C-8B07-45EB-BA06-09D59AE0B634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{899B1B2C-8B07-45EB-BA06-09D59AE0B634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{899B1B2C-8B07-45EB-BA06-09D59AE0B634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{899B1B2C-8B07-45EB-BA06-09D59AE0B634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E22BB558-1FAA-4B04-9CE3-3C33FAB2E6B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E22BB558-1FAA-4B04-9CE3-3C33FAB2E6B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E22BB558-1FAA-4B04-9CE3-3C33FAB2E6B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E22BB558-1FAA-4B04-9CE3-3C33FAB2E6B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD76EBB1-E197-4AD2-82E7-7A05C29173CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD76EBB1-E197-4AD2-82E7-7A05C29173CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD76EBB1-E197-4AD2-82E7-7A05C29173CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD76EBB1-E197-4AD2-82E7-7A05C29173CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EABC6842-F718-4378-AAC7-AB18DB96ABBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EABC6842-F718-4378-AAC7-AB18DB96ABBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EABC6842-F718-4378-AAC7-AB18DB96ABBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EABC6842-F718-4378-AAC7-AB18DB96ABBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
