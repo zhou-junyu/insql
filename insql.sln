@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.PostgreSql", "src\Ins
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.Sqlite", "src\Insql.Sqlite\Insql.Sqlite.csproj", "{E22BB558-1FAA-4B04-9CE3-3C33FAB2E6B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insql.Tests", "test\Insql.Tests\Insql.Tests.csproj", "{CA5236FE-81AC-4959-B1AF-2DE42EC0818A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Insql.Tests", "test\Insql.Tests\Insql.Tests.csproj", "{CA5236FE-81AC-4959-B1AF-2DE42EC0818A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D9CEFFC9-31D9-477A-9F67-266E7BFD3DC2}"
 EndProject
