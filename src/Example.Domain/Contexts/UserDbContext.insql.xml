@@ -21,7 +21,7 @@
 
   <insert id="InsertUser">
     insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-    select SCOPE_IDENTITY() as UserId;
+    select last_insert_rowid() from user_info;
   </insert>
   <insert id="InsertUserSelective">
     insert into user_info 
