@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Example.Domain\Example.Domain.csproj" />
     <ProjectReference Include="..\Insql.MySql\Insql.MySql.csproj" />
     <ProjectReference Include="..\Insql.Sqlite\Insql.Sqlite.csproj" />
     <ProjectReference Include="..\Insql\Insql.csproj" />
