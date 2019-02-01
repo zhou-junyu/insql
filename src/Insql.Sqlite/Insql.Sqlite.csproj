@@ -6,6 +6,8 @@
     <Authors>rainrcn@qq.com</Authors>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>secret.pfx</AssemblyOriginatorKeyFile>
+    <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,6 +7,11 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>secret.pfx</AssemblyOriginatorKeyFile>
+    <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageReleaseNotes>a lightweight ORM for .Net , base on Dapper like Mybatis.</PackageReleaseNotes>
   </PropertyGroup>
   
   <ItemGroup>
