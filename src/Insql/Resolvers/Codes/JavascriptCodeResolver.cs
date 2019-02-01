@@ -16,7 +16,7 @@ namespace Insql.Resolvers.Codes
         {
             if (string.IsNullOrWhiteSpace(code))
             {
-                throw new ArgumentNullException(code);
+                throw new ArgumentNullException(nameof(code));
             }
             if (param == null)
             {
