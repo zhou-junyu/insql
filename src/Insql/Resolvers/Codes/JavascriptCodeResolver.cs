@@ -14,6 +14,17 @@ namespace Insql.Resolvers.Codes
 
         public object Resolve(Type type, string code, IDictionary<string, object> param)
         {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                throw new ArgumentNullException(code);
+            }
+            if (param == null)
+            {
+                throw new ArgumentNullException(nameof(param));
+            }
+
+            var codeString = this.ReplaceCodeOperator(code);
+
             var engine = new Engine(options =>
             {
                 options.DebugMode(false);
@@ -37,6 +48,19 @@ namespace Insql.Resolvers.Codes
             }
 
             return Convert.ChangeType(result, type);
+        }
+
+        private string ReplaceCodeOperator(string code)
+        {
+            return code
+                .Replace(" and ", " && ")
+                .Replace(" or ", " || ")
+                .Replace(" gt ", " > ")
+                .Replace(" gte ", " >= ")
+                .Replace(" lt ", " < ")
+                .Replace(" lte ", " <= ")
+                .Replace(" eq ", " == ")
+                .Replace(" neq ", " != ");
         }
     }
 
