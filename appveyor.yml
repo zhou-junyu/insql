@@ -12,5 +12,3 @@ build_script:
 test_script:
   - dotnet test .\test\Insql.Tests\Insql.Tests.csproj -c Release -f netcoreapp2.2
   - dotnet test .\test\Insql.Tests\Insql.Tests.csproj -c Release -f net461
-artifacts:
-  - path: '**/*.nupkg'
