@@ -5,7 +5,7 @@
     <Version>0.1.2</Version>
     <Authors>rainrcn@qq.com</Authors>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>secret.pfx</AssemblyOriginatorKeyFile>
     <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
