@@ -1,4 +1,5 @@
 # Insql
+[![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 
 Insql is a lightweight ORM for .Net , base on Dapper like Mybatis.
 
