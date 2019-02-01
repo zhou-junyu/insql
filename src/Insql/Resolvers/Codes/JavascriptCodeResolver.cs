@@ -1,13 +1,31 @@
 ﻿using Jint;
-using Jint.Native;
-using Jint.Runtime.Interop;
+using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Insql.Resolvers.Codes
 {
-    internal class JavaScriptCodeResolver : IInsqlCodeResolver
+    public class JavaScriptCodeResolver : IInsqlCodeResolver
     {
+        private readonly Regex clearRegex;
+        private readonly Regex operatorRegex;
+        private readonly ConcurrentDictionary<string, string> codeCaches;
+
+        private readonly IOptions<JavascriptCodeResolverOptions> options;
+
+        public JavaScriptCodeResolver(IOptions<JavascriptCodeResolverOptions> options)
+        {
+            this.options = options;
+
+            this.clearRegex = new Regex("(['\"]).*?[^\\\\]\\1");
+            this.operatorRegex = new Regex("\\s+(and|or|gt|gte|lt|lte|eq|neq)\\s+");
+
+            this.codeCaches = new ConcurrentDictionary<string, string>();
+        }
+
         public void Dispose()
         {
         }
@@ -22,13 +40,21 @@ namespace Insql.Resolvers.Codes
             {
                 throw new ArgumentNullException(nameof(param));
             }
+            var optionsValue = this.options.Value;
 
-            var codeString = this.ReplaceCodeOperator(code);
+            if (optionsValue.IsReplaceOperator)
+            {
+                code = this.codeCaches.GetOrAdd(code.GetHashCode().ToString(), (key) => this.ReplaceOperator(code));
+            }
 
             var engine = new Engine(options =>
             {
                 options.DebugMode(false);
-                options.AddObjectConverter(JavaScriptEnumConverter.Instance);
+
+                if (optionsValue.IsConvertEnum)
+                {
+                    options.AddObjectConverter(JavaScriptEnumConverter.Instance);
+                }
             });
 
             foreach (var item in param)
@@ -50,9 +76,30 @@ namespace Insql.Resolvers.Codes
             return Convert.ChangeType(result, type);
         }
 
-        private string ReplaceCodeOperator(string code)
+        private string ReplaceOperator(string code)
         {
-            return code
+            var clearMatchs = clearRegex.Matches(code);
+
+            return this.operatorRegex.Replace(code, match =>
+            {
+                if (!match.Success)
+                {
+                    return match.Value;
+                }
+
+                var endIndex = match.Index + match.Length - 1;
+
+                if (clearMatchs.Cast<Match>().Any(cmatch =>
+                {
+                    var cendIndex = cmatch.Index + cmatch.Length - 1;
+
+                    return match.Index > cmatch.Index && endIndex < cendIndex;
+                }))
+                {
+                    return match.Value;
+                }
+
+                return match.Value
                 .Replace(" and ", " && ")
                 .Replace(" or ", " || ")
                 .Replace(" gt ", " > ")
@@ -61,26 +108,7 @@ namespace Insql.Resolvers.Codes
                 .Replace(" lte ", " <= ")
                 .Replace(" eq ", " == ")
                 .Replace(" neq ", " != ");
-        }
-    }
-
-    internal class JavaScriptEnumConverter : IObjectConverter
-    {
-        public static JavaScriptEnumConverter Instance = new JavaScriptEnumConverter();
-
-        public bool TryConvert(object value, out JsValue result)
-        {
-            if (value == null)
-            {
-                result = JsValue.Null; return false;
-            }
-
-            if (value.GetType().IsEnum)
-            {
-                result = new JsValue(value.ToString()); return true;
-            }
-
-            result = JsValue.Null; return false;
+            });
         }
     }
 }

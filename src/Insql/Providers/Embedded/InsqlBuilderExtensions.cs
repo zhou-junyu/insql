@@ -7,7 +7,7 @@ using System;
 
 namespace Insql
 {
-    public static class EmbeddedInsqlBuilderExtensions
+    public static partial class InsqlBuilderExtensions
     {
         public static IInsqlBuilder AddEmbeddedXml(this IInsqlBuilder builder)
         {
