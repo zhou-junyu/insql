@@ -1,7 +1,7 @@
 # Insql
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 
-Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql configuration was inspired by Mybatis.
+Insql 是一个轻量级的.NET ORM类库 . 对象映射基于Dapper , Sql配置灵感来自于Mybatis.
 
 [中文](https://github.com/rainrcn/insql/blob/master/README.zh_cn.md) | [English](https://github.com/rainrcn/insql/blob/master/README.md)
 
@@ -17,37 +17,37 @@ Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql confi
 
 # Features
 ### DbContext and DependencyInjection
-like entiryframework dbcontext
+EntityFramework类似的DbContext使用方式
 ### Mybatis xml syntax 
-like mybatis xml syntax , supported :
-    
+mybatis 很相近的sql xml配置语法，目前支持：
+
  - sections
     - **sql**
     `[id]`
     - **code**
     `[id]`
-    `javascript` syntax
+    `javascript` 语法
     - **select**
-    `sql` section alias
+    `sql` 节的别名
     - **insert**
-    `sql` section alias
+    `sql` 节的别名
     - **update**
-    `sql` section alias
+    `sql` 节的别名
     - **delete**
-    `sql` section alias
+    `sql` 节的别名
  - elements
     - **include**
-    `[refid(ref sql section)]`
+    `[refid(引用code配置节)]`
     - **bind**
-    `[name][value(javascript syntax)` or `refid(ref code section)]`
+    `[name][value(javascript 语法)` or `refid(引用code配置节)]`
     - **if**
-    `[test(javascript syntax)` or `refid(ref code section)]`
+    `[test(javascript 语法)` or `refid(引用code配置节)]`
     - **where**
-    add `where` sql and remove `and | or ` prefix
+    添加 `where` sql 语句并且移除开头的and 或者or 
     - **set**
-    add `set` sql in update. and remove `,` suffix
+    添加 `set` sql 语句到update后. 并且删除最后的 `,`
     - **trim**
-    can add or remove prefix , suffix
+    可以添加和移除开头和结尾自定义的字符
 
 # Usage
 * **Add Insql**
@@ -110,7 +110,7 @@ like mybatis xml syntax , supported :
     }
     ```
 * **Create DbContext.insql.xml**
-	> create `UserDbContext.insql.xml` and modify this file attribute to `embedded file`. `insql type` mapping to `UserDbContext` Type.
+	> 创建 `UserDbContext.insql.xml` 文件并且修改这个文件的属性为`嵌入式文件`类型 . `insql type` 与 `UserDbContext` 类型对应.
 
     ```xml
     <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
@@ -172,7 +172,7 @@ like mybatis xml syntax , supported :
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            //use Transaction
+            //可以这样简单的使用事务
             this.userDbContext.DoWithTransaction(() =>
             {
                 this.userDbContext.InsertUser(new Domain.UserInfo
@@ -240,7 +240,7 @@ like mybatis xml syntax , supported :
     }
     ```
 * **Create Service.insql.xml**
-	> create `UserService.insql.xml` and modify this file attribute to `embedded file`. `insql type` mapping to `UserService` Type.
+	> 创建 `UserService.insql.xml` 文件并且修改这个文件的属性为`嵌入式文件`类型 . `insql type` 与 `UserService` 类型对应.
 
     ```xml
     <insql type="Example.Domain.Services.UserService,Example.Domain" >
