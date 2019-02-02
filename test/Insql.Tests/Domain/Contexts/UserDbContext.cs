@@ -1,5 +1,6 @@
 ﻿using Insql.Tests.Domain.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Insql.Tests.Domain.Contexts
 {
@@ -12,6 +13,11 @@ namespace Insql.Tests.Domain.Contexts
         public IEnumerable<UserInfo> GetUserList(string userName, UserGender? userGender)
         {
             return this.Query<UserInfo>(nameof(GetUserList), new { userName, userGender });
+        }
+
+        public UserInfo GetUser(int userId)
+        {
+            return this.Query<UserInfo>(nameof(GetUser), new { userId }).SingleOrDefault();
         }
 
         public void InsertUser(UserInfo info)

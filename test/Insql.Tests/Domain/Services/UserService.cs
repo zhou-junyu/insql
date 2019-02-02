@@ -18,6 +18,11 @@ namespace Insql.Tests.Domain.Services
             this.dbContext.DeleteUser(userId);
         }
 
+        public UserInfo GetUser(int userId)
+        {
+            return this.dbContext.GetUser(userId);
+        }
+
         public IEnumerable<UserInfo> GetUserList(string userName, UserGender? userGender)
         {
             return this.dbContext.GetUserList(userName, userGender);
