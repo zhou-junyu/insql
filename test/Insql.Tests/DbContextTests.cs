@@ -97,6 +97,31 @@ namespace Insql.Tests
             }
         }
 
+        [Fact]
+        public void InsertDeleteGetUser()
+        {
+            using (var scopeProvider = this.serviceProvider.CreateScope())
+            {
+                var userService = scopeProvider.ServiceProvider.GetRequiredService<IUserService>();
+
+                var userInfo = new Domain.Models.UserInfo
+                {
+                    UserName = new Random().Next().ToString(),
+                    UserGender = Domain.Models.UserGender.W
+                };
+
+                userService.InsertUser(userInfo);
+
+                Assert.True(userInfo.UserId > 0);
+
+                userService.DeleteUser(userInfo.UserId);
+
+                var updatedUserInfo = userService.GetUser(userInfo.UserId);
+
+                Assert.Null(updatedUserInfo);
+            }
+        }
+
         [Fact(Timeout = 500)]
         public void GetWUserList()
         {
