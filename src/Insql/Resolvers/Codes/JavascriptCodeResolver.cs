@@ -10,7 +10,7 @@ namespace Insql.Resolvers.Codes
 {
     public class JavaScriptCodeResolver : IInsqlCodeResolver
     {
-        private readonly Regex clearRegex;
+        private readonly Regex excludeRegex;
         private readonly Regex operatorRegex;
         private readonly ConcurrentDictionary<string, string> codeCaches;
 
@@ -20,8 +20,8 @@ namespace Insql.Resolvers.Codes
         {
             this.options = options;
 
-            this.clearRegex = new Regex("(['\"]).*?[^\\\\]\\1");
-            this.operatorRegex = new Regex("\\s+(and|or|gt|gte|lt|lte|eq|neq)\\s+");
+            this.excludeRegex = new Regex("(['\"]).*?[^\\\\]\\1");
+            this.operatorRegex = new Regex("\\s+([a-z]+)\\s+");
 
             this.codeCaches = new ConcurrentDictionary<string, string>();
         }
@@ -44,7 +44,7 @@ namespace Insql.Resolvers.Codes
 
             if (optionsValue.IsReplaceOperator)
             {
-                code = this.codeCaches.GetOrAdd(code.GetHashCode().ToString(), (key) => this.ReplaceOperator(code));
+                code = this.codeCaches.GetOrAdd(code.GetHashCode().ToString(), (key) => this.ReplaceOperator(code, optionsValue.OperatorMappings));
             }
 
             var engine = new Engine(options =>
@@ -76,9 +76,9 @@ namespace Insql.Resolvers.Codes
             return Convert.ChangeType(result, type);
         }
 
-        private string ReplaceOperator(string code)
+        private string ReplaceOperator(string code, Dictionary<string, string> operatorMappings)
         {
-            var clearMatchs = clearRegex.Matches(code);
+            var clearMatchs = excludeRegex.Matches(code);
 
             return this.operatorRegex.Replace(code, match =>
             {
@@ -99,15 +99,19 @@ namespace Insql.Resolvers.Codes
                     return match.Value;
                 }
 
-                return match.Value
-                .Replace(" and ", " && ")
-                .Replace(" or ", " || ")
-                .Replace(" gt ", " > ")
-                .Replace(" gte ", " >= ")
-                .Replace(" lt ", " < ")
-                .Replace(" lte ", " <= ")
-                .Replace(" eq ", " == ")
-                .Replace(" neq ", " != ");
+                var operatorGroup = match.Groups.Count > 0 ? match.Groups[0] : null;
+
+                if (operatorGroup == null || !operatorGroup.Success)
+                {
+                    return match.Value;
+                }
+
+                if (!operatorMappings.TryGetValue(operatorGroup.Value, out string operatorValue))
+                {
+                    return match.Value;
+                }
+
+                return $"{match.Value.Substring(0, operatorGroup.Index)}{operatorValue}{match.Value.Substring(operatorGroup.Index + operatorGroup.Length)}";
             });
         }
     }
