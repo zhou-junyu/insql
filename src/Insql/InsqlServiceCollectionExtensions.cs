@@ -1,7 +1,10 @@
 ﻿using Insql;
+using Insql.Providers;
+using Insql.Providers.Embedded;
 using Insql.Resolvers;
 using Insql.Resolvers.Codes;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -17,9 +20,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddOptions();
 
+            //sql resolver
             services.TryAdd(ServiceDescriptor.Singleton<ISqlResolverFactory, SqlResolverFactory>());
             services.TryAdd(ServiceDescriptor.Singleton(typeof(ISqlResolver<>), typeof(SqlResolver<>)));
+
+            //code resolver
             services.TryAdd(ServiceDescriptor.Singleton<IInsqlCodeResolver, JavaScriptCodeResolver>());
+            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<JavascriptCodeResolverOptions>, JavascriptCodeResolverOptionsSetup>());
+
+            //descriptor provider
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, EmbeddedDescriptorProvider>());
+            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<EmbeddedDescriptorOptions>, EmbeddedDescriptorOptionsSetup>());
 
             configure(new InsqlBuilder(services));
 

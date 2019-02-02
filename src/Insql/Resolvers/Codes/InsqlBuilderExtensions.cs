@@ -1,6 +1,7 @@
 ﻿using Insql.Resolvers.Codes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace Insql
@@ -14,7 +15,8 @@ namespace Insql
                 throw new ArgumentNullException(nameof(configure));
             }
 
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlCodeResolver, JavaScriptCodeResolver>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlCodeResolver, JavaScriptCodeResolver>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<JavascriptCodeResolverOptions>, JavascriptCodeResolverOptionsSetup>());
 
             builder.Services.Configure(configure);
 
