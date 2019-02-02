@@ -1,9 +1,9 @@
 # Insql
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 
-Insql ÊÇÒ»¸öÇáÁ¿¼¶µÄ.NET ORMÀà¿â . ¶ÔÏóÓ³Éä»ùÓÚDapper , SqlÅäÖÃÁé¸ÐÀ´×ÔÓÚMybatis.
+Insql æ˜¯ä¸€ä¸ªè½»é‡çº§çš„.NET ORMç±»åº“ . å¯¹è±¡æ˜ å°„åŸºäºŽDapper , Sqlé…ç½®çµæ„Ÿæ¥è‡ªäºŽMybatis.
 
-[ÖÐÎÄ](https://github.com/rainrcn/insql/blob/master/README.zh_cn.md) | [English](https://github.com/rainrcn/insql/blob/master/README.md)
+[ä¸­æ–‡](https://github.com/rainrcn/insql/blob/master/README.zh_cn.md) | [English](https://github.com/rainrcn/insql/blob/master/README.md)
 
 # Packages
 
@@ -15,41 +15,41 @@ Insql ÊÇÒ»¸öÇáÁ¿¼¶µÄ.NET ORMÀà¿â . ¶ÔÏóÓ³Éä»ùÓÚDapper , SqlÅäÖÃÁé¸ÐÀ´×ÔÓÚMybatis
 | Insql.PostgreSql  | https://www.nuget.org/packages/Insql.PostgreSql/  |
 | Insql.Sqlite  |  https://www.nuget.org/packages/Insql.Sqlite/ |
 
-# Features
+# åŠŸèƒ½
 ### DbContext and DependencyInjection
-EntityFrameworkÀàËÆµÄDbContextÊ¹ÓÃ·½Ê½
+EntityFrameworkç±»ä¼¼çš„DbContextä½¿ç”¨æ–¹å¼
 ### Mybatis xml syntax 
-mybatis ºÜÏà½üµÄsql xmlÅäÖÃÓï·¨£¬Ä¿Ç°Ö§³Ö£º
+mybatis å¾ˆç›¸è¿‘çš„sql xmlé…ç½®è¯­æ³•ï¼Œç›®å‰æ”¯æŒï¼š
 
  - sections
     - **sql**
     `[id]`
     - **code**
     `[id]`
-    `javascript` Óï·¨
+    `javascript` è¯­æ³•
     - **select**
-    `sql` ½ÚµÄ±ðÃû
+    `sql` èŠ‚çš„åˆ«å
     - **insert**
-    `sql` ½ÚµÄ±ðÃû
+    `sql` èŠ‚çš„åˆ«å
     - **update**
-    `sql` ½ÚµÄ±ðÃû
+    `sql` èŠ‚çš„åˆ«å
     - **delete**
-    `sql` ½ÚµÄ±ðÃû
+    `sql` èŠ‚çš„åˆ«å
  - elements
     - **include**
-    `[refid(ÒýÓÃcodeÅäÖÃ½Ú)]`
+    `[refid(å¼•ç”¨codeé…ç½®èŠ‚)]`
     - **bind**
-    `[name][value(javascript Óï·¨)` or `refid(ÒýÓÃcodeÅäÖÃ½Ú)]`
+    `[name][value(javascript è¯­æ³•)` or `refid(å¼•ç”¨codeé…ç½®èŠ‚)]`
     - **if**
-    `[test(javascript Óï·¨)` or `refid(ÒýÓÃcodeÅäÖÃ½Ú)]`
+    `[test(javascript è¯­æ³•)` or `refid(å¼•ç”¨codeé…ç½®èŠ‚)]`
     - **where**
-    Ìí¼Ó `where` sql Óï¾ä²¢ÇÒÒÆ³ý¿ªÍ·µÄand »òÕßor 
+    æ·»åŠ  `where` sql è¯­å¥å¹¶ä¸”ç§»é™¤å¼€å¤´çš„and æˆ–è€…or 
     - **set**
-    Ìí¼Ó `set` sql Óï¾äµ½updateºó. ²¢ÇÒÉ¾³ý×îºóµÄ `,`
+    æ·»åŠ  `set` sql è¯­å¥åˆ°updateåŽ. å¹¶ä¸”åˆ é™¤æœ€åŽçš„ `,`
     - **trim**
-    ¿ÉÒÔÌí¼ÓºÍÒÆ³ý¿ªÍ·ºÍ½áÎ²×Ô¶¨ÒåµÄ×Ö·û
+    å¯ä»¥æ·»åŠ å’Œç§»é™¤å¼€å¤´å’Œç»“å°¾è‡ªå®šä¹‰çš„å­—ç¬¦
 
-# Usage
+# ç”¨æ³•
 * **Add Insql**
  
     ```c#
@@ -110,7 +110,7 @@ mybatis ºÜÏà½üµÄsql xmlÅäÖÃÓï·¨£¬Ä¿Ç°Ö§³Ö£º
     }
     ```
 * **Create DbContext.insql.xml**
-	> ´´½¨ `UserDbContext.insql.xml` ÎÄ¼þ²¢ÇÒÐÞ¸ÄÕâ¸öÎÄ¼þµÄÊôÐÔÎª`Ç¶ÈëÊ½ÎÄ¼þ`ÀàÐÍ . `insql type` Óë `UserDbContext` ÀàÐÍ¶ÔÓ¦.
+	> åˆ›å»º `UserDbContext.insql.xml` æ–‡ä»¶å¹¶ä¸”ä¿®æ”¹è¿™ä¸ªæ–‡ä»¶çš„å±žæ€§ä¸º`åµŒå…¥å¼æ–‡ä»¶`ç±»åž‹ . `insql type` ä¸Ž `UserDbContext` ç±»åž‹å¯¹åº”.
 
     ```xml
     <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
@@ -172,7 +172,7 @@ mybatis ºÜÏà½üµÄsql xmlÅäÖÃÓï·¨£¬Ä¿Ç°Ö§³Ö£º
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            //¿ÉÒÔÕâÑù¼òµ¥µÄÊ¹ÓÃÊÂÎñ
+            //å¯ä»¥è¿™æ ·ç®€å•çš„ä½¿ç”¨äº‹åŠ¡
             this.userDbContext.DoWithTransaction(() =>
             {
                 this.userDbContext.InsertUser(new Domain.UserInfo
@@ -194,7 +194,7 @@ mybatis ºÜÏà½üµÄsql xmlÅäÖÃÓï·¨£¬Ä¿Ç°Ö§³Ö£º
     ```
     
     
-# Other Uses
+# å…¶ä»–ç”¨æ³•
 * **Create Common DbContext**
 
     ```c#
@@ -240,7 +240,7 @@ mybatis ºÜÏà½üµÄsql xmlÅäÖÃÓï·¨£¬Ä¿Ç°Ö§³Ö£º
     }
     ```
 * **Create Service.insql.xml**
-	> ´´½¨ `UserService.insql.xml` ÎÄ¼þ²¢ÇÒÐÞ¸ÄÕâ¸öÎÄ¼þµÄÊôÐÔÎª`Ç¶ÈëÊ½ÎÄ¼þ`ÀàÐÍ . `insql type` Óë `UserService` ÀàÐÍ¶ÔÓ¦.
+	> åˆ›å»º `UserService.insql.xml` æ–‡ä»¶å¹¶ä¸”ä¿®æ”¹è¿™ä¸ªæ–‡ä»¶çš„å±žæ€§ä¸º`åµŒå…¥å¼æ–‡ä»¶`ç±»åž‹ . `insql type` ä¸Ž `UserService` ç±»åž‹å¯¹åº”.
 
     ```xml
     <insql type="Example.Domain.Services.UserService,Example.Domain" >
