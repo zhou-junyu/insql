@@ -53,10 +53,7 @@ like mybatis xml syntax , supported :
     ```c#
     public void ConfigureServices(IServiceCollection services)
     {
-		services.AddInsql(builder =>
-		{
-			builder.AddEmbeddedXml();
-		});
+		services.AddInsql();
 
 		services.AddInsqlDbContext<UserDbContext>(options =>
 		{
@@ -78,7 +75,7 @@ like mybatis xml syntax , supported :
         {
             //sqlId = "GetUserList"
             //sqlParam is PlainObject or IDictionary<string,object>
-            return this.Query<UserInfo>(nameof(GetUserList), new { userName, userGender = Gender.M });
+            return this.Query<UserInfo>(nameof(GetUserList), new { userName, userGender = Gender.W });
         }
 
         public void InsertUser(UserInfo info)
@@ -86,11 +83,6 @@ like mybatis xml syntax , supported :
             var userId = this.ExecuteScalar<int>(nameof(InsertUser),info);
 
             info.UserId = userId;
-        }
-
-        public void UpdateUser(UserInfo info)
-        {
-            this.Execute(nameof(UpdateUser), info);
         }
 
         public void UpdateUserSelective(UserInfo info)
@@ -132,8 +124,8 @@ like mybatis xml syntax , supported :
             <bind name="likeUserName" value="'%' + userName + '%'" />
             user_name like @likeUserName
           </if>
-          <if test="userGender != 'M' ">
-            and user_name = @userGender
+          <if test="userGender != null and userGender != 'M' ">
+            and user_gender = @userGender
           </if>
         </where>
         order by  user_id
@@ -159,10 +151,6 @@ like mybatis xml syntax , supported :
         </set>
         where user_id = @UserId
       </update>
-    
-      <delete id="DeleteUser">
-        delete from user_info where user_id = @userId
-      </delete>
     
     </insql>
     ```
@@ -195,8 +183,6 @@ like mybatis xml syntax , supported :
                     UserId = 1,
                     UserName = "loveWWW",
                 });
-
-                this.userDbContext.DeleteUser(2);
             });
 
             var list = this.userDbContext.GetUserList("love");
@@ -267,8 +253,8 @@ like mybatis xml syntax , supported :
             <bind name="likeUserName" value="'%' + userName + '%'" />
             user_name like @likeUserName
           </if>
-          <if test="userGender != 'M' ">
-            and user_name = @userGender
+          <if test="userGender != null ">
+            and user_gender = @userGender
           </if>
         </where>
         order by  user_id
@@ -281,10 +267,7 @@ like mybatis xml syntax , supported :
     ```c#
     public void ConfigureServices(IServiceCollection services)
     {
-		services.AddInsql(builder =>
-		{
-			builder.AddEmbeddedXml();
-		});
+		services.AddInsql();
 
 		services.AddScoped(typeof(DbContextOptions<>));
         services.AddScoped(typeof(SqliteDbContext<>));
