@@ -4,10 +4,8 @@ namespace Insql.Resolvers.Codes
 {
     public class JavascriptCodeResolverOptions
     {
-        public bool IsConvertEnum { get; set; }
+        public bool IsConvertEnum { get; set; } = true;
 
-        public bool IsReplaceOperator { get; set; }
-
-        public Dictionary<string, string> OperatorMappings { get; set; }
+        public bool IsReplaceOperator { get; set; } = true;
     }
 }

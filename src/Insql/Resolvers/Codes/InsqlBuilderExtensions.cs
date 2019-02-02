@@ -16,7 +16,7 @@ namespace Insql
             }
 
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlCodeResolver, JavaScriptCodeResolver>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<JavascriptCodeResolverOptions>, JavascriptCodeResolverOptionsSetup>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IOptions<JavascriptCodeResolverOptions>>((sp) => Options.Create(new JavascriptCodeResolverOptions())));
 
             builder.Services.Configure(configure);
 

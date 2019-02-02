@@ -13,6 +13,7 @@ namespace Insql.Resolvers.Codes
         private readonly Regex excludeRegex;
         private readonly Regex operatorRegex;
         private readonly ConcurrentDictionary<string, string> codeCaches;
+        private readonly Dictionary<string, string> operatorMappings;
 
         private readonly IOptions<JavascriptCodeResolverOptions> options;
 
@@ -20,10 +21,22 @@ namespace Insql.Resolvers.Codes
         {
             this.options = options;
 
-            this.excludeRegex = new Regex("(['\"]).*?[^\\\\]\\1");
-            this.operatorRegex = new Regex("\\s+([a-z]+)\\s+");
-
             this.codeCaches = new ConcurrentDictionary<string, string>();
+
+            this.operatorMappings = new Dictionary<string, string>
+            {
+                { "and","&&" },
+                { "or","||" },
+                { "gt",">" },
+                { "gte",">=" },
+                { "lt","<" },
+                { "lte","<=" },
+                { "eq","==" },
+                { "neq","!=" },
+            };
+
+            this.excludeRegex = new Regex("(['\"]).*?[^\\\\]\\1");
+            this.operatorRegex = new Regex($"\\s+({string.Join("|", this.operatorMappings.Keys)})\\s+");
         }
 
         public void Dispose()
@@ -44,7 +57,7 @@ namespace Insql.Resolvers.Codes
 
             if (optionsValue.IsReplaceOperator)
             {
-                code = this.codeCaches.GetOrAdd(code.GetHashCode().ToString(), (key) => this.ReplaceOperator(code, optionsValue.OperatorMappings));
+                code = this.codeCaches.GetOrAdd(code.GetHashCode().ToString(), (key) => this.ReplaceOperator(code));
             }
 
             var engine = new Engine(options =>
@@ -76,9 +89,9 @@ namespace Insql.Resolvers.Codes
             return Convert.ChangeType(result, type);
         }
 
-        private string ReplaceOperator(string code, Dictionary<string, string> operatorMappings)
+        private string ReplaceOperator(string code)
         {
-            var clearMatchs = excludeRegex.Matches(code);
+            var excludeMatchs = excludeRegex.Matches(code);
 
             return this.operatorRegex.Replace(code, match =>
             {
@@ -89,7 +102,7 @@ namespace Insql.Resolvers.Codes
 
                 var endIndex = match.Index + match.Length - 1;
 
-                if (clearMatchs.Cast<Match>().Any(cmatch =>
+                if (excludeMatchs.Cast<Match>().Any(cmatch =>
                 {
                     var cendIndex = cmatch.Index + cmatch.Length - 1;
 
@@ -99,19 +112,21 @@ namespace Insql.Resolvers.Codes
                     return match.Value;
                 }
 
-                var operatorGroup = match.Groups.Count > 0 ? match.Groups[0] : null;
+                var operatorGroup = match.Groups.Count > 1 ? match.Groups[1] : null;
 
                 if (operatorGroup == null || !operatorGroup.Success)
                 {
                     return match.Value;
                 }
 
-                if (!operatorMappings.TryGetValue(operatorGroup.Value, out string operatorValue))
+                if (!this.operatorMappings.TryGetValue(operatorGroup.Value, out string operatorValue))
                 {
                     return match.Value;
                 }
 
-                return $"{match.Value.Substring(0, operatorGroup.Index)}{operatorValue}{match.Value.Substring(operatorGroup.Index + operatorGroup.Length)}";
+                return $"{match.Value.Substring(0, operatorGroup.Index - match.Index)}" +
+                    $"{operatorValue}" +
+                    $"{match.Value.Substring(operatorGroup.Index - match.Index + operatorGroup.Length)}";
             });
         }
     }

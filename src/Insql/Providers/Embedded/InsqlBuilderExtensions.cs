@@ -12,7 +12,7 @@ namespace Insql
         public static IInsqlBuilder AddEmbeddedXml(this IInsqlBuilder builder)
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, EmbeddedDescriptorProvider>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<EmbeddedDescriptorOptions>, EmbeddedDescriptorOptionsSetup>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IOptions<EmbeddedDescriptorOptions>>((sp) => Options.Create(new EmbeddedDescriptorOptions())));
 
             return builder;
         }

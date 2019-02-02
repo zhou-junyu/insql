@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class InsqlServiceCollectionExtensions
     {
-        public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure)
+        public static IServiceCollection AddInsql(this IServiceCollection services)
         {
             if (services == null)
             {
@@ -26,11 +26,18 @@ namespace Microsoft.Extensions.DependencyInjection
 
             //code resolver
             services.TryAdd(ServiceDescriptor.Singleton<IInsqlCodeResolver, JavaScriptCodeResolver>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<JavascriptCodeResolverOptions>, JavascriptCodeResolverOptionsSetup>());
+            services.TryAdd(ServiceDescriptor.Singleton<IOptions<JavascriptCodeResolverOptions>>((sp) => Options.Options.Create(new JavascriptCodeResolverOptions())));
 
             //descriptor provider
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, EmbeddedDescriptorProvider>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<EmbeddedDescriptorOptions>, EmbeddedDescriptorOptionsSetup>());
+            services.TryAdd(ServiceDescriptor.Singleton<IOptions<EmbeddedDescriptorOptions>>((sp) => Options.Options.Create(new EmbeddedDescriptorOptions())));
+
+            return services;
+        }
+
+        public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure)
+        {
+            services.AddInsql();
 
             configure(new InsqlBuilder(services));
 
