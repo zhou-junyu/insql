@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <Version>0.1.2</Version>
+    <Version>0.2.0</Version>
     <Authors>rainrcn@qq.com</Authors>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>secret.pfx</AssemblyOriginatorKeyFile>
     <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <RepositoryUrl></RepositoryUrl>
-    <RepositoryType></RepositoryType>
+    <RepositoryUrl>https://github.com/rainrcn/insql</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>a lightweight ORM for .Net , base on Dapper like Mybatis.</PackageReleaseNotes>
   </PropertyGroup>
   
