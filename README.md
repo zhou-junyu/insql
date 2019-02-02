@@ -37,7 +37,7 @@ like mybatis xml syntax , supported :
     - **include**
     `[refid(ref sql section)]`
     - **bind**
-    `[value(javascript syntax)` or `refid(ref code section)]`
+    `[name][value(javascript syntax)` or `refid(ref code section)]`
     - **if**
     `[test(javascript syntax)` or `refid(ref code section)]`
     - **where**
@@ -48,7 +48,7 @@ like mybatis xml syntax , supported :
     can add or remove prefix , suffix
 
 # Usage
- 1. add `Insql` and `DbContext` to `DependencyInjection`. 
+* **Add Insql**
  
     ```c#
     public void ConfigureServices(IServiceCollection services)
@@ -61,7 +61,7 @@ like mybatis xml syntax , supported :
 		});
     }
     ```
- 2. create `UserDbContext` and `UserInfo`.
+* **Create DbContext**
  
     ```c#
     public class UserDbContext : Insql.DbContext  
@@ -107,8 +107,8 @@ like mybatis xml syntax , supported :
         W
     }
     ```
- 3. create `UserDbContext.insql.xml` and modify this file attribute to `embedded file`.
-`insql type` mapping to `UserDbContext` Type.
+* **Create DbContext.insql.xml**
+	> create `UserDbContext.insql.xml` and modify this file attribute to `embedded file`. `insql type` mapping to `UserDbContext` Type.
 
     ```xml
     <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
@@ -154,7 +154,8 @@ like mybatis xml syntax , supported :
     
     </insql>
     ```
-4. use dbContext in `domain service` or `web controller`.
+ 
+* **Use DbContext**
 
     ```c#
     public class ValuesController : ControllerBase
@@ -192,7 +193,7 @@ like mybatis xml syntax , supported :
     
     
 # Other Uses
-1. create a common dbContext type
+* **Create Common DbContext**
 
     ```c#
     public class SqliteDbContext<T> : DbContext where T : class
@@ -212,7 +213,7 @@ like mybatis xml syntax , supported :
         }
     }
     ```
-2. create domain service
+* **Create Domain Service**
 
     ```c#
     public interface IUserService
@@ -236,8 +237,8 @@ like mybatis xml syntax , supported :
         }
     }
     ```
-3. create `UserService.insql.xml` and modify this file attribute to `embedded file`.
-`insql type` mapping to `UserService` Type.
+* **Create Service.insql.xml**
+	> create `UserService.insql.xml` and modify this file attribute to `embedded file`. `insql type` mapping to `UserService` Type.
 
     ```xml
     <insql type="Example.Domain.Services.UserService,Example.Domain" >
@@ -262,20 +263,20 @@ like mybatis xml syntax , supported :
     
     </insql>
     ```
-4. add `Insql` , `SqliteDbContext` , `UserService` to `DependencyInjection`.
+* **Add Insql**
 
     ```c#
     public void ConfigureServices(IServiceCollection services)
     {
-		services.AddInsql();
+	services.AddInsql();
 
-		services.AddScoped(typeof(DbContextOptions<>));
+	services.AddScoped(typeof(DbContextOptions<>));
         services.AddScoped(typeof(SqliteDbContext<>));
 
         services.AddScoped<IUserService, UserService>();
     }
     ```
-5. use IUserService in `web controller`.
+* **Use Domain Service**
 
    ```c#
     public class ValuesController : ControllerBase
