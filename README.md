@@ -3,7 +3,7 @@
 
 Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql configuration was inspired by Mybatis.
 
-[ÖÐÎÄ](https://github.com/rainrcn/insql/blob/master/README.zh_cn.md) | [English](https://github.com/rainrcn/insql/blob/master/README.md)
+[ä¸­æ–‡](https://github.com/rainrcn/insql/blob/master/README.zh_cn.md) | [English](https://github.com/rainrcn/insql/blob/master/README.md)
 
 # Packages
 
