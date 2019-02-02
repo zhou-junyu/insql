@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<insql type="Insql.Tests.Domain.Contexts.UserDbContext,Insql.Tests" >
+
+  <sql id="selectUserColumns">
+    select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
+  </sql>
+
+  <select id="GetUserList">
+    <include refid="selectUserColumns" />
+    <where>
+      <if test="userName != null">
+        <bind name="likeUserName" value="'%' + userName + '%'" />
+        user_name like @likeUserName
+      </if>
+      <if test="userGender !=null and userGender == 'W' ">
+        and user_gender = @userGender
+      </if>
+    </where>
+    order by  user_id
+  </select>
+
+  <insert id="InsertUser">
+    insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+    select last_insert_rowid() from user_info;
+  </insert>
+  <insert id="InsertUserSelective">
+    insert into user_info 
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="UserName != null">
+        user_name,
+      </if>
+      <if test="UserGender != null">
+        user_gender
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="UserName != null">
+        @UserName,
+      </if>
+      <if test="UserGender != null">
+        @UserGender
+      </if>
+    </trim>;
+    select last_insert_rowid() from user_info;
+  </insert>
+
+  <update id="UpdateUser">
+    update user_info set user_name=@UserName,user_gender=@UserGender where user_id = @userId
+  </update>
+
+  <update id="UpdateUserSelective">
+    update user_info
+    <set>
+      <if test="UserName != null">
+        user_name=@UserName,
+      </if>
+      <if test="UserGender != null">
+        user_gender=@UserGender
+      </if>
+    </set>
+    where user_id = @UserId
+  </update>
+
+  <delete id="DeleteUser">
+    delete from user_info where user_id = @userId
+  </delete>
+
+</insql>
