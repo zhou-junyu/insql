@@ -6,14 +6,14 @@ namespace Insql
 {
     public static partial class InsqlBuilderExtensions
     {
-        public static IInsqlBuilder AddProvider(this IInsqlBuilder builder, IInsqlDescriptorProvider provider)
+        public static IInsqlBuilder AddDescriptorProvider(this IInsqlBuilder builder, IInsqlDescriptorProvider provider)
         {
             builder.Services.AddSingleton(provider);
 
             return builder;
         }
 
-        public static IInsqlBuilder ClearProviders(this IInsqlBuilder builder)
+        public static IInsqlBuilder ClearDescriptorProviders(this IInsqlBuilder builder)
         {
             builder.Services.RemoveAll<IInsqlDescriptorProvider>();
 
