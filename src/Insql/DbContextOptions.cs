@@ -6,6 +6,8 @@ namespace Insql
 {
     public abstract class DbContextOptions
     {
+        public abstract Type ContextType { get; }
+
         public IServiceProvider ServiceProvider { get; set; }
 
         public ISqlResolver SqlResolver { get; set; }

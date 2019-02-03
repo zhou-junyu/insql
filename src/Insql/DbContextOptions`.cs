@@ -9,5 +9,7 @@ namespace Insql
         {
             this.ServiceProvider = serviceProvider;
         }
+
+        public override Type ContextType => typeof(TContext);
     }
 }
