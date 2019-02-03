@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Authors>rainrcn@qq.com</Authors>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>secret.pfx</AssemblyOriginatorKeyFile>
@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rainrcn/insql</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Description>a lightweight orm for .net , postgresql database adapter.</Description>
   </PropertyGroup>
 
   <ItemGroup>
