@@ -7,13 +7,13 @@ Insql 是一个轻量级的.NET ORM类库 . 对象映射基于Dapper , Sql配置
 
 # Packages
 
-| Package  |  Url |
+| Package  |  Nuget Install |
 | ------------ | ------------ |
-| Insql  |  https://www.nuget.org/packages/Insql/ |
-| Insql.MySql  |  https://www.nuget.org/packages/Insql.MySql/ |
-| Insql.Oracle      |  https://www.nuget.org/packages/Insql.Oracle/ |
-| Insql.PostgreSql  | https://www.nuget.org/packages/Insql.PostgreSql/  |
-| Insql.Sqlite  |  https://www.nuget.org/packages/Insql.Sqlite/ |
+| Insql  |  [Install-Package Insql](https://www.nuget.org/packages/Insql/) |
+| Insql.MySql  |  [Install-Package Insql.MySql](https://www.nuget.org/packages/Insql.MySql/) |
+| Insql.Oracle      |  [Install-Package Insql.Oracle](https://www.nuget.org/packages/Insql.Oracle/) |
+| Insql.PostgreSql  | [Install-Package Insql.PostgreSql](https://www.nuget.org/packages/Insql.PostgreSql/)  |
+| Insql.Sqlite  |  [Install-Package Insql.Sqlite](https://www.nuget.org/packages/Insql.Sqlite/) |
 
 # 功能
 ### DbContext and DependencyInjection
