@@ -59,7 +59,7 @@ mybatis 很相近的sql xml配置语法，目前支持：
 
 		services.AddInsqlDbContext<UserDbContext>(options =>
 		{
-			options.UserSqlite(this.Configuration.GetConnectionString("sqlite"));
+			options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
 		});
     }
     ```
@@ -211,7 +211,7 @@ mybatis 很相近的sql xml配置语法，目前支持：
             //T type mapping to insql.xml type
             options.UseSqlResolver<T>();
 
-            options.UserSqlite(configuration.GetConnectionString("sqlite"));
+            options.UseSqlite(configuration.GetConnectionString("sqlite"));
         }
     }
     ```

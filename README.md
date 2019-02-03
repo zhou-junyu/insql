@@ -59,7 +59,7 @@ like mybatis xml syntax , supported :
 
 		services.AddInsqlDbContext<UserDbContext>(options =>
 		{
-			options.UserSqlite(this.Configuration.GetConnectionString("sqlite"));
+			options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
 		});
     }
     ```
@@ -211,7 +211,7 @@ like mybatis xml syntax , supported :
             //T type mapping to insql.xml type
             options.UseSqlResolver<T>();
 
-            options.UserSqlite(configuration.GetConnectionString("sqlite"));
+            options.UseSqlite(configuration.GetConnectionString("sqlite"));
         }
     }
     ```
