@@ -7,13 +7,13 @@ Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql confi
 
 # Packages
 
-| Package  |  Url |
+| Package  |  Nuget Install |
 | ------------ | ------------ |
-| Insql  |  https://www.nuget.org/packages/Insql/ |
-| Insql.MySql  |  https://www.nuget.org/packages/Insql.MySql/ |
-| Insql.Oracle      |  https://www.nuget.org/packages/Insql.Oracle/ |
-| Insql.PostgreSql  | https://www.nuget.org/packages/Insql.PostgreSql/  |
-| Insql.Sqlite  |  https://www.nuget.org/packages/Insql.Sqlite/ |
+| Insql  |  [Install-Package Insql](https://www.nuget.org/packages/Insql/) |
+| Insql.MySql  |  [Install-Package Insql.MySql](https://www.nuget.org/packages/Insql.MySql/) |
+| Insql.Oracle      |  [Install-Package Insql.Oracle](https://www.nuget.org/packages/Insql.Oracle/) |
+| Insql.PostgreSql  | [Install-Package Insql.PostgreSql](https://www.nuget.org/packages/Insql.PostgreSql/)  |
+| Insql.Sqlite  |  [Install-Package Insql.Sqlite](https://www.nuget.org/packages/Insql.Sqlite/) |
 
 # Features
 ### DbContext and DependencyInjection
