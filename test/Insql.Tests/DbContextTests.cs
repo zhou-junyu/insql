@@ -21,7 +21,7 @@ namespace Insql.Tests
 
             this.serviceCollection.AddInsqlDbContext<UserDbContext>(optinos =>
             {
-                optinos.UserSqlite("Data Source= ./insql.tests.db");
+                optinos.UseSqlite("Data Source= ./insql.tests.db");
             });
 
             this.serviceCollection.AddScoped<IUserService, UserService>();

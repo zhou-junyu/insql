@@ -5,14 +5,14 @@ namespace Insql
 {
     public static partial class DbContextOptionsExtensions
     {
-        public static DbContextOptions UserOracle(this DbContextOptions options)
+        public static DbContextOptions UseOracle(this DbContextOptions options)
         {
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
 
             return options;
         }
 
-        public static DbContextOptions UserOracle(this DbContextOptions options, string connectionString)
+        public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString)
         {
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
@@ -20,7 +20,7 @@ namespace Insql
             return options;
         }
 
-        public static DbContextOptions UserOracle(this DbContextOptions options, IDbConnection connection)
+        public static DbContextOptions UseOracle(this DbContextOptions options, IDbConnection connection)
         {
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
             options.ConnectionString = connection.ConnectionString;
