@@ -37,7 +37,7 @@ mybatis 很相近的sql xml配置语法，目前支持：
     `sql` 节的别名
  - elements
     - **include**
-    `[refid(引用code配置节)]`
+    `[refid(引用sql配置节)]`
     - **bind**
     `[name][value(javascript 语法)` or `refid(引用code配置节)]`
     - **if**
