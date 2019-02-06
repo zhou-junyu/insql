@@ -24,6 +24,11 @@
     order by  user_id
   </select>
 
+  <select id="GetUserInList">
+    <include refid="selectUserColumns" />
+    where user_name in @userNames order by  user_id
+  </select>
+
   <insert id="InsertUser">
     insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
     select last_insert_rowid() from user_info;

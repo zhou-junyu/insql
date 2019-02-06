@@ -7,9 +7,13 @@ namespace Insql.Tests.Domain.Services
     {
         IEnumerable<UserInfo> GetUserList(string userName, UserGender? userGender);
 
+        IEnumerable<UserInfo> GetUserInList(string[] userNames);
+
         UserInfo GetUser(int userId);
 
         void InsertUser(UserInfo info);
+
+        void InsertUserList(IEnumerable<UserInfo> infoList);
 
         void InsertUserSelective(UserInfo info);
 

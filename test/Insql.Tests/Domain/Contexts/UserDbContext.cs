@@ -15,6 +15,11 @@ namespace Insql.Tests.Domain.Contexts
             return this.Query<UserInfo>(nameof(GetUserList), new { userName, userGender });
         }
 
+        public IEnumerable<UserInfo> GetUserInList(string[] userNames)
+        {
+            return this.Query<UserInfo>(nameof(GetUserInList), new { userNames });
+        }
+
         public UserInfo GetUser(int userId)
         {
             return this.Query<UserInfo>(nameof(GetUser), new { userId }).SingleOrDefault();

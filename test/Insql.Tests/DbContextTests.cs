@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Insql.Tests.Domain.Contexts;
+using Insql.Tests.Domain.Models;
 using Insql.Tests.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -132,6 +134,36 @@ namespace Insql.Tests
                 var wlist = userService.GetUserList(null, Domain.Models.UserGender.W).ToList();
 
                 Assert.True(wlist.All(o => o.UserGender == Domain.Models.UserGender.W));
+            }
+        }
+
+        [Fact]
+        public void GetUserInList()
+        {
+            using (var scopeProvider = this.serviceProvider.CreateScope())
+            {
+                var userService = scopeProvider.ServiceProvider.GetRequiredService<IUserService>();
+
+                userService.InsertUserList(new List<UserInfo>
+                {
+                    new UserInfo
+                    {
+                         UserName = "in1", UserGender = UserGender.M
+                    },
+                    new UserInfo
+                    {
+                         UserName = "in2",
+                    }
+                    ,
+                    new UserInfo
+                    {
+                         UserName = "in3", UserGender = UserGender.M
+                    }
+                });
+
+                var wlist = userService.GetUserInList(new string[] { "in1", "in2" });
+
+                Assert.True(wlist.Count() > 0);
             }
         }
     }
