@@ -8,23 +8,21 @@ using Xunit;
 
 namespace Insql.Tests
 {
-    public class DbContextTests : IDisposable
+    public class CommonDbContextTests : IDisposable
     {
         private readonly IServiceCollection serviceCollection;
         private readonly IServiceProvider serviceProvider;
 
-        public DbContextTests()
+        public CommonDbContextTests()
         {
             this.serviceCollection = new ServiceCollection();
 
             this.serviceCollection.AddInsql();
 
-            this.serviceCollection.AddInsqlDbContext<UserDbContext>(options =>
-            {
-                options.UseSqlite("Data Source= ./insql.tests.db");
-            });
+            this.serviceCollection.AddScoped(typeof(CommonDbContextOptions<>));
+            this.serviceCollection.AddScoped(typeof(CommonDbContext<>));
 
-            this.serviceCollection.AddScoped<IUserService, UserService>();
+            this.serviceCollection.AddScoped<ICommonUserService, CommonUserService>();
 
             this.serviceProvider = this.serviceCollection.BuildServiceProvider();
 
@@ -43,7 +41,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                using (var dbContext = scopeProvider.ServiceProvider.GetRequiredService<UserDbContext>())
+                using (var dbContext = scopeProvider.ServiceProvider.GetRequiredService<CommonDbContext<CommonUserService>>())
                 {
                     dbContext.DbSession.CurrentConnection.Execute(" CREATE TABLE IF NOT EXISTS user_info (user_id  INTEGER PRIMARY KEY AUTOINCREMENT,user_name TEXT ,user_gender INTEGER);  ");
                 }
@@ -55,7 +53,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var userService = scopeProvider.ServiceProvider.GetRequiredService<IUserService>();
+                var userService = scopeProvider.ServiceProvider.GetRequiredService<ICommonUserService>();
 
                 var userInfo = new Domain.Models.UserInfo
                 {
@@ -74,7 +72,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var userService = scopeProvider.ServiceProvider.GetRequiredService<IUserService>();
+                var userService = scopeProvider.ServiceProvider.GetRequiredService<ICommonUserService>();
 
                 var userInfo = new Domain.Models.UserInfo
                 {
@@ -102,7 +100,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var userService = scopeProvider.ServiceProvider.GetRequiredService<IUserService>();
+                var userService = scopeProvider.ServiceProvider.GetRequiredService<ICommonUserService>();
 
                 var userInfo = new Domain.Models.UserInfo
                 {
@@ -127,7 +125,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var userService = scopeProvider.ServiceProvider.GetRequiredService<IUserService>();
+                var userService = scopeProvider.ServiceProvider.GetRequiredService<ICommonUserService>();
 
                 var wlist = userService.GetUserList(null, Domain.Models.UserGender.W).ToList();
 

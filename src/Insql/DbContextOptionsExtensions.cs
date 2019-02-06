@@ -5,9 +5,9 @@ namespace Insql
 {
     public static partial class DbContextOptionsExtensions
     {
-        public static DbContextOptions UseSqlResolver<T>(this DbContextOptions options) where T : class
+        public static DbContextOptions UseSqlResolver<TInsql>(this DbContextOptions options) where TInsql : class
         {
-            options.SqlResolver = options.ServiceProvider.GetRequiredService<ISqlResolver<T>>();
+            options.SqlResolver = options.ServiceProvider.GetRequiredService<ISqlResolver<TInsql>>();
 
             return options;
         }
