@@ -57,7 +57,7 @@ namespace Insql.Resolvers.Codes
 
             if (optionsValue.IsReplaceOperator)
             {
-                code = this.codeCaches.GetOrAdd(code.GetHashCode().ToString(), (key) => this.ReplaceOperator(code));
+                code = this.codeCaches.GetOrAdd(code, (key) => this.ReplaceOperator(code));
             }
 
             var engine = new Engine(options =>
