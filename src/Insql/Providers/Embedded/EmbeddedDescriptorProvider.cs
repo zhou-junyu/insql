@@ -1,6 +1,5 @@
 ﻿using Insql.Resolvers;
 using Insql.Resolvers.Elements;
-using Insql.Resolvers.Sections;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -86,7 +85,7 @@ namespace Insql.Providers.Embedded
             }
         }
 
-        private IEnumerable<IInsqlSection> ParseSectionDescriptors(XElement root)
+        private IEnumerable<InsqlSection> ParseSectionDescriptors(XElement root)
         {
             var sqlSections = root.Elements(XName.Get("sql", "")).Select(element =>
             {
@@ -97,12 +96,12 @@ namespace Insql.Providers.Embedded
                     throw new Exception("insql sql section element `id` is empty !");
                 }
 
-                var section = new SqlSection(id.Value);
+                var section = new InsqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSections(element));
 
                 return section;
-            }).Cast<IInsqlSection>();
+            }).Cast<InsqlSection>();
 
             var selectSqlSections = root.Elements(XName.Get("select", "")).Select(element =>
             {
@@ -113,12 +112,12 @@ namespace Insql.Providers.Embedded
                     throw new Exception("insql select insert sql section element `id` is empty !");
                 }
 
-                var section = new SqlSection(id.Value);
+                var section = new InsqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSections(element));
 
                 return section;
-            }).Cast<IInsqlSection>();
+            }).Cast<InsqlSection>();
 
             var insertSqlSections = root.Elements(XName.Get("insert", "")).Select(element =>
             {
@@ -129,12 +128,12 @@ namespace Insql.Providers.Embedded
                     throw new Exception("insql insert sql section element `id` is empty !");
                 }
 
-                var section = new SqlSection(id.Value);
+                var section = new InsqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSections(element));
 
                 return section;
-            }).Cast<IInsqlSection>();
+            }).Cast<InsqlSection>();
 
             var updateSqlSections = root.Elements(XName.Get("update", "")).Select(element =>
             {
@@ -145,12 +144,12 @@ namespace Insql.Providers.Embedded
                     throw new Exception("insql update sql section element `id` is empty !");
                 }
 
-                var section = new SqlSection(id.Value);
+                var section = new InsqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSections(element));
 
                 return section;
-            }).Cast<IInsqlSection>();
+            }).Cast<InsqlSection>();
 
             var deleteSqlSections = root.Elements(XName.Get("delete", "")).Select(element =>
             {
@@ -161,12 +160,12 @@ namespace Insql.Providers.Embedded
                     throw new Exception("insql delete sql section element `id` is empty !");
                 }
 
-                var section = new SqlSection(id.Value);
+                var section = new InsqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSections(element));
 
                 return section;
-            }).Cast<IInsqlSection>();
+            }).Cast<InsqlSection>();
 
             return sqlSections
                 .Concat(selectSqlSections)
@@ -176,7 +175,7 @@ namespace Insql.Providers.Embedded
                 .ToList();
         }
 
-        private IEnumerable<ISqlSectionElement> ParseSqlSections(XElement element)
+        private IEnumerable<IInsqlSectionElement> ParseSqlSections(XElement element)
         {
             return element.Nodes().Select(node =>
              {
@@ -248,7 +247,7 @@ namespace Insql.Providers.Embedded
                      }
                  }
 
-                 return (ISqlSectionElement)null;
+                 return (IInsqlSectionElement)null;
              }).Where(o => o != null).ToList();
         }
     }

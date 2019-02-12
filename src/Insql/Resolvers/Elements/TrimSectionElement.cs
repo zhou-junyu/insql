@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Insql.Resolvers.Elements
 {
-    public class TrimSectionElement : ISqlSectionElement
+    public class TrimSectionElement : IInsqlSectionElement
     {
         public string Prefix { get; set; }
 
@@ -14,11 +14,11 @@ namespace Insql.Resolvers.Elements
 
         public string SuffixOverrides { get; set; }
 
-        public List<ISqlSectionElement> Children { get; }
+        public List<IInsqlSectionElement> Children { get; }
 
         public TrimSectionElement()
         {
-            this.Children = new List<ISqlSectionElement>();
+            this.Children = new List<IInsqlSectionElement>();
         }
 
         public string Resolve(ResolveContext context)

@@ -4,7 +4,7 @@ using System;
 
 namespace Insql.Resolvers.Elements
 {
-    public class BindSectionElement : ISqlSectionElement
+    public class BindSectionElement : IInsqlSectionElement
     {
         public string Name { get; }
 

@@ -1,6 +1,6 @@
 ﻿namespace Insql.Resolvers.Elements
 {
-    public class TextSectionElement : ISqlSectionElement
+    public class TextSectionElement : IInsqlSectionElement
     {
         public string Text { get; }
 

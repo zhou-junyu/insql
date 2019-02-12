@@ -24,9 +24,6 @@ mybatis 很相近的sql xml配置语法，目前支持：
  - sections
     - **sql**
     `[id]`
-    - **code**
-    `[id]`
-    `javascript` 语法
     - **select**
     `sql` 节的别名
     - **insert**
@@ -39,9 +36,9 @@ mybatis 很相近的sql xml配置语法，目前支持：
     - **include**
     `[refid(引用sql配置节)]`
     - **bind**
-    `[name][value(javascript 语法)` or `refid(引用code配置节)]`
+    `[name][value(javascript 语法)]`
     - **if**
-    `[test(javascript 语法)` or `refid(引用code配置节)]`
+    `[test(javascript 语法)]`
     - **where**
     添加 `where` sql 语句并且移除开头的and 或者or 
     - **set**

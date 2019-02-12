@@ -21,9 +21,7 @@ namespace Insql.Resolvers
                 throw new ArgumentNullException(nameof(sqlId));
             }
 
-            //sqlId = this.MatchSqlId(sqlId);
-
-            if (this.descriptor.Sections.TryGetValue(sqlId, out IInsqlSection insqlSection))
+            if (this.descriptor.Sections.TryGetValue(sqlId, out InsqlSection insqlSection))
             {
                 var resolveResult = new ResolveResult
                 {
@@ -43,34 +41,5 @@ namespace Insql.Resolvers
 
             throw new Exception($"sqlId : {sqlId} [InsqlSection] not found !");
         }
-
-        //private string MatchSection(string sqlId)
-        //{
-        //    var sqlIdSplit = sqlId.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-        //    //functionName
-        //    if (sqlIdSplit.Length == 1)
-        //    {
-        //        return sqlIdSplit[0];
-        //    }
-
-        //    //functionName.serverName
-        //    if (sqlIdSplit.Length == 2)
-        //    {
-        //        return $"{sqlIdSplit[0]}.{sqlIdSplit[1]}";
-        //    }
-
-        //    //functionName.serverName.serverVersion
-        //    if (sqlIdSplit.Length == 3)
-        //    {
-        //        var fsName = $"{sqlIdSplit[0]}.{sqlIdSplit[1]}";
-
-        //        var matchIds = this.descriptor.Sections.Keys.Where(key => key.StartsWith(fsName)).ToArray();
-
-
-        //    }
-
-        //    throw new Exception($"sqlId: { sqlId } format error !");
-        //}
     }
 }

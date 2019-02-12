@@ -2,7 +2,7 @@
 
 namespace Insql.Resolvers.Elements
 {
-    public class IncludeSectionElement : ISqlSectionElement
+    public class IncludeSectionElement : IInsqlSectionElement
     {
         public string RefId { get; }
 
@@ -18,7 +18,7 @@ namespace Insql.Resolvers.Elements
 
         public string Resolve(ResolveContext context)
         {
-            if (context.InsqlDescriptor.Sections.TryGetValue(this.RefId, out IInsqlSection insqlSection))
+            if (context.InsqlDescriptor.Sections.TryGetValue(this.RefId, out InsqlSection insqlSection))
             {
                 return insqlSection.Resolve(new ResolveContext
                 {

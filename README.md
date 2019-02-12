@@ -24,9 +24,6 @@ like mybatis xml syntax , supported :
  - sections
     - **sql**
     `[id]`
-    - **code**
-    `[id]`
-    `javascript` syntax
     - **select**
     `sql` section alias
     - **insert**
@@ -39,9 +36,9 @@ like mybatis xml syntax , supported :
     - **include**
     `[refid(ref sql section)]`
     - **bind**
-    `[name][value(javascript syntax)` or `refid(ref code section)]`
+    `[name][value(javascript syntax)]`
     - **if**
-    `[test(javascript syntax)` or `refid(ref code section)]`
+    `[test(javascript syntax)]`
     - **where**
     add `where` sql and remove `and | or ` prefix
     - **set**

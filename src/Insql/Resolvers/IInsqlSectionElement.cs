@@ -1,6 +1,6 @@
 ﻿namespace Insql.Resolvers
 {
-    public interface ISqlSectionElement
+    public interface IInsqlSectionElement
     {
         string Resolve(ResolveContext context);
     }

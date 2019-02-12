@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Insql.Resolvers.Elements
 {
-    public class IfSectionElement : ISqlSectionElement
+    public class IfSectionElement : IInsqlSectionElement
     {
         public string Test { get; }
 
-        public List<ISqlSectionElement> Children { get; }
+        public List<IInsqlSectionElement> Children { get; }
 
         public IfSectionElement(string test)
         {
@@ -21,7 +21,7 @@ namespace Insql.Resolvers.Elements
 
             this.Test = test;
 
-            this.Children = new List<ISqlSectionElement>();
+            this.Children = new List<IInsqlSectionElement>();
         }
 
         public string Resolve(ResolveContext context)
