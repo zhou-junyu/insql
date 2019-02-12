@@ -5,7 +5,9 @@ namespace Insql
 {
     internal class DbSession : IDbSession
     {
-        private readonly bool wasDisposed;
+        private readonly bool isConnectionClosed;
+        private readonly bool wasConnectionDisposed;
+
         private bool wasClosed;
         private bool isDisposed;
 
@@ -24,7 +26,8 @@ namespace Insql
             this.CurrentConnection.ConnectionString = connectionString;
             this.CommandTimeout = commandTimeout;
 
-            this.wasDisposed = true;
+            this.isConnectionClosed = this.CurrentConnection.State == ConnectionState.Closed;
+            this.wasConnectionDisposed = true;
         }
 
         public DbSession(IDbConnection connection, int? commandTimeout)
@@ -36,6 +39,8 @@ namespace Insql
 
             this.CurrentConnection = connection;
             this.CommandTimeout = commandTimeout;
+
+            this.isConnectionClosed = this.CurrentConnection.State == ConnectionState.Closed;
         }
 
         public IDbConnection CurrentConnection { get; }
@@ -55,7 +60,7 @@ namespace Insql
                 throw new Exception("The current transaction already exists.");
             }
 
-            this.OpenConnection();
+            this.OpenTransaction();
 
             this.CurrentTransaction = this.CurrentConnection.BeginTransaction();
         }
@@ -71,7 +76,7 @@ namespace Insql
                 throw new Exception("The current transaction already exists.");
             }
 
-            this.OpenConnection();
+            this.OpenTransaction();
 
             this.CurrentTransaction = this.CurrentConnection.BeginTransaction(isolationLevel);
         }
@@ -140,13 +145,18 @@ namespace Insql
                 this.CloseTransaction();
             }
 
-            if (this.wasDisposed)
+            if (this.isConnectionClosed && this.CurrentConnection.State != ConnectionState.Closed)
+            {
+                this.CurrentConnection.Close();
+            }
+
+            if (this.wasConnectionDisposed)
             {
                 this.CurrentConnection.Dispose();
             }
         }
 
-        private void OpenConnection()
+        private void OpenTransaction()
         {
             if (this.CurrentConnection.State == ConnectionState.Closed)
             {

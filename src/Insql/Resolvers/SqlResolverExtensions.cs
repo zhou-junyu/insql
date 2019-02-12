@@ -17,7 +17,7 @@ namespace Insql.Resolvers
         {
             if (sqlParam == null)
             {
-                return sqlResolver.Resolve(sqlId, null);
+                return sqlResolver.Resolve(sqlId, (IDictionary<string, object>)null);
             }
 
             var dictionaryParam = sqlParam as IEnumerable<KeyValuePair<string, object>>;
