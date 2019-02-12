@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Insql.Resolvers
+namespace Insql.Resolvers.Sections
 {
-    public class InsqlSection
+    public class SqlInsqlSection: IInsqlSection
     {
         public string Id { get; }
 
         public List<IInsqlSectionElement> Elements { get; }
 
-        public InsqlSection(string id)
+        public SqlInsqlSection(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

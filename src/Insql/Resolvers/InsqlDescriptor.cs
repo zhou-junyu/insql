@@ -7,7 +7,7 @@ namespace Insql.Resolvers
     {
         public Type Type { get; }
 
-        public Dictionary<string, InsqlSection> Sections { get; }
+        public Dictionary<string, IInsqlSection> Sections { get; }
 
         public InsqlDescriptor(Type type)
         {
@@ -17,7 +17,7 @@ namespace Insql.Resolvers
             }
 
             this.Type = type;
-            this.Sections = new Dictionary<string, InsqlSection>();
+            this.Sections = new Dictionary<string, IInsqlSection>();
         }
     }
 }

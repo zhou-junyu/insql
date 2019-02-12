@@ -180,6 +180,8 @@ namespace Insql
 
         private ResolveResult Resolve(string sqlId, object sqlParam)
         {
+            //sqlId = $"{sqlId}.{this.DbSession.ServerName}.{this.DbSession.ServerVersion}";
+
             var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
 
             this.OnResolved(resolveResult);

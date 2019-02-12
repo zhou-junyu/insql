@@ -18,7 +18,7 @@ namespace Insql.Resolvers.Elements
 
         public string Resolve(ResolveContext context)
         {
-            if (context.InsqlDescriptor.Sections.TryGetValue(this.RefId, out InsqlSection insqlSection))
+            if (context.InsqlDescriptor.Sections.TryGetValue(this.RefId, out IInsqlSection insqlSection))
             {
                 return insqlSection.Resolve(new ResolveContext
                 {
@@ -32,5 +32,4 @@ namespace Insql.Resolvers.Elements
             throw new ArgumentException($"insql section id : {this.RefId} not found !");
         }
     }
-
 }

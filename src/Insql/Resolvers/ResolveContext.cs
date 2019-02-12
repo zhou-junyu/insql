@@ -9,7 +9,7 @@ namespace Insql.Resolvers
 
         public InsqlDescriptor InsqlDescriptor { get; set; }
 
-        public InsqlSection InsqlSection { get; set; }
+        public IInsqlSection InsqlSection { get; set; }
 
         public IDictionary<string, object> Param { get; set; }
     }
