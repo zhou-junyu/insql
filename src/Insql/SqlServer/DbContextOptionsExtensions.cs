@@ -9,6 +9,8 @@ namespace Insql
         {
             options.ConnectionFactory = SqlServerDbConnectionFactory.Instance;
 
+            options.ServerName = "SqlServer";
+
             return options;
         }
 
@@ -16,6 +18,8 @@ namespace Insql
         {
             options.ConnectionFactory = SqlServerDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
+
+            options.ServerName = "SqlServer";
 
             return options;
         }
@@ -25,6 +29,8 @@ namespace Insql
             options.ConnectionFactory = SqlServerDbConnectionFactory.Instance;
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
+
+            options.ServerName = "SqlServer";
 
             return options;
         }

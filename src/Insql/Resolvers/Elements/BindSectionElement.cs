@@ -10,60 +10,29 @@ namespace Insql.Resolvers.Elements
 
         public string Value { get; }
 
-        public string RefId { get; }
-
-        public BindSectionElement(string name, string value, string refid)
+        public BindSectionElement(string name, string value)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
-            if (string.IsNullOrWhiteSpace(value) && string.IsNullOrWhiteSpace(refid))
+            if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentNullException($"{nameof(name)},{nameof(refid)}");
-            }
-            if (!string.IsNullOrWhiteSpace(this.Value) && !string.IsNullOrWhiteSpace(this.RefId))
-            {
-                throw new Exception("if element test or refid not coexist ! ");
+                throw new ArgumentNullException(nameof(value));
             }
 
             this.Name = name;
             this.Value = value;
-            this.RefId = refid;
         }
 
         public string Resolve(ResolveContext context)
         {
-            object executeResult = null;
+            var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlCodeResolver>();
 
-            if (!string.IsNullOrWhiteSpace(this.RefId))
-            {
-                if (!context.InsqlDescriptor.Sections.ContainsKey(this.RefId))
-                {
-                    throw new ArgumentException($"mapper section id : {this.RefId} not found !");
-                }
+            var executeResult = codeExecuter.Resolve(typeof(object), this.Value, context.Param);
 
-                IInsqlSection sectionDescriptor = context.InsqlDescriptor.Sections[this.RefId];
-
-                executeResult = sectionDescriptor.Resolve(new ResolveContext
-                {
-                    ServiceProvider = context.ServiceProvider,
-                    InsqlDescriptor = context.InsqlDescriptor,
-                    SectionDescriptor = sectionDescriptor,
-                    Param = context.Param
-                });
-            }
-            else if (!string.IsNullOrWhiteSpace(this.Value))
-            {
-                var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlCodeResolver>();
-
-                executeResult = codeExecuter.Resolve(typeof(object), this.Value, context.Param);
-            }
-
-            //给上下文设置参数
             context.Param[this.Name] = executeResult;
 
-            //返回空内容
             return string.Empty;
         }
     }

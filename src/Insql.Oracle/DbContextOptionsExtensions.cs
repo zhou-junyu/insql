@@ -9,6 +9,8 @@ namespace Insql
         {
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
 
+            options.ServerName = "Oracle";
+
             return options;
         }
 
@@ -16,6 +18,8 @@ namespace Insql
         {
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
+
+            options.ServerName = "Oracle";
 
             return options;
         }
@@ -25,6 +29,8 @@ namespace Insql
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
+
+            options.ServerName = "Oracle";
 
             return options;
         }

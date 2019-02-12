@@ -9,6 +9,8 @@ namespace Insql
         {
             options.ConnectionFactory = MySqlDbConnectionFactory.Instance;
 
+            options.ServerName = "MySql";
+
             return options;
         }
 
@@ -16,6 +18,8 @@ namespace Insql
         {
             options.ConnectionFactory = MySqlDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
+
+            options.ServerName = "MySql";
 
             return options;
         }
@@ -25,6 +29,8 @@ namespace Insql
             options.ConnectionFactory = MySqlDbConnectionFactory.Instance;
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
+
+            options.ServerName = "MySql";
 
             return options;
         }

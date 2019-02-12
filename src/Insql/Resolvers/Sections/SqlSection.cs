@@ -21,7 +21,7 @@ namespace Insql.Resolvers.Sections
             this.Elements = new List<ISqlSectionElement>();
         }
 
-        public object Resolve(ResolveContext context)
+        public string Resolve(ResolveContext context)
         {
             var elementsResult = this.Elements.Select(element =>
             {

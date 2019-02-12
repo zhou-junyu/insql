@@ -21,25 +21,56 @@ namespace Insql.Resolvers
                 throw new ArgumentNullException(nameof(sqlId));
             }
 
-            if (this.descriptor.Sections.TryGetValue(sqlId, out IInsqlSection sectionDescriptor))
+            //sqlId = this.MatchSqlId(sqlId);
+
+            if (this.descriptor.Sections.TryGetValue(sqlId, out IInsqlSection insqlSection))
             {
-                ResolveResult resolveResult = new ResolveResult
+                var resolveResult = new ResolveResult
                 {
                     Param = sqlParam ?? new Dictionary<string, object>()
                 };
 
-                resolveResult.Sql = (string)sectionDescriptor.Resolve(new ResolveContext
+                resolveResult.Sql = insqlSection.Resolve(new ResolveContext
                 {
                     ServiceProvider = this.serviceProvider,
                     InsqlDescriptor = this.descriptor,
-                    SectionDescriptor = sectionDescriptor,
+                    InsqlSection = insqlSection,
                     Param = resolveResult.Param
                 });
 
                 return resolveResult;
             }
 
-            throw new Exception($"sqlId : {sqlId} [SectionDescriptor] not found !");
+            throw new Exception($"sqlId : {sqlId} [InsqlSection] not found !");
         }
+
+        //private string MatchSection(string sqlId)
+        //{
+        //    var sqlIdSplit = sqlId.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+        //    //functionName
+        //    if (sqlIdSplit.Length == 1)
+        //    {
+        //        return sqlIdSplit[0];
+        //    }
+
+        //    //functionName.serverName
+        //    if (sqlIdSplit.Length == 2)
+        //    {
+        //        return $"{sqlIdSplit[0]}.{sqlIdSplit[1]}";
+        //    }
+
+        //    //functionName.serverName.serverVersion
+        //    if (sqlIdSplit.Length == 3)
+        //    {
+        //        var fsName = $"{sqlIdSplit[0]}.{sqlIdSplit[1]}";
+
+        //        var matchIds = this.descriptor.Sections.Keys.Where(key => key.StartsWith(fsName)).ToArray();
+
+
+        //    }
+
+        //    throw new Exception($"sqlId: { sqlId } format error !");
+        //}
     }
 }

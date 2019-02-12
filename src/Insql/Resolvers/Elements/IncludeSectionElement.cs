@@ -18,20 +18,18 @@ namespace Insql.Resolvers.Elements
 
         public string Resolve(ResolveContext context)
         {
-            if (!context.InsqlDescriptor.Sections.ContainsKey(this.RefId))
+            if (context.InsqlDescriptor.Sections.TryGetValue(this.RefId, out IInsqlSection insqlSection))
             {
-                throw new ArgumentException($"mapper section id : {this.RefId} not found !");
+                return insqlSection.Resolve(new ResolveContext
+                {
+                    ServiceProvider = context.ServiceProvider,
+                    InsqlDescriptor = context.InsqlDescriptor,
+                    InsqlSection = insqlSection,
+                    Param = context.Param
+                });
             }
 
-            IInsqlSection sectionDescriptor = context.InsqlDescriptor.Sections[this.RefId];
-
-            return (string)sectionDescriptor.Resolve(new ResolveContext
-            {
-                ServiceProvider = context.ServiceProvider,
-                InsqlDescriptor = context.InsqlDescriptor,
-                SectionDescriptor = sectionDescriptor,
-                Param = context.Param
-            });
+            throw new ArgumentException($"insql section id : {this.RefId} not found !");
         }
     }
 

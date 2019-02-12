@@ -9,6 +9,8 @@ namespace Insql
         {
             options.ConnectionFactory = PostgreSqlDbConnectionFactory.Instance;
 
+            options.ServerName = "PostgreSql";
+
             return options;
         }
 
@@ -16,6 +18,8 @@ namespace Insql
         {
             options.ConnectionFactory = PostgreSqlDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
+
+            options.ServerName = "PostgreSql";
 
             return options;
         }
@@ -25,6 +29,8 @@ namespace Insql
             options.ConnectionFactory = PostgreSqlDbConnectionFactory.Instance;
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
+
+            options.ServerName = "PostgreSql";
 
             return options;
         }

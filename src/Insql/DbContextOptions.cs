@@ -19,5 +19,9 @@ namespace Insql
         public IDbConnectionFactory ConnectionFactory { get; set; }
 
         public int? CommandTimeout { get; set; }
+
+        public string ServerName { get; set; }
+
+        public int? ServerVersion { get; set; }
     }
 }

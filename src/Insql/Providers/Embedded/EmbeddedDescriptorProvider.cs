@@ -168,24 +168,12 @@ namespace Insql.Providers.Embedded
                 return section;
             }).Cast<IInsqlSection>();
 
-            var codeSections = root.Elements(XName.Get("code", "")).Select(element =>
-            {
-                var id = element.Attribute(XName.Get("id", ""));
-
-                if (id == null || string.IsNullOrWhiteSpace(id.Value))
-                {
-                    throw new Exception("insql code section element `id` is empty !");
-                }
-
-                return new CodeSection(id.Value, element.Value);
-            }).Cast<IInsqlSection>();
-
             return sqlSections
                 .Concat(selectSqlSections)
                 .Concat(insertSqlSections)
                 .Concat(updateSqlSections)
                 .Concat(deleteSqlSections)
-                .Concat(codeSections).ToList();
+                .ToList();
         }
 
         private IEnumerable<ISqlSectionElement> ParseSqlSections(XElement element)
@@ -208,15 +196,13 @@ namespace Insql.Providers.Embedded
                              {
                                  return new BindSectionElement(
                                      xelement.Attribute(XName.Get("name", ""))?.Value,
-                                     xelement.Attribute(XName.Get("value", ""))?.Value,
-                                     xelement.Attribute(XName.Get("refid", ""))?.Value
+                                     xelement.Attribute(XName.Get("value", ""))?.Value
                                  );
                              }
                          case "if":
                              {
                                  var ifSection = new IfSectionElement(
-                                     xelement.Attribute(XName.Get("test", ""))?.Value,
-                                     xelement.Attribute(XName.Get("refid", ""))?.Value
+                                     xelement.Attribute(XName.Get("test", ""))?.Value
                                  );
 
                                  ifSection.Children.AddRange(this.ParseSqlSections(xelement));

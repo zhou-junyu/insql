@@ -31,11 +31,21 @@ namespace Insql
 
             if (options.Connection != null)
             {
-                this.DbSession = new DbSession(options.Connection, options.CommandTimeout);
+                this.DbSession = new DbSession(options.Connection)
+                {
+                    CommandTimeout = options.CommandTimeout,
+                    ServerName = options.ServerName,
+                    ServerVersion = options.ServerVersion
+                };
             }
             else
             {
-                this.DbSession = new DbSession(options.ConnectionFactory, options.ConnectionString, options.CommandTimeout);
+                this.DbSession = new DbSession(options.ConnectionFactory, options.ConnectionString)
+                {
+                    CommandTimeout = options.CommandTimeout,
+                    ServerName = options.ServerName,
+                    ServerVersion = options.ServerVersion
+                };
             }
         }
 
@@ -170,6 +180,8 @@ namespace Insql
 
         private ResolveResult Resolve(string sqlId, object sqlParam)
         {
+            //sqlId = $"{sqlId}.{this.DbSession.ServerName}.{this.DbSession.ServerVersion}";
+
             var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
 
             this.OnResolved(resolveResult);

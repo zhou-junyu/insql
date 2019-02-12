@@ -4,6 +4,6 @@
     {
         string Id { get; }
 
-        object Resolve(ResolveContext context);
+        string Resolve(ResolveContext context);
     }
 }

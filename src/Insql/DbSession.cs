@@ -11,7 +11,7 @@ namespace Insql
         private bool wasClosed;
         private bool isDisposed;
 
-        public DbSession(IDbConnectionFactory connectionFactory, string connectionString, int? commandTimeout)
+        public DbSession(IDbConnectionFactory connectionFactory, string connectionString)
         {
             if (connectionFactory == null)
             {
@@ -24,13 +24,12 @@ namespace Insql
 
             this.CurrentConnection = connectionFactory.CreateConnection();
             this.CurrentConnection.ConnectionString = connectionString;
-            this.CommandTimeout = commandTimeout;
 
             this.isConnectionClosed = this.CurrentConnection.State == ConnectionState.Closed;
             this.wasConnectionDisposed = true;
         }
 
-        public DbSession(IDbConnection connection, int? commandTimeout)
+        public DbSession(IDbConnection connection)
         {
             if (connection == null)
             {
@@ -38,7 +37,6 @@ namespace Insql
             }
 
             this.CurrentConnection = connection;
-            this.CommandTimeout = commandTimeout;
 
             this.isConnectionClosed = this.CurrentConnection.State == ConnectionState.Closed;
         }
@@ -48,6 +46,10 @@ namespace Insql
         public IDbTransaction CurrentTransaction { get; private set; }
 
         public int? CommandTimeout { get; set; }
+
+        public string ServerName { get; set; }
+
+        public int? ServerVersion { get; set; }
 
         public void BeginTransaction()
         {
