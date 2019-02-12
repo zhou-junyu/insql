@@ -6,7 +6,8 @@ namespace Insql
     internal class DbSession : IDbSession
     {
         private readonly bool wasDisposed;
-        private bool wasClosed;
+        private readonly bool wasClosed;
+        private bool wasTransactionClosed;
         private bool isDisposed;
 
         public DbSession(IDbConnectionFactory connectionFactory, string connectionString, int? commandTimeout)
@@ -36,6 +37,8 @@ namespace Insql
 
             this.CurrentConnection = connection;
             this.CommandTimeout = commandTimeout;
+
+            this.wasClosed = connection.State != ConnectionState.Closed;
         }
 
         public IDbConnection CurrentConnection { get; }
@@ -55,7 +58,7 @@ namespace Insql
                 throw new Exception("The current transaction already exists.");
             }
 
-            this.OpenConnection();
+            this.OpenTransaction();
 
             this.CurrentTransaction = this.CurrentConnection.BeginTransaction();
         }
@@ -71,7 +74,7 @@ namespace Insql
                 throw new Exception("The current transaction already exists.");
             }
 
-            this.OpenConnection();
+            this.OpenTransaction();
 
             this.CurrentTransaction = this.CurrentConnection.BeginTransaction(isolationLevel);
         }
@@ -140,17 +143,28 @@ namespace Insql
                 this.CloseTransaction();
             }
 
+            if (this.wasClosed)
+            {
+                try
+                {
+                    this.CurrentConnection.Close();
+                }
+                catch
+                {
+                }
+            }
+
             if (this.wasDisposed)
             {
                 this.CurrentConnection.Dispose();
             }
         }
 
-        private void OpenConnection()
+        private void OpenTransaction()
         {
             if (this.CurrentConnection.State == ConnectionState.Closed)
             {
-                this.wasClosed = true;
+                this.wasTransactionClosed = true;
 
                 this.CurrentConnection.Open();
             }
@@ -168,9 +182,9 @@ namespace Insql
 
             this.CurrentTransaction = null;
 
-            if (this.wasClosed)
+            if (this.wasTransactionClosed)
             {
-                this.wasClosed = false;
+                this.wasTransactionClosed = false;
 
                 this.CurrentConnection.Close();
             }
