@@ -43,30 +43,34 @@ namespace Insql
         {
         }
 
+        protected virtual void OnResolved(ResolveResult resolveResult)
+        {
+        }
+
         public IEnumerable<T> Query<T>(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.Query<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
         }
 
         public IEnumerable<object> Query<T>(Type type, string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.Query(type, resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
         }
 
         public IEnumerable<dynamic> Query(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.Query(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
         }
 
         public IMultipleDataReader QueryMultiple(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             var gridReader = this.DbSession.CurrentConnection.QueryMultiple(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
 
@@ -75,56 +79,56 @@ namespace Insql
 
         public int Execute(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.Execute(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public object ExecuteScalar(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.ExecuteScalar(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public T ExecuteScalar<T>(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.ExecuteScalar<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public IDataReader ExecuteReader(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return this.DbSession.CurrentConnection.ExecuteReader(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.QueryAsync<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<IEnumerable<object>> QueryAsync<T>(Type type, string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.QueryAsync(type, resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<IEnumerable<dynamic>> QueryAsync(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.QueryAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<IMultipleDataReader> QueryMultipleAsync(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             var gridReader = await this.DbSession.CurrentConnection.QueryMultipleAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
 
@@ -133,28 +137,28 @@ namespace Insql
 
         public async Task<int> ExecuteAsync(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.ExecuteAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<object> ExecuteScalarAsync(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.ExecuteScalarAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<T> ExecuteScalarAsync<T>(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.ExecuteScalarAsync<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
         public async Task<IDataReader> ExecuteReaderAsync(string sqlId, object sqlParam = null)
         {
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+            var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.ExecuteReaderAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
@@ -162,6 +166,15 @@ namespace Insql
         public void Dispose()
         {
             this.DbSession.Dispose();
+        }
+
+        private ResolveResult Resolve(string sqlId, object sqlParam)
+        {
+            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
+
+            this.OnResolved(resolveResult);
+
+            return resolveResult;
         }
     }
 }
