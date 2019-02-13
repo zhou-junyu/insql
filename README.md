@@ -7,13 +7,13 @@ Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql confi
 
 # Packages
 
-| Package  |  Nuget Install |
-| ------------ | ------------ |
-| Insql  |  [Install-Package Insql](https://www.nuget.org/packages/Insql/) |
-| Insql.MySql  |  [Install-Package Insql.MySql](https://www.nuget.org/packages/Insql.MySql/) |
-| Insql.Oracle      |  [Install-Package Insql.Oracle](https://www.nuget.org/packages/Insql.Oracle/) |
-| Insql.PostgreSql  | [Install-Package Insql.PostgreSql](https://www.nuget.org/packages/Insql.PostgreSql/)  |
-| Insql.Sqlite  |  [Install-Package Insql.Sqlite](https://www.nuget.org/packages/Insql.Sqlite/) |
+| Package  |  Nuget Stable  |  Downloads  |
+| ------------ | ------------ | ------------ |
+| [Insql](https://www.nuget.org/packages/Insql/)  | [![Insql](https://img.shields.io/nuget/v/Insql.svg?style=flat)](https://www.nuget.org/packages/Insql/)  |  [![Insql](https://img.shields.io/nuget/dt/Insql.svg?style=flat)](https://www.nuget.org/packages/Insql/)  |
+| [Insql.MySql](https://www.nuget.org/packages/Insql.MySql/)  | [![Insql.MySql](https://img.shields.io/nuget/v/Insql.MySql.svg?style=flat)](https://www.nuget.org/packages/Insql.MySql/)  |  [![Insql.MySql](https://img.shields.io/nuget/dt/Insql.MySql.svg?style=flat)](https://www.nuget.org/packages/Insql.MySql/)  |
+| [Insql.Oracle](https://www.nuget.org/packages/Insql.Oracle/)  | [![Insql.Oracle](https://img.shields.io/nuget/v/Insql.Oracle.svg?style=flat)](https://www.nuget.org/packages/Insql.Oracle/)  |  [![Insql.Oracle](https://img.shields.io/nuget/dt/Insql.Oracle.svg?style=flat)](https://www.nuget.org/packages/Insql.Oracle/)  |
+| [Insql.PostgreSql](https://www.nuget.org/packages/Insql.PostgreSql/)  | [![Insql.PostgreSql](https://img.shields.io/nuget/v/Insql.PostgreSql.svg?style=flat)](https://www.nuget.org/packages/Insql.PostgreSql/)  |  [![Insql.PostgreSql](https://img.shields.io/nuget/dt/Insql.PostgreSql.svg?style=flat)](https://www.nuget.org/packages/Insql.PostgreSql/)  |
+| [Insql.Sqlite](https://www.nuget.org/packages/Insql.Sqlite/)  | [![Insql.Sqlite](https://img.shields.io/nuget/v/Insql.Sqlite.svg?style=flat)](https://www.nuget.org/packages/Insql.Sqlite/)  |  [![Insql.Sqlite](https://img.shields.io/nuget/dt/Insql.Sqlite.svg?style=flat)](https://www.nuget.org/packages/Insql.Sqlite/)  |
 
 # Features
 ### DbContext and DependencyInjection
