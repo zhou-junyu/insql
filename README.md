@@ -1,5 +1,6 @@
 # Insql
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
+![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 
 Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql configuration was inspired by Mybatis.
 
@@ -294,6 +295,3 @@ like mybatis xml syntax , supported :
         }
     }
     ```  
-
-# License
-[MIT](http://opensource.org/licenses/MIT) License

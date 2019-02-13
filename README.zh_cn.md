@@ -1,5 +1,6 @@
 # Insql
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
+![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 
 Insql 是一个轻量级的.NET ORM类库 . 对象映射基于Dapper , Sql配置灵感来自于Mybatis.
 
@@ -294,6 +295,3 @@ mybatis 很相近的sql xml配置语法，目前支持：
         }
     }
     ```  
-
-# License
-[MIT](http://opensource.org/licenses/MIT) License
