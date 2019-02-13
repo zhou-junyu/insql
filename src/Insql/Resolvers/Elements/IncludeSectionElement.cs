@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 
 namespace Insql.Resolvers.Elements
 {
@@ -19,22 +18,18 @@ namespace Insql.Resolvers.Elements
 
         public string Resolve(ResolveContext context)
         {
-            var sectionMatcher = context.ServiceProvider.GetRequiredService<IInsqlSectionMatcher>();
-
-            var insqlSection = sectionMatcher.Match(context.InsqlDescriptor, this.RefId, context.Param, context.Environment);
-
-            if (insqlSection == null)
+            if (context.InsqlDescriptor.Sections.TryGetValue(this.RefId, out IInsqlSection insqlSection))
             {
-                throw new ArgumentException($"insql section : {this.RefId} not found !");
+                return insqlSection.Resolve(new ResolveContext
+                {
+                    ServiceProvider = context.ServiceProvider,
+                    InsqlDescriptor = context.InsqlDescriptor,
+                    InsqlSection = insqlSection,
+                    Param = context.Param
+                });
             }
 
-            return insqlSection.Resolve(new ResolveContext
-            {
-                ServiceProvider = context.ServiceProvider,
-                InsqlDescriptor = context.InsqlDescriptor,
-                InsqlSection = insqlSection,
-                Param = context.Param
-            });
+            throw new ArgumentException($"insql section id : {this.RefId} not found !");
         }
     }
 }
