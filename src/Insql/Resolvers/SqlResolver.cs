@@ -38,14 +38,14 @@ namespace Insql.Resolvers
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnPre(this.descriptor, sqlId, sqlParam, envParam);
+                filter.OnResolving(this.descriptor, sqlId, sqlParam, envParam);
             }
 
             var insqlSection = this.sectionMatcher.Match(this.descriptor, sqlId, sqlParam, envParam);
 
             if (insqlSection == null)
             {
-                throw new Exception($"sqlId : {sqlId} [InsqlSection] not found !");
+                throw new Exception($"insql sqlId : {sqlId} [InsqlSection] not found !");
             }
 
             var resolveContext = new ResolveContext
@@ -65,7 +65,7 @@ namespace Insql.Resolvers
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnPost(this.descriptor, resolveContext, resolveResult);
+                filter.OnResolved(this.descriptor, resolveContext, resolveResult);
             }
 
             return resolveResult;
