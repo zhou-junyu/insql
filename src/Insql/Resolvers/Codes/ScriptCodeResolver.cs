@@ -8,16 +8,16 @@ using System.Text.RegularExpressions;
 
 namespace Insql.Resolvers.Codes
 {
-    public class JavaScriptCodeResolver : IInsqlCodeResolver
+    public class ScriptCodeResolver : IInsqlCodeResolver
     {
         private readonly Regex excludeRegex;
         private readonly Regex operatorRegex;
         private readonly ConcurrentDictionary<string, string> codeCaches;
         private readonly Dictionary<string, string> operatorMappings;
 
-        private readonly IOptions<JavascriptCodeResolverOptions> options;
+        private readonly IOptions<ScriptCodeResolverOptions> options;
 
-        public JavaScriptCodeResolver(IOptions<JavascriptCodeResolverOptions> options)
+        public ScriptCodeResolver(IOptions<ScriptCodeResolverOptions> options)
         {
             this.options = options;
 
@@ -66,7 +66,7 @@ namespace Insql.Resolvers.Codes
 
                 if (optionsValue.IsConvertEnum)
                 {
-                    options.AddObjectConverter(JavaScriptEnumConverter.Instance);
+                    options.AddObjectConverter(ScriptEnumConverter.Instance);
                 }
             });
 

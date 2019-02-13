@@ -3,9 +3,9 @@ using Jint.Runtime.Interop;
 
 namespace Insql.Resolvers.Codes
 {
-    internal class JavaScriptEnumConverter : IObjectConverter
+    internal class ScriptEnumConverter : IObjectConverter
     {
-        public static JavaScriptEnumConverter Instance = new JavaScriptEnumConverter();
+        public static ScriptEnumConverter Instance = new ScriptEnumConverter();
 
         public bool TryConvert(object value, out JsValue result)
         {

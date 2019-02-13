@@ -9,7 +9,8 @@ namespace Insql.Resolvers
         /// </summary>
         /// <param name="sqlId"></param>
         /// <param name="sqlParam"></param>
+        /// <param name="envParam"></param>
         /// <returns></returns>
-        ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam);
+        ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam);
     }
 }

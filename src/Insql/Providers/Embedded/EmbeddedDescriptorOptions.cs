@@ -7,8 +7,8 @@ namespace Insql.Providers.Embedded
     {
         public List<Assembly> Assemblies { get; set; }
 
-        public string Locations { get; set; } = "**/*.insql.xml";
+        public string Locations { get; set; }
 
-        public string Namespace { get; set; } = "";
+        public string Namespace { get; set; }
     }
 }

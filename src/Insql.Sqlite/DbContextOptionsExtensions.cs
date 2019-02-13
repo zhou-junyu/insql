@@ -9,7 +9,7 @@ namespace Insql
         {
             options.ConnectionFactory = SqliteDbConnectionFactory.Instance;
 
-            options.ServerName = "Sqlite";
+            options.SqlResolverEnvironment["DbType"] = "Sqlite";
 
             return options;
         }
@@ -19,7 +19,7 @@ namespace Insql
             options.ConnectionFactory = SqliteDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
 
-            options.ServerName = "Sqlite";
+            options.SqlResolverEnvironment["DbType"] = "Sqlite";
 
             return options;
         }
@@ -30,7 +30,7 @@ namespace Insql
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
 
-            options.ServerName = "Sqlite";
+            options.SqlResolverEnvironment["DbType"] = "Sqlite";
 
             return options;
         }

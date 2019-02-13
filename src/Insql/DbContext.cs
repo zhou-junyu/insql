@@ -13,6 +13,8 @@ namespace Insql
 
         public virtual ISqlResolver SqlResolver { get; }
 
+        protected IDictionary<string, string> SqlResolverEnvironment { get; }
+
         public DbContext(DbContextOptions options)
         {
             if (options == null)
@@ -28,14 +30,13 @@ namespace Insql
             }
 
             this.SqlResolver = options.SqlResolver;
+            this.SqlResolverEnvironment = options.SqlResolverEnvironment;
 
             if (options.Connection != null)
             {
                 this.DbSession = new DbSession(options.Connection)
                 {
                     CommandTimeout = options.CommandTimeout,
-                    ServerName = options.ServerName,
-                    ServerVersion = options.ServerVersion
                 };
             }
             else
@@ -43,17 +44,11 @@ namespace Insql
                 this.DbSession = new DbSession(options.ConnectionFactory, options.ConnectionString)
                 {
                     CommandTimeout = options.CommandTimeout,
-                    ServerName = options.ServerName,
-                    ServerVersion = options.ServerVersion
                 };
             }
         }
 
         protected virtual void OnConfiguring(DbContextOptions options)
-        {
-        }
-
-        protected virtual void OnResolved(ResolveResult resolveResult)
         {
         }
 
@@ -180,13 +175,7 @@ namespace Insql
 
         private ResolveResult Resolve(string sqlId, object sqlParam)
         {
-            //sqlId = $"{sqlId}.{this.DbSession.ServerName}.{this.DbSession.ServerVersion}";
-
-            var resolveResult = this.SqlResolver.Resolve(sqlId, sqlParam);
-
-            this.OnResolved(resolveResult);
-
-            return resolveResult;
+            return this.SqlResolver.Resolve(sqlId, sqlParam, new Dictionary<string, string>(this.SqlResolverEnvironment));
         }
     }
 }

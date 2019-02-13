@@ -9,7 +9,7 @@ namespace Insql
         {
             options.ConnectionFactory = MySqlDbConnectionFactory.Instance;
 
-            options.ServerName = "MySql";
+            options.SqlResolverEnvironment["DbType"] = "MySql";
 
             return options;
         }
@@ -19,7 +19,7 @@ namespace Insql
             options.ConnectionFactory = MySqlDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
 
-            options.ServerName = "MySql";
+            options.SqlResolverEnvironment["DbType"] = "MySql";
 
             return options;
         }
@@ -30,7 +30,7 @@ namespace Insql
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
 
-            options.ServerName = "MySql";
+            options.SqlResolverEnvironment["DbType"] = "MySql";
 
             return options;
         }

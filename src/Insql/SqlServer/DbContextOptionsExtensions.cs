@@ -9,7 +9,7 @@ namespace Insql
         {
             options.ConnectionFactory = SqlServerDbConnectionFactory.Instance;
 
-            options.ServerName = "SqlServer";
+            options.SqlResolverEnvironment["DbType"] = "SqlServer";
 
             return options;
         }
@@ -19,7 +19,7 @@ namespace Insql
             options.ConnectionFactory = SqlServerDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
 
-            options.ServerName = "SqlServer";
+            options.SqlResolverEnvironment["DbType"] = "SqlServer";
 
             return options;
         }
@@ -30,7 +30,7 @@ namespace Insql
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
 
-            options.ServerName = "SqlServer";
+            options.SqlResolverEnvironment["DbType"] = "SqlServer";
 
             return options;
         }

@@ -9,10 +9,6 @@ namespace Insql
 
         IDbTransaction CurrentTransaction { get; }
 
-        string ServerName { get; }
-
-        int? ServerVersion { get; }
-
         int? CommandTimeout { get; set; }
 
         void BeginTransaction();

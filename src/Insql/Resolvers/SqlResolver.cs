@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Insql.Resolvers
 {
@@ -8,80 +8,67 @@ namespace Insql.Resolvers
     {
         private readonly InsqlDescriptor descriptor;
         private readonly IServiceProvider serviceProvider;
+        private readonly IInsqlSectionMatcher sectionMatcher;
+        private readonly IEnumerable<ISqlResolveFilter> resolveFilters;
 
         public SqlResolver(InsqlDescriptor descriptor, IServiceProvider serviceProvider)
         {
             this.descriptor = descriptor;
             this.serviceProvider = serviceProvider;
+
+            this.sectionMatcher = serviceProvider.GetRequiredService<IInsqlSectionMatcher>();
+            this.resolveFilters = serviceProvider.GetServices<ISqlResolveFilter>();
         }
 
-        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam)
+        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
         {
             if (string.IsNullOrWhiteSpace(sqlId))
             {
                 throw new ArgumentNullException(nameof(sqlId));
             }
 
-            //this.MatchSection(sqlId);
-
-            if (this.descriptor.Sections.TryGetValue(sqlId, out IInsqlSection insqlSection))
+            if (sqlParam == null)
             {
-                var resolveResult = new ResolveResult
-                {
-                    Param = sqlParam ?? new Dictionary<string, object>()
-                };
-
-                resolveResult.Sql = insqlSection.Resolve(new ResolveContext
-                {
-                    ServiceProvider = this.serviceProvider,
-                    InsqlDescriptor = this.descriptor,
-                    InsqlSection = insqlSection,
-                    Param = resolveResult.Param
-                });
-
-                return resolveResult;
+                sqlParam = new Dictionary<string, object>();
+            }
+            if (envParam == null)
+            {
+                envParam = new Dictionary<string, string>();
             }
 
-            throw new Exception($"sqlId : {sqlId} [InsqlSection] not found !");
+            foreach (var filter in this.resolveFilters)
+            {
+                filter.OnPre(this.descriptor, sqlId, sqlParam, envParam);
+            }
+
+            var insqlSection = this.sectionMatcher.Match(this.descriptor, sqlId, sqlParam, envParam);
+
+            if (insqlSection == null)
+            {
+                throw new Exception($"sqlId : {sqlId} [InsqlSection] not found !");
+            }
+
+            var resolveContext = new ResolveContext
+            {
+                ServiceProvider = this.serviceProvider,
+                InsqlDescriptor = this.descriptor,
+                InsqlSection = insqlSection,
+                Param = sqlParam,
+                Environment = envParam
+            };
+
+            var resolveResult = new ResolveResult
+            {
+                Sql = insqlSection.Resolve(resolveContext),
+                Param = resolveContext.Param
+            };
+
+            foreach (var filter in this.resolveFilters)
+            {
+                filter.OnPost(this.descriptor, resolveContext, resolveResult);
+            }
+
+            return resolveResult;
         }
-
-        //private IInsqlSection MatchSection(string sqlId)
-        //{
-        //    if (this.descriptor.Sections.TryGetValue(sqlId, out IInsqlSection insqlSection))
-        //    {
-        //        return insqlSection;
-        //    }
-
-
-
-
-        //    return null;
-        //}
     }
-
-    //internal class SegmentSqlId
-    //{
-    //    public string IdName { get; set; }
-
-    //    public string ServerName { get; set; }
-
-    //    public int? ServerVersion { get; set; }
-
-    //    public SegmentSqlId(string sqlId)
-    //    {
-    //        var sqlIdSplit = sqlId.Split(new char[] { '.' }, StringSplitOptions.None);
-
-    //        if (sqlIdSplit.Length < 3)
-    //        {
-    //            throw new Exception($"sqlId : {sqlId} format error !");
-    //        }
-
-    //        if (int.TryParse(sqlIdSplit[sqlIdSplit.Length - 1], out int serverVersion))
-    //        {
-    //            this.ServerVersion = serverVersion;
-    //        }
-    //        this.ServerName = sqlIdSplit[sqlIdSplit.Length - 2];
-    //        this.IdName = sqlIdSplit[sqlIdSplit.Length - 3];
-    //    }
-    //}
 }

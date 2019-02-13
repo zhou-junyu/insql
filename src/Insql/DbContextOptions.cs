@@ -1,5 +1,6 @@
 ﻿using Insql.Resolvers;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Insql
@@ -12,6 +13,8 @@ namespace Insql
 
         public ISqlResolver SqlResolver { get; set; }
 
+        public IDictionary<string, string> SqlResolverEnvironment { get; }
+
         public IDbConnection Connection { get; set; }
 
         public string ConnectionString { get; set; }
@@ -20,8 +23,9 @@ namespace Insql
 
         public int? CommandTimeout { get; set; }
 
-        public string ServerName { get; set; }
-
-        public int? ServerVersion { get; set; }
+        public DbContextOptions()
+        {
+            this.SqlResolverEnvironment = new Dictionary<string, string>();
+        }
     }
 }

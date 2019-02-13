@@ -47,10 +47,6 @@ namespace Insql
 
         public int? CommandTimeout { get; set; }
 
-        public string ServerName { get; set; }
-
-        public int? ServerVersion { get; set; }
-
         public void BeginTransaction()
         {
             if (this.isDisposed)

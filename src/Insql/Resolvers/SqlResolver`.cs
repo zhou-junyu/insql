@@ -17,9 +17,9 @@ namespace Insql.Resolvers
             this._resolver = factory.GetResolver(typeof(T));
         }
 
-        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam)
+        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
         {
-            return this._resolver.Resolve(sqlId, sqlParam);
+            return this._resolver.Resolve(sqlId, sqlParam, envParam);
         }
     }
 }

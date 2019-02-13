@@ -16,7 +16,11 @@ namespace Insql.Tests
         [Fact]
         public void Basic()
         {
-            var resolver = new JavaScriptCodeResolver(Options.Create(new JavascriptCodeResolverOptions()));
+            var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
+            {
+                IsConvertEnum = true,
+                IsReplaceOperator = true
+            }));
 
             var result = (bool)resolver.Resolve(typeof(bool), " userId != null ", new Dictionary<string, object>
             {
@@ -39,11 +43,15 @@ namespace Insql.Tests
 
             Assert.False(result);
         }
-        
+
         [Fact]
         public void ReplaceOperator()
         {
-            var resolver = new JavaScriptCodeResolver(Options.Create(new JavascriptCodeResolverOptions { }));
+            var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
+            {
+                IsConvertEnum = true,
+                IsReplaceOperator = true
+            }));
 
             var code = " userId != null and userId == 'aa' ";
 
@@ -86,9 +94,10 @@ namespace Insql.Tests
         [Fact]
         public void NotReplaceOperator()
         {
-            var resolver = new JavaScriptCodeResolver(Options.Create(new JavascriptCodeResolverOptions
+            var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
             {
-                IsReplaceOperator = false
+                IsReplaceOperator = false,
+                IsConvertEnum = true,
             }));
 
             var code = @"var and = 'aa'; userId == and ";

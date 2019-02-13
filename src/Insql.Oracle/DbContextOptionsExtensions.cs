@@ -9,7 +9,7 @@ namespace Insql
         {
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
 
-            options.ServerName = "Oracle";
+            options.SqlResolverEnvironment["DbType"] = "Oracle";
 
             return options;
         }
@@ -19,7 +19,7 @@ namespace Insql
             options.ConnectionFactory = OracleDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
 
-            options.ServerName = "Oracle";
+            options.SqlResolverEnvironment["DbType"] = "Oracle";
 
             return options;
         }
@@ -30,7 +30,7 @@ namespace Insql
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
 
-            options.ServerName = "Oracle";
+            options.SqlResolverEnvironment["DbType"] = "Oracle";
 
             return options;
         }

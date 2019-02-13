@@ -9,7 +9,7 @@ namespace Insql
         {
             options.ConnectionFactory = PostgreSqlDbConnectionFactory.Instance;
 
-            options.ServerName = "PostgreSql";
+            options.SqlResolverEnvironment["DbType"] = "PostgreSql";
 
             return options;
         }
@@ -19,7 +19,7 @@ namespace Insql
             options.ConnectionFactory = PostgreSqlDbConnectionFactory.Instance;
             options.ConnectionString = connectionString;
 
-            options.ServerName = "PostgreSql";
+            options.SqlResolverEnvironment["DbType"] = "PostgreSql";
 
             return options;
         }
@@ -30,7 +30,7 @@ namespace Insql
             options.ConnectionString = connection.ConnectionString;
             options.Connection = connection;
 
-            options.ServerName = "PostgreSql";
+            options.SqlResolverEnvironment["DbType"] = "PostgreSql";
 
             return options;
         }

@@ -7,6 +7,18 @@ namespace Insql.Resolvers
     public static partial class SqlResolverExtensions
     {
         /// <summary>
+        ///  resolve sql.
+        /// </summary>
+        /// <param name="sqlResolver"></param>
+        /// <param name="sqlId"></param>
+        /// <param name="sqlParam"></param>
+        /// <returns></returns>
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, IDictionary<string, object> sqlParam)
+        {
+            return sqlResolver.Resolve(sqlId, sqlParam, (IDictionary<string, string>)null);
+        }
+
+        /// <summary>
         /// resolve sql.
         /// </summary>
         /// <param name="sqlResolver"></param>
@@ -15,21 +27,34 @@ namespace Insql.Resolvers
         /// <returns></returns>
         public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, object sqlParam)
         {
+            return sqlResolver.Resolve(sqlId, sqlParam, (IDictionary<string, string>)null);
+        }
+
+        /// <summary>
+        /// resolve sql.
+        /// </summary>
+        /// <param name="sqlResolver"></param>
+        /// <param name="sqlId"></param>
+        /// <param name="sqlParam"></param>
+        /// <param name="envParam"></param>
+        /// <returns></returns>
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, object sqlParam, IDictionary<string, string> envParam)
+        {
             if (sqlParam == null)
             {
-                return sqlResolver.Resolve(sqlId, (IDictionary<string, object>)null);
+                return sqlResolver.Resolve(sqlId, (IDictionary<string, object>)null, envParam);
             }
 
-            var dictionaryParam = sqlParam as IEnumerable<KeyValuePair<string, object>>;
+            var sqlParamDictionary = sqlParam as IEnumerable<KeyValuePair<string, object>>;
 
-            if (dictionaryParam == null)
+            if (sqlParamDictionary == null)
             {
-                dictionaryParam = sqlParam.GetType()
+                sqlParamDictionary = sqlParam.GetType()
                .GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
                .Select(propInfo => new KeyValuePair<string, object>(propInfo.Name, propInfo.GetValue(sqlParam, null)));
             }
 
-            return sqlResolver.Resolve(sqlId, dictionaryParam.ToDictionary(item => item.Key, item => item.Value));
+            return sqlResolver.Resolve(sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value), envParam);
         }
     }
 }

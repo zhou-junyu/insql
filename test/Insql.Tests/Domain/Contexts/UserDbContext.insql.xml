@@ -29,11 +29,16 @@
     where user_name in @userNames order by  user_id
   </select>
 
-  <insert id="InsertUser">
+  <insert id="InsertUser.Sqlite">
     insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
     select last_insert_rowid() from user_info;
   </insert>
-  
+
+  <insert id="InsertUser.SqlServer">
+    insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+    select SCOPE_IDENTITY();
+  </insert>
+
   <insert id="InsertUserSelective">
     insert into user_info 
     <trim prefix="(" suffix=")" suffixOverrides=",">
