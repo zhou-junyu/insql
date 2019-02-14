@@ -1,11 +1,11 @@
 ﻿# Insql documentation
 ## table of Contents
-* **[MyBatis Sql Xml syntax]()**
-* **[Multiple database support]()**
-* **[Dynamic Script Support]()**
-* **[Sql Resolve Filter for logging]()**
-* **[Query Syntax]()**
-* **[Other usage]()**
+* **[MyBatis Sql Xml syntax](https://github.com/rainrcn/insql/blob/master/doc/doc.md#1mybatis-sql-xml-syntax)**
+* **[Multiple database support](https://github.com/rainrcn/insql/blob/master/doc/doc.md#2multi-database-support)**
+* **[Dynamic Script Support](https://github.com/rainrcn/insql/blob/master/doc/doc.md#3-dynamic-script-support)**
+* **[Sql Resolve Filter for logging](https://github.com/rainrcn/insql/blob/master/doc/doc.md#4-sql-resolve-filter-for-logging)**
+* **[Query Syntax](https://github.com/rainrcn/insql/blob/master/doc/doc.md#5-query-syntax)**
+* **[Other usage](https://github.com/rainrcn/insql/blob/master/doc/doc.md#6-other-usage)**
 
 ### 1.MyBatis Sql Xml syntax
 MyBatis 3 sql xml Similar configuration syntax, currently supports the following configuration sections and elements. Can view [MyBatis documentation](http://www.mybatis.org/mybatis-3/dynamic-sql.html)
