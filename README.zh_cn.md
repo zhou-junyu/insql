@@ -29,13 +29,13 @@ Insql 是一个轻量级的.NET ORM类库. 对象映射基于Dapper, Sql配置�
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql();
+    services.AddInsql();
 
-	services.AddInsqlDbContext<UserDbContext>(options =>
-	{
-		//options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
-		options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
-	});
+    services.AddInsqlDbContext<UserDbContext>(options =>
+    {
+      //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
+      options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
+    });
 }
 ```
 ### 创建 DbContext
@@ -87,42 +87,43 @@ public enum Gender
 _创建 `UserDbContext.insql.xml` 文件并且修改这个文件的属性为`嵌入式文件`类型 . `insql type` 与 `UserDbContext` 类型对应._
 ```xml
 <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
+  
     <sql id="selectUserColumns">
-    select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
+      select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
     </sql>
 
     <select id="GetUserList">
-    <include refid="selectUserColumns" />
-    <where>
+      <include refid="selectUserColumns" />
+      <where>
         <if test="userName != null">
-        <bind name="likeUserName" value="'%' + userName + '%'" />
-        user_name like @likeUserName
+          <bind name="likeUserName" value="'%' + userName + '%'" />
+          user_name like @likeUserName
         </if>
         <if test="userGender != null and userGender != 'M' ">
-        and user_gender = @userGender
+          and user_gender = @userGender
         </if>
-    </where>
-    order by  user_id
+      </where>
+      order by  user_id
     </select>
 
     <insert id="InsertUser">
-    insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-    select last_insert_rowid() from user_info;
+      insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+      select last_insert_rowid() from user_info;
     </insert>
 
     <update id="UpdateUserSelective">
-    update user_info
-    <set>
+      update user_info
+      <set>
         <if test="UserName != null">
-        user_name=@UserName,
+          user_name=@UserName,
         </if>
         <if test="UserGender != null">
-        user_gender=@UserGender
+          user_gender=@UserGender
         </if>
-    </set>
-    where user_id = @UserId
+      </set>
+      where user_id = @UserId
     </update>
-    
+	
 </insql>
 ```
  
