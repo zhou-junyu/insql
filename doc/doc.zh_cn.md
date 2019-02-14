@@ -1,34 +1,34 @@
 
-# Insql ËµÃ÷ÎÄµµ
-## Ä¿Â¼
-* **[MyBatis Sql Xml Óï·¨]()**
-* **[¶àÊı¾İ¿âÖ§³Ö]()**
-* **[¶¯Ì¬½Å±¾Ö§³Ö]()**
-* **[Óï¾ä½âÎö¹ıÂËÆ÷£¬ÊµÏÖÈÕÖ¾¼ÇÂ¼]()**
-* **[²éÑ¯Óï·¨]()**
-* **[ÆäËûÓÃ·¨]()**
+# Insql è¯´æ˜æ–‡æ¡£
+## ç›®å½•
+* **[MyBatis Sql Xml è¯­æ³•](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#1mybatis-sql-xml-%E8%AF%AD%E6%B3%95)**
+* **[å¤šæ•°æ®åº“æ”¯æŒ](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#2%E5%A4%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%94%AF%E6%8C%81)**
+* **[åŠ¨æ€è„šæœ¬æ”¯æŒ](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#3%E5%8A%A8%E6%80%81%E8%84%9A%E6%9C%AC%E6%94%AF%E6%8C%81)**
+* **[è¯­å¥è§£æè¿‡æ»¤å™¨ï¼Œå®ç°æ—¥å¿—è®°å½•](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#4%E8%AF%AD%E5%8F%A5%E8%A7%A3%E6%9E%90%E8%BF%87%E6%BB%A4%E5%99%A8%E5%AE%9E%E7%8E%B0%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95)**
+* **[æŸ¥è¯¢è¯­æ³•](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#5%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%B3%95)**
+* **[å…¶ä»–ç”¨æ³•](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#6%E5%85%B6%E4%BB%96%E7%94%A8%E6%B3%95)**
 
-### 1.MyBatis Sql Xml Óï·¨
-Mybatis 3 sql xml ÀàËÆµÄÅäÖÃÓï·¨£¬Ä¿Ç°Ö§³ÖÒÔÏÂÅäÖÃ½ÚºÍÔªËØ¡£¿ÉÒÔ²é¿´ [MybatisÎÄµµ](http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html)
+### 1.MyBatis Sql Xml è¯­æ³•
+Mybatis 3 sql xml ç±»ä¼¼çš„é…ç½®è¯­æ³•ï¼Œç›®å‰æ”¯æŒä»¥ä¸‹é…ç½®èŠ‚å’Œå…ƒç´ ã€‚å¯ä»¥æŸ¥çœ‹ [Mybatisæ–‡æ¡£](http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html)
 - sections
     - **sql**
     `[id]`
-    - **select** : _sql½ÚµÄ±ğÃû_
-    - **insert** : _sql½ÚµÄ±ğÃû_
-    - **update** : _sql½ÚµÄ±ğÃû_
-    - **delete** : _sql½ÚµÄ±ğÃû_
+    - **select** : _sqlèŠ‚çš„åˆ«å_
+    - **insert** : _sqlèŠ‚çš„åˆ«å_
+    - **update** : _sqlèŠ‚çš„åˆ«å_
+    - **delete** : _sqlèŠ‚çš„åˆ«å_
  - elements
-    - **include** `[refid(ÒıÓÃsqlÅäÖÃ½Ú)]`
-    - **bind** `[name]` `[value(javascript Óï·¨)]`
-    - **if** `[test(javascript Óï·¨)]`
-    - **where** £º_Ìí¼Ó `where` sql Óï¾ä²¢ÇÒÒÆ³ı¿ªÍ·µÄand »òÕßor_ 
-    - **set** £º_Ìí¼Ó `set` sql Óï¾äµ½updateºó. ²¢ÇÒÉ¾³ı×îºóµÄ `,`_
-    - **trim** `[prefix]` `[suffix]` `[prefixOverrides]` `[suffixOverrides]` _¿ÉÒÔÌí¼ÓºÍÒÆ³ı¿ªÍ·ºÍ½áÎ²×Ô¶¨ÒåµÄ×Ö·û_
+    - **include** `[refid(å¼•ç”¨sqlé…ç½®èŠ‚)]`
+    - **bind** `[name]` `[value(javascript è¯­æ³•)]`
+    - **if** `[test(javascript è¯­æ³•)]`
+    - **where** ï¼š_æ·»åŠ  `where` sql è¯­å¥å¹¶ä¸”ç§»é™¤å¼€å¤´çš„and æˆ–è€…or_ 
+    - **set** ï¼š_æ·»åŠ  `set` sql è¯­å¥åˆ°updateå. å¹¶ä¸”åˆ é™¤æœ€åçš„ `,`_
+    - **trim** `[prefix]` `[suffix]` `[prefixOverrides]` `[suffixOverrides]` _å¯ä»¥æ·»åŠ å’Œç§»é™¤å¼€å¤´å’Œç»“å°¾è‡ªå®šä¹‰çš„å­—ç¬¦_
 
-## 2.¶àÊı¾İ¿âÖ§³Ö
-¶àÊı¾İ¿âÖ§³ÖÎªÄ¬ÈÏÆôÓÃ£¬Ê¹ÓÃÊ±·Ç³£¼òµ¥¡£
-### Ê¹ÓÃ·½Ê½
-_`xxx.insql.xml`ÖĞÈç¹ûµ±Ç°Ê¹ÓÃµÄÊÇSqlServerÊı¾İ¿â£¬Ôò»áÓÅÏÈÊ¹ÓÃ`InsertUser.SqlServer`£¬Èç¹ûÎ´ÕÒµ½ºó×ºÊÇ`.SqlServer`µÄÅäÖÃ½Ú£¬ÔòÊ¹ÓÃÄ¬ÈÏµÄ`InsertUser`_
+## 2.å¤šæ•°æ®åº“æ”¯æŒ
+å¤šæ•°æ®åº“æ”¯æŒä¸ºé»˜è®¤å¯ç”¨ï¼Œä½¿ç”¨æ—¶éå¸¸ç®€å•ã€‚
+### ä½¿ç”¨æ–¹å¼
+_`xxx.insql.xml`ä¸­å¦‚æœå½“å‰ä½¿ç”¨çš„æ˜¯SqlServeræ•°æ®åº“ï¼Œåˆ™ä¼šä¼˜å…ˆä½¿ç”¨`InsertUser.SqlServer`ï¼Œå¦‚æœæœªæ‰¾åˆ°åç¼€æ˜¯`.SqlServer`çš„é…ç½®èŠ‚ï¼Œåˆ™ä½¿ç”¨é»˜è®¤çš„`InsertUser`_
 ``` xml
 <insert id="InsertUser">
 insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
@@ -40,7 +40,7 @@ insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
 select SCOPE_IDENTITY();
 </insert>
 ```
-### ÈçºÎ½ûÓÃ¶àÊı¾İ¿âÆ¥ÅäÖ§³Ö
+### å¦‚ä½•ç¦ç”¨å¤šæ•°æ®åº“åŒ¹é…æ”¯æŒ
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -48,12 +48,12 @@ public void ConfigureServices(IServiceCollection services)
         {
             builder.AddDefaultResolveMatcher(options => 
             {
-                options.CorssDbEnabled = false;  //Ä¬ÈÏÎª true
+                options.CorssDbEnabled = false;  //é»˜è®¤ä¸º true
             });
         });
 }
 ```
-### ÈçºÎĞŞ¸ÄÆ¥Åä·Ö¸î·û
+### å¦‚ä½•ä¿®æ”¹åŒ¹é…åˆ†å‰²ç¬¦
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -61,12 +61,12 @@ public void ConfigureServices(IServiceCollection services)
         {
             builder.AddDefaultResolveMatcher(options => 
             {
-                options.CorssDbSeparator = "@"; //Ä¬ÈÏÊÇ `.`
+                options.CorssDbSeparator = "@"; //é»˜è®¤æ˜¯ `.`
             });
         });
 }
 ```
-_`xxx.insql.xml`ÖĞĞŞ¸ÄÎª `InsertUser@SqlServer`_
+_`xxx.insql.xml`ä¸­ä¿®æ”¹ä¸º `InsertUser@SqlServer`_
 ``` xml
 <insert id="InsertUser">
 insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
@@ -78,18 +78,18 @@ insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
 select SCOPE_IDENTITY();
 </insert>
 ```
-## 3.¶¯Ì¬½Å±¾Ö§³Ö
-### ²Ù×÷·û×ª»»
-_`xxx.insql.xml`ÖĞ `test="userGender !=null and userGender == 'W' "` Îª¶¯Ì¬½Å±¾£¬ÒòÎª`&&` ÔÚxmlÖĞÓĞÌØÊâÒâÒå£¬ËùÒÔÊ¹ÓÃ `and` À´Ìæ»» `&&`²Ù×÷·û¡£_
+## 3.åŠ¨æ€è„šæœ¬æ”¯æŒ
+### æ“ä½œç¬¦è½¬æ¢
+_`xxx.insql.xml`ä¸­ `test="userGender !=null and userGender == 'W' "` ä¸ºåŠ¨æ€è„šæœ¬ï¼Œå› ä¸º`&&` åœ¨xmlä¸­æœ‰ç‰¹æ®Šæ„ä¹‰ï¼Œæ‰€ä»¥ä½¿ç”¨ `and` æ¥æ›¿æ¢ `&&`æ“ä½œç¬¦ã€‚_
 ``` xml
 <if test="userGender !=null and userGender == 'W' ">
  and user_gender = @userGender
 </if>
 ```
-_²Ù×÷·û×ª»»Ó³Éä±í£º_
+_æ“ä½œç¬¦è½¬æ¢æ˜ å°„è¡¨ï¼š_
 `"and"->"&&"` `"or"->"||"` `"gt"->">"` `"gte"->">="` `"lt"->"<"` `"lte"->"<="` `"eq"->"=="` `"neq"->"!="`
 
-### ½ûÓÃ²Ù×÷·û×ª»»
+### ç¦ç”¨æ“ä½œç¬¦è½¬æ¢
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -97,19 +97,19 @@ public void ConfigureServices(IServiceCollection services)
         {
             builder.AddScriptCodeResolver(options => 
             {
-                options.IsConvertOperator = false;  //Ä¬ÈÏÎª true
+                options.IsConvertOperator = false;  //é»˜è®¤ä¸º true
             });
         });
 }
 ```
-### Ã¶¾Ù×ª»»Îª×Ö·û´®
-_`xxx.insql.xml`ÖĞ`userGender == 'W'`,`userGender`ÎªÃ¶¾ÙÀàĞÍ£¬ÕâÀïÄ¬ÈÏ×ª»»Îª×Ö·û´®ÀàĞÍ_
+### æšä¸¾è½¬æ¢ä¸ºå­—ç¬¦ä¸²
+_`xxx.insql.xml`ä¸­`userGender == 'W'`,`userGender`ä¸ºæšä¸¾ç±»å‹ï¼Œè¿™é‡Œé»˜è®¤è½¬æ¢ä¸ºå­—ç¬¦ä¸²ç±»å‹_
 ``` xml
 <if test="userGender !=null and userGender == 'W' ">
  and user_gender = @userGender
 </if>
 ```
-### ½ûÓÃÃ¶¾Ù×ª»»Îª×Ö·û´®
+### ç¦ç”¨æšä¸¾è½¬æ¢ä¸ºå­—ç¬¦ä¸²
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -117,20 +117,20 @@ public void ConfigureServices(IServiceCollection services)
         {
             builder.AddScriptCodeResolver(options => 
             {
-                options.IsConvertEnum = false; //Ä¬ÈÏÎª true
+                options.IsConvertEnum = false; //é»˜è®¤ä¸º true
             });
         });
 }
 ```
-_`xxx.insql.xml`ÖĞĞèÒªĞŞ¸ÄÎª`userGender == 1`_
+_`xxx.insql.xml`ä¸­éœ€è¦ä¿®æ”¹ä¸º`userGender == 1`_
 ``` xml
 <if test="userGender !=null and userGender == 1 ">
  and user_gender = @userGender
 </if>
 ```
-## 4.Óï¾ä½âÎö¹ıÂËÆ÷£¬ÊµÏÖÈÕÖ¾¼ÇÂ¼
-### ´´½¨²¢Ê¹ÓÃ¹ıÂËÆ÷
-_`OnResolving`ÎªÓï¾ä½âÎöÇ°Ö´ĞĞ£¬`OnResoved` ÎªÓï¾ä½âÎöºóÖ´ĞĞ_
+## 4.è¯­å¥è§£æè¿‡æ»¤å™¨ï¼Œå®ç°æ—¥å¿—è®°å½•
+### åˆ›å»ºå¹¶ä½¿ç”¨è¿‡æ»¤å™¨
+_`OnResolving`ä¸ºè¯­å¥è§£æå‰æ‰§è¡Œï¼Œ`OnResoved` ä¸ºè¯­å¥è§£æåæ‰§è¡Œ_
 ```C#
 public class LogResolveFilter : ISqlResolveFilter
     {
@@ -151,7 +151,7 @@ public class LogResolveFilter : ISqlResolveFilter
         }
     }
 ```
-_ÆôÓÃ¹ıÂËÆ÷_
+_å¯ç”¨è¿‡æ»¤å™¨_
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -162,9 +162,9 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-## 5.²éÑ¯Óï·¨
-### SELECT IN ²éÑ¯
-_Ê¹ÓÃDapperÖ§³ÖµÄÁĞ±í²ÎÊı×ª»»¹¦ÄÜ_
+## 5.æŸ¥è¯¢è¯­æ³•
+### SELECT IN æŸ¥è¯¢
+_ä½¿ç”¨Dapperæ”¯æŒçš„åˆ—è¡¨å‚æ•°è½¬æ¢åŠŸèƒ½_
 ``` C#
 var sqlParam = new { userNameList = new string[] { 'love1','love2' } };
 ```
@@ -173,13 +173,13 @@ var sqlParam = new { userNameList = new string[] { 'love1','love2' } };
  select * from user_info where user_name in @userNameList
 </select>
 ```
-_½«±»×ª»»Îª£º_
+_å°†è¢«è½¬æ¢ä¸ºï¼š_
 ``` sql
 select * from user_info where user_name in (@userNameList1,@userNameList2)
 ```
 
-## 6.ÆäËûÓÃ·¨
-### ´´½¨¹«¹² DbContext
+## 6.å…¶ä»–ç”¨æ³•
+### åˆ›å»ºå…¬å…± DbContext
 ```C#
 public class CommonDbContext<TInsql> : DbContext where TInsql : class
 {
@@ -205,7 +205,7 @@ public class CommonDbContextOptions<TInsql> : DbContextOptions<CommonDbContext<T
 	}
 }
 ```
-### ´´½¨ Domain Service
+### åˆ›å»º Domain Service
 ```c#
 public interface IUserService
 {
@@ -228,57 +228,5 @@ public class UserService : IUserService
     }
 }
 ```
-### ´´½¨ Service.insql.xml
-_´´½¨ `UserService.insql.xml` ÎÄ¼ş²¢ÇÒĞŞ¸ÄÕâ¸öÎÄ¼şµÄÊôĞÔÎª`Ç¶ÈëÊ½ÎÄ¼ş`ÀàĞÍ . `insql type` Óë `UserService` ÀàĞÍ¶ÔÓ¦._
-```xml
-<insql type="Example.Domain.Services.UserService,Example.Domain" >
-    <sql id="selectUserColumns">
-    select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
-    </sql>
-    
-    <select id="GetUserList">
-    <include refid="selectUserColumns" />
-    <where>
-        <if test="userName != null">
-        <bind name="likeUserName" value="'%' + userName + '%'" />
-        user_name like @likeUserName
-        </if>
-        <if test="userGender != null ">
-        and user_gender = @userGender
-        </if>
-    </where>
-    order by  user_id
-    </select>
-</insql>
-```
-### Ìí¼Ó DbContext
-```c#
-public void ConfigureServices(IServiceCollection services)
-{
-	services.AddInsql();
-
-	services.AddScoped(typeof(CommonDbContextOptions<>));
-	services.AddScoped(typeof(CommonDbContext<>));
-
-	services.AddScoped<IUserService, UserService>();
-}
-```
-### Ê¹ÓÃ Domain Service
-```c#
-public class ValuesController : ControllerBase
-{
-    private readonly IUserService userService;
-
-    public ValuesController(IUserService userService)
-    {
-        this.userService = userService;
-    }
-
-    [HttpGet]
-    public ActionResult<IEnumerable<string>> Get()
-    {
-        var list = this.userService.GetUserList("11", Domain.Gender.M);
-	//todo return
-    }
-}
-```  
+### åˆ›å»º Service.insql.xml
+_åˆ›å»º `
