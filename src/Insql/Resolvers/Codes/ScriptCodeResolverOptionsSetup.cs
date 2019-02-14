@@ -7,7 +7,7 @@ namespace Insql.Resolvers.Codes
         public void Configure(ScriptCodeResolverOptions options)
         {
             options.IsConvertEnum = true;
-            options.IsReplaceOperator = true;
+            options.IsConvertOperator = true;
         }
     }
 }
