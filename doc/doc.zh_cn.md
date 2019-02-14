@@ -31,51 +31,51 @@ Mybatis 3 sql xml 类似的配置语法，目前支持以下配置节和元素�
 _`xxx.insql.xml`中如果当前使用的是SqlServer数据库，则会优先使用`InsertUser.SqlServer`，如果未找到后缀是`.SqlServer`的配置节，则使用默认的`InsertUser`_
 ``` xml
 <insert id="InsertUser">
-insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-select last_insert_rowid() from user_info;
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select last_insert_rowid() from user_info;
 </insert>
 
 <insert id="InsertUser.SqlServer">
-insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-select SCOPE_IDENTITY();
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
 </insert>
 ```
 ### 如何禁用多数据库匹配支持
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=> 
-        {
-            builder.AddDefaultResolveMatcher(options => 
-            {
-                options.CorssDbEnabled = false;  //默认为 true
-            });
-        });
+  services.AddInsql(builder=> 
+  {
+      builder.AddDefaultResolveMatcher(options => 
+      {
+          options.CorssDbEnabled = false;  //默认为 true
+      });
+  });
 }
 ```
 ### 如何修改匹配分割符
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=> 
-        {
-            builder.AddDefaultResolveMatcher(options => 
-            {
-                options.CorssDbSeparator = "@"; //默认是 `.`
-            });
-        });
+  services.AddInsql(builder=> 
+  {
+      builder.AddDefaultResolveMatcher(options => 
+      {
+          options.CorssDbSeparator = "@"; //默认是 `.`
+      });
+  });
 }
 ```
 _`xxx.insql.xml`中修改为 `InsertUser@SqlServer`_
 ``` xml
 <insert id="InsertUser">
-insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-select last_insert_rowid() from user_info;
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select last_insert_rowid() from user_info;
 </insert>
 
 <insert id="InsertUser@SqlServer">
-insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-select SCOPE_IDENTITY();
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
 </insert>
 ```
 ## 3.动态脚本支持
@@ -83,7 +83,7 @@ select SCOPE_IDENTITY();
 _`xxx.insql.xml`中 `test="userGender !=null and userGender == 'W' "` 为动态脚本，因为`&&` 在xml中有特殊意义，所以使用 `and` 来替换 `&&`操作符。_
 ``` xml
 <if test="userGender !=null and userGender == 'W' ">
- and user_gender = @userGender
+  and user_gender = @userGender
 </if>
 ```
 _操作符转换映射表：_
@@ -93,39 +93,39 @@ _操作符转换映射表：_
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=> 
-        {
-            builder.AddScriptCodeResolver(options => 
-            {
-                options.IsConvertOperator = false;  //默认为 true
-            });
-        });
+  services.AddInsql(builder=> 
+  {
+      builder.AddScriptCodeResolver(options => 
+      {
+          options.IsConvertOperator = false;  //默认为 true
+      });
+  });
 }
 ```
 ### 枚举转换为字符串
 _`xxx.insql.xml`中`userGender == 'W'`,`userGender`为枚举类型，这里默认转换为字符串类型_
 ``` xml
 <if test="userGender !=null and userGender == 'W' ">
- and user_gender = @userGender
+  and user_gender = @userGender
 </if>
 ```
 ### 禁用枚举转换为字符串
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=> 
-        {
-            builder.AddScriptCodeResolver(options => 
-            {
-                options.IsConvertEnum = false; //默认为 true
-            });
-        });
+  services.AddInsql(builder=> 
+  {
+      builder.AddScriptCodeResolver(options => 
+      {
+          options.IsConvertEnum = false; //默认为 true
+      });
+  });
 }
 ```
 _`xxx.insql.xml`中需要修改为`userGender == 1`_
 ``` xml
 <if test="userGender !=null and userGender == 1 ">
- and user_gender = @userGender
+  and user_gender = @userGender
 </if>
 ```
 ## 4.语句解析过滤器，实现日志记录
@@ -133,32 +133,32 @@ _`xxx.insql.xml`中需要修改为`userGender == 1`_
 _`OnResolving`为语句解析前执行，`OnResoved` 为语句解析后执行_
 ```C#
 public class LogResolveFilter : ISqlResolveFilter
-    {
-        private readonly ILogger<LogResolveFilter> logger;
+{
+  private readonly ILogger<LogResolveFilter> logger;
 
-        public LogResolveFilter(ILogger<LogResolveFilter> logger)
-        {
-            this.logger = logger;
-        }
+  public LogResolveFilter(ILogger<LogResolveFilter> logger)
+  {
+      this.logger = logger;
+  }
 
-        public void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult)
-        {
-            this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
-        }
+  public void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult)
+  {
+      this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
+  }
 
-        public void OnResolving(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
-        {
-        }
-    }
+  public void OnResolving(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
+  {
+  }
+}
 ```
 _启用过滤器_
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder =>
-        {
-            builder.AddResolveFilter<LogResolveFilter>();
-        });
+  services.AddInsql(builder =>
+  {
+      builder.AddResolveFilter<LogResolveFilter>();
+  });
 }
 ```
 
@@ -170,7 +170,7 @@ var sqlParam = new { userNameList = new string[] { 'love1','love2' } };
 ```
 ``` xml
 <select id="selectInList">
- select * from user_info where user_name in @userNameList
+  select * from user_info where user_name in @userNameList
 </select>
 ```
 _将被转换为：_
@@ -183,102 +183,104 @@ select * from user_info where user_name in (@userNameList1,@userNameList2)
 ```C#
 public class CommonDbContext<TInsql> : DbContext where TInsql : class
 {
-	public CommonDbContext(CommonDbContextOptions<TInsql> options) : base(options)
-	{
-	}
+  public CommonDbContext(CommonDbContextOptions<TInsql> options) : base(options)
+  {
+  }
 
-	protected override void OnConfiguring(DbContextOptions options)
-	{
-		var configuration = options.ServiceProvider.GetRequiredService<IConfiguration>();
+  protected override void OnConfiguring(DbContextOptions options)
+  {
+    var configuration = options.ServiceProvider.GetRequiredService<IConfiguration>();
 
-		//TInsql type mapping to insql.xml type
-		options.UseSqlResolver<TInsql>();
+    //TInsql type mapping to insql.xml type
+    options.UseSqlResolver<TInsql>();
 
-		options.UseSqlite(configuration.GetConnectionString("sqlite"));
-	}
+    options.UseSqlite(configuration.GetConnectionString("sqlite"));
+  }
 }
 
 public class CommonDbContextOptions<TInsql> : DbContextOptions<CommonDbContext<TInsql>> where TInsql : class
 {
-	public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
-	{
-	}
+  public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
+  {
+  }
 }
 ```
 ### 创建 Domain Service
 ```c#
 public interface IUserService
 {
-    IEnumerable<UserInfo> GetUserList(string userName,Gender? userGender);
+  IEnumerable<UserInfo> GetUserList(string userName,Gender? userGender);
 }
-    
+
 public class UserService : IUserService
 {
-    private readonly DbContext dbContext;
+  private readonly DbContext dbContext;
 
-    //T is UserService
-    public UserService(CommonDbContext<UserService> dbContext)
-    {
-        this.dbContext = dbContext;
-    }
+  //T is UserService
+  public UserService(CommonDbContext<UserService> dbContext)
+  {
+      this.dbContext = dbContext;
+  }
 
-    public IEnumerable<UserInfo> GetUserList(string userName, Gender? userGender)
-    {
-        return this.dbContext.Query<UserInfo>(nameof(GetUserList), new { userName, userGender });
-    }
+  public IEnumerable<UserInfo> GetUserList(string userName, Gender? userGender)
+  {
+      return this.dbContext.Query<UserInfo>(nameof(GetUserList), new { userName, userGender });
+  }
 }
 ```
 ### 创建 Service.insql.xml
 _创建 `UserService.insql.xml` 文件并且修改这个文件的属性为`嵌入式文件`类型 . `insql type` 与 `UserService` 类型对应._
 ```xml
 <insql type="Example.Domain.Services.UserService,Example.Domain" >
-    <sql id="selectUserColumns">
+  
+  <sql id="selectUserColumns">
     select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
-    </sql>
-    
-    <select id="GetUserList">
+  </sql>
+
+  <select id="GetUserList">
     <include refid="selectUserColumns" />
     <where>
         <if test="userName != null">
-        <bind name="likeUserName" value="'%' + userName + '%'" />
-        user_name like @likeUserName
+          <bind name="likeUserName" value="'%' + userName + '%'" />
+          user_name like @likeUserName
         </if>
         <if test="userGender != null ">
-        and user_gender = @userGender
+          and user_gender = @userGender
         </if>
     </where>
     order by  user_id
-    </select>
+  </select>
+  
 </insql>
 ```
 ### 添加 DbContext
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql();
+  services.AddInsql();
 
-	services.AddScoped(typeof(CommonDbContextOptions<>));
-	services.AddScoped(typeof(CommonDbContext<>));
+  services.AddScoped(typeof(CommonDbContextOptions<>));
+  services.AddScoped(typeof(CommonDbContext<>));
 
-	services.AddScoped<IUserService, UserService>();
+  services.AddScoped<IUserService, UserService>();
 }
 ```
 ### 使用 Domain Service
 ```c#
 public class ValuesController : ControllerBase
 {
-    private readonly IUserService userService;
+  private readonly IUserService userService;
 
-    public ValuesController(IUserService userService)
-    {
-        this.userService = userService;
-    }
+  public ValuesController(IUserService userService)
+  {
+      this.userService = userService;
+  }
 
-    [HttpGet]
-    public ActionResult<IEnumerable<string>> Get()
-    {
-        var list = this.userService.GetUserList("11", Domain.Gender.M);
-	//todo return
-    }
+  [HttpGet]
+  public ActionResult<IEnumerable<string>> Get()
+  {
+      var list = this.userService.GetUserList("11", Domain.Gender.M);
+      //todo return
+  }
 }
 ```  
