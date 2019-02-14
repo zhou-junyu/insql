@@ -4,6 +4,6 @@
     {
         public bool IsConvertEnum { get; set; }
 
-        public bool IsReplaceOperator { get; set; }
+        public bool IsConvertOperator { get; set; }
     }
 }

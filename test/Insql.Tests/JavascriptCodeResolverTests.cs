@@ -19,7 +19,7 @@ namespace Insql.Tests
             var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
             {
                 IsConvertEnum = true,
-                IsReplaceOperator = true
+                IsConvertOperator = true
             }));
 
             var result = (bool)resolver.Resolve(typeof(bool), " userId != null ", new Dictionary<string, object>
@@ -50,7 +50,7 @@ namespace Insql.Tests
             var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
             {
                 IsConvertEnum = true,
-                IsReplaceOperator = true
+                IsConvertOperator = true
             }));
 
             var code = " userId != null and userId == 'aa' ";
@@ -96,7 +96,7 @@ namespace Insql.Tests
         {
             var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
             {
-                IsReplaceOperator = false,
+                IsConvertOperator = false,
                 IsConvertEnum = true,
             }));
 
