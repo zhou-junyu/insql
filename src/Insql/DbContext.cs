@@ -11,9 +11,9 @@ namespace Insql
     {
         public virtual IDbSession DbSession { get; }
 
-        public virtual ISqlResolver SqlResolver { get; }
+        protected virtual ISqlResolver SqlResolver { get; }
 
-        protected IDictionary<string, string> SqlResolverEnvironment { get; }
+        private readonly IDictionary<string, string> sqlResolverEnvironment;
 
         public DbContext(DbContextOptions options)
         {
@@ -30,7 +30,7 @@ namespace Insql
             }
 
             this.SqlResolver = options.SqlResolver;
-            this.SqlResolverEnvironment = options.SqlResolverEnvironment;
+            this.sqlResolverEnvironment = options.SqlResolverEnvironment;
 
             if (options.Connection != null)
             {
@@ -168,14 +168,14 @@ namespace Insql
             return await this.DbSession.CurrentConnection.ExecuteReaderAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
+        public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
+        {
+            return this.SqlResolver.Resolve(sqlId, sqlParam, new Dictionary<string, string>(this.sqlResolverEnvironment));
+        }
+
         public void Dispose()
         {
             this.DbSession.Dispose();
-        }
-
-        private ResolveResult Resolve(string sqlId, object sqlParam)
-        {
-            return this.SqlResolver.Resolve(sqlId, sqlParam, new Dictionary<string, string>(this.SqlResolverEnvironment));
         }
     }
 }
