@@ -168,7 +168,7 @@ namespace Insql
             return await this.DbSession.CurrentConnection.ExecuteReaderAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
-        public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
+        public ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
             return this.SqlResolver.Resolve(sqlId, sqlParam, new Dictionary<string, string>(this.sqlResolverEnvironment));
         }
