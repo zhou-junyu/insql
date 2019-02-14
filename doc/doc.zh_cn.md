@@ -229,4 +229,56 @@ public class UserService : IUserService
 }
 ```
 ### 创建 Service.insql.xml
-_创建 `
+_创建 `UserService.insql.xml` 文件并且修改这个文件的属性为`嵌入式文件`类型 . `insql type` 与 `UserService` 类型对应._
+```xml
+<insql type="Example.Domain.Services.UserService,Example.Domain" >
+    <sql id="selectUserColumns">
+    select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
+    </sql>
+    
+    <select id="GetUserList">
+    <include refid="selectUserColumns" />
+    <where>
+        <if test="userName != null">
+        <bind name="likeUserName" value="'%' + userName + '%'" />
+        user_name like @likeUserName
+        </if>
+        <if test="userGender != null ">
+        and user_gender = @userGender
+        </if>
+    </where>
+    order by  user_id
+    </select>
+</insql>
+```
+### 添加 DbContext
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+	services.AddInsql();
+
+	services.AddScoped(typeof(CommonDbContextOptions<>));
+	services.AddScoped(typeof(CommonDbContext<>));
+
+	services.AddScoped<IUserService, UserService>();
+}
+```
+### 使用 Domain Service
+```c#
+public class ValuesController : ControllerBase
+{
+    private readonly IUserService userService;
+
+    public ValuesController(IUserService userService)
+    {
+        this.userService = userService;
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
+    {
+        var list = this.userService.GetUserList("11", Domain.Gender.M);
+	//todo return
+    }
+}
+```  
