@@ -29,12 +29,12 @@ Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql confi
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql();
+    services.AddInsql();
 
-	services.AddInsqlDbContext<UserDbContext>(options =>
-	{
-		options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
-	});
+    services.AddInsqlDbContext<UserDbContext>(options =>
+    {
+      options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
+    });
 }
 ```
 ### Create DbContext
@@ -42,7 +42,7 @@ public void ConfigureServices(IServiceCollection services)
 public class UserDbContext : Insql.DbContext  
 {
     public UserDbContext(Insql.DbContextOptions<UserDbContext> options) 
-		: base(options)
+    : base(options)
     {
     }
 
@@ -87,41 +87,41 @@ _create `UserDbContext.insql.xml` and modify this file attribute to `embedded fi
 ```xml
 <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
     <sql id="selectUserColumns">
-    select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
+      select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
     </sql>
 
     <select id="GetUserList">
-    <include refid="selectUserColumns" />
-    <where>
+      <include refid="selectUserColumns" />
+      <where>
         <if test="userName != null">
-        <bind name="likeUserName" value="'%' + userName + '%'" />
-        user_name like @likeUserName
+          <bind name="likeUserName" value="'%' + userName + '%'" />
+          user_name like @likeUserName
         </if>
         <if test="userGender != null and userGender != 'M' ">
-        and user_gender = @userGender
+          and user_gender = @userGender
         </if>
-    </where>
-    order by  user_id
+      </where>
+      order by  user_id
     </select>
 
     <insert id="InsertUser">
-    insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-    select last_insert_rowid() from user_info;
+      insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+      select last_insert_rowid() from user_info;
     </insert>
 
     <update id="UpdateUserSelective">
-    update user_info
-    <set>
+      update user_info
+      <set>
         <if test="UserName != null">
-        user_name=@UserName,
+          user_name=@UserName,
         </if>
         <if test="UserGender != null">
-        user_gender=@UserGender
+          user_gender=@UserGender
         </if>
-    </set>
-    where user_id = @UserId
+      </set>
+      where user_id = @UserId
     </update>
-    
+	
 </insql>
 ```
 ### Use DbContext
@@ -132,7 +132,7 @@ public class ValuesController : ControllerBase
 
     public ValuesController(UserDbContext userDbContext)
     {
-        this.userDbContext = userDbContext;
+        this.userDbContext = userDbContext;	
     }
 
     [HttpGet]
