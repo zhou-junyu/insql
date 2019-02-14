@@ -86,6 +86,7 @@ public enum Gender
 _create `UserDbContext.insql.xml` and modify this file attribute to `embedded file`. `insql type` mapping to `UserDbContext` Type._
 ```xml
 <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
+
     <sql id="selectUserColumns">
       select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
     </sql>
