@@ -29,51 +29,51 @@ Multi-database support is enabled by default and is very simple to use.
 _`xxx.insql.xml` If you are currently using the SqlServer database, it will use `InsertUser.SqlServer` first. If the configuration section with the suffix `.SqlServer` is not found, the default `InsertUser` will be used._
 ``` xml
 <insert id="InsertUser">
-insert into user_info (user_name,user_gender) values ​​(@UserName,@UserGender);
-select last_insert_rowid() from user_info;
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select last_insert_rowid() from user_info;
 </insert>
 
 <insert id="InsertUser.SqlServer">
-insert into user_info (user_name,user_gender) values ​​(@UserName,@UserGender);
-select SCOPE_IDENTITY();
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
 </insert>
 ```
 ### How to disable multi-database matching support
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=>
-        {
-            builder.AddDefaultResolveMatcher(options =>
-            {
-                options.CorssDbEnabled = false; //defaults to true
-            });
-        });
+  services.AddInsql(builder=>
+  {
+      builder.AddDefaultResolveMatcher(options =>
+      {
+          options.CorssDbEnabled = false; //defaults to true
+      });
+  });
 }
 ```
 ### How to modify the matching separator
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=>
-        {
-            builder.AddDefaultResolveMatcher(options =>
-            {
-                options.CorssDbSeparator = "@"; //The default is `.`
-            });
-        });
+  services.AddInsql(builder=>
+  {
+      builder.AddDefaultResolveMatcher(options =>
+      {
+          options.CorssDbSeparator = "@"; //The default is `.`
+      });
+  });
 }
 ```
 _`xxx.insql.xml` is modified to `InsertUser@SqlServer`_
 ``` xml
 <insert id="InsertUser">
-insert into user_info (user_name,user_gender) values ​​(@UserName,@UserGender);
-select last_insert_rowid() from user_info;
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select last_insert_rowid() from user_info;
 </insert>
 
 <insert id="InsertUser@SqlServer">
-insert into user_info (user_name,user_gender) values ​​(@UserName,@UserGender);
-select SCOPE_IDENTITY();
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
 </insert>
 ```
 ## 3. Dynamic script support
@@ -81,7 +81,7 @@ select SCOPE_IDENTITY();
 _`xxx.insql.xml` `test="userGender !=null and userGender == 'W' "` is a dynamic script, because `&&` has special meaning in xml, so use `and` to replace ` &&` operator._
 ``` xml
 <if test="userGender !=null and userGender == 'W' ">
- and user_gender = @userGender
+  and user_gender = @userGender
 </if>
 ```
 _operator conversion mapping table:_ `"and"->"&&"` `"or"->"||"` `"gt"->">"` `"gte"->">="` `"lt"->"< "` `"lte"->"<="` `"eq"->"=="` `"neq"->"!="`
@@ -90,13 +90,13 @@ _operator conversion mapping table:_ `"and"->"&&"` `"or"->"||"` `"gt"->">"` `"gt
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder=>
-        {
-            builder.AddScriptCodeResolver(options =>
-            {
-                options.IsConvertOperator = false; //defaults to true
-            });
-        });
+  services.AddInsql(builder=>
+  {
+      builder.AddScriptCodeResolver(options =>
+      {
+          options.IsConvertOperator = false; //defaults to true
+      });
+  });
 }
 ```
 ### Enumeration converted to a string
@@ -110,19 +110,19 @@ _`xxx.insql.xml` `userGender == 'W'`, `userGender` is an enumerated type, which 
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-services.AddInsql(builder=>
-        {
-            builder.AddScriptCodeResolver(options =>
-            {
-                options.IsConvertEnum = false; //defaults to true
-            });
-        });
+  services.AddInsql(builder=>
+  {
+      builder.AddScriptCodeResolver(options =>
+      {
+          options.IsConvertEnum = false; //defaults to true
+      });
+  });
 }
 ```
 _`xxx.insql.xml` needs to be modified to `userGender == 1`_
 ``` xml
 <if test="userGender !=null and userGender == 1 ">
- and user_gender = @userGender
+  and user_gender = @userGender
 </if>
 ```
 ## 4. Sql Resolve Filter for logging
@@ -131,31 +131,31 @@ _`OnResolving` is executed before the statement is parsed, and `OnResoved` is ex
 ```C#
 public class LogResolveFilter : ISqlResolveFilter
 {
-    private readonly ILogger<LogResolveFilter> logger;
+  private readonly ILogger<LogResolveFilter> logger;
 
-    public LogResolveFilter(ILogger<LogResolveFilter> logger)
-    {
-        this.logger = logger;
-    }
+  public LogResolveFilter(ILogger<LogResolveFilter> logger)
+  {
+      this.logger = logger;
+  }
 
-    public void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult)
-    {
-        this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
-    }
+  public void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult)
+  {
+      this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
+  }
 
-    public void OnResolving(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
-    {
-    }
+  public void OnResolving(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
+  {
+  }
 }
 ```
 _Enable filter_
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-	services.AddInsql(builder =>
-        {
-            builder.AddResolveFilter<LogResolveFilter>();
-        });
+  services.AddInsql(builder =>
+  {
+      builder.AddResolveFilter<LogResolveFilter>();
+  });
 }
 ```
 
@@ -167,7 +167,7 @@ var sqlParam = new { userNameList = new string[] { 'love1','love2' } };
 ```
 ``` xml
 <select id="selectInList">
- select * from user_info where user_name in @userNameList
+  select * from user_info where user_name in @userNameList
 </select>
 ```
 _will be converted to:_
@@ -179,51 +179,51 @@ select * from user_info where user_name in (@userNameList1,@userNameList2)
 ```C#
 public class CommonDbContext<TInsql> : DbContext where TInsql : class
 {
-	public CommonDbContext(CommonDbContextOptions<TInsql> options) : base(options)
-	{
-	}
+  public CommonDbContext(CommonDbContextOptions<TInsql> options) : base(options)
+  {
+  }
 
-	Protected override void OnConfiguring(DbContextOptions options)
-	{
-		var configuration = options.ServiceProvider.GetRequiredService<IConfiguration>();
+  Protected override void OnConfiguring(DbContextOptions options)
+  {
+    var configuration = options.ServiceProvider.GetRequiredService<IConfiguration>();
 
-		//TInsql type mapping to insql.xml type
-		options.UseSqlResolver<TInsql>();
+    //TInsql type mapping to insql.xml type
+    options.UseSqlResolver<TInsql>();
 
-		options.UseSqlite(configuration.GetConnectionString("sqlite"));
-	}
+    options.UseSqlite(configuration.GetConnectionString("sqlite"));
+  }
 }
 
 public class CommonDbContextOptions<TInsql> : DbContextOptions<CommonDbContext<TInsql>> where TInsql : class
 {
-	public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
-	{
-	}
+  public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
+  {
+  }
 }
 ```
 
 ### Create Domain Service
 ```C#
-    public interface IUserService
-    {
-        IEnumerable<UserInfo> GetUserList(string userName,Gender? userGender);
-    }
-    
-    public class UserService : IUserService
-    {
-        private readonly DbContext dbContext;
+public interface IUserService
+{
+  IEnumerable<UserInfo> GetUserList(string userName,Gender? userGender);
+}
 
-        //T is UserService
-        public UserService(CommonDbContext<UserService> dbContext)
-        {
-            this.dbContext = dbContext;
-        }
+public class UserService : IUserService
+{
+  private readonly DbContext dbContext;
 
-        public IEnumerable<UserInfo> GetUserList(string userName, Gender? userGender)
-        {
-            return this.dbContext.Query<UserInfo>(nameof(GetUserList), new { userName, userGender });
-        }
-    }
+  //T is UserService
+  public UserService(CommonDbContext<UserService> dbContext)
+  {
+      this.dbContext = dbContext;
+  }
+
+  public IEnumerable<UserInfo> GetUserList(string userName, Gender? userGender)
+  {
+      return this.dbContext.Query<UserInfo>(nameof(GetUserList), new { userName, userGender });
+  }
+}
 ```
 
 ### Create Service.insql.xml
@@ -232,21 +232,21 @@ _Create the `UserService.insql.xml` file and modify the properties of this file 
     <insql type="Example.Domain.Services.UserService,Example.Domain" >
     
       <sql id="selectUserColumns">
-        Select user_id as UserId, user_name as UserName, user_gender as UserGender from user_info
+        select user_id as UserId, user_name as UserName, user_gender as UserGender from user_info
       </sql>
     
       <select id="GetUserList">
-        <include refid="selectUserColumns" />
-        <where>
-          <if test="userName != null">
-            <bind name="likeUserName" value="'%' + userName + '%'" />
-            User_name like @likeUserName
-          </if>
-          <if test="userGender != null ">
-            And user_gender = @userGender
-          </if>
-        </where>
-        Order by user_id
+        <include refid="selectUserColumns" />
+        <where>
+          <if test="userName != null">
+            <bind name="likeUserName" value="'%' + userName + '%'" />
+            user_name like @likeUserName
+          </if>
+          <if test="userGender != null ">
+            and user_gender = @userGender
+          </if>
+        </where>
+        order by user_id
       </select>
     
     </insql>
@@ -254,33 +254,33 @@ _Create the `UserService.insql.xml` file and modify the properties of this file 
 
 ### Add DbContext
 ```c#
-    public void ConfigureServices(IServiceCollection services)
-    {
-	services.AddInsql();
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql();
 
-	services.AddScoped(typeof(CommonDbContextOptions<>));
-	services.AddScoped(typeof(CommonDbContext<>));
+  services.AddScoped(typeof(CommonDbContextOptions<>));
+  services.AddScoped(typeof(CommonDbContext<>));
 
-	services.AddScoped<IUserService, UserService>();
-    }
+  services.AddScoped<IUserService, UserService>();
+}
 ```
 
 ### Use Domain Service
 ```C#
-    public class ValuesController : ControllerBase
-    {
-        private readonly IUserService userService;
+public class ValuesController : ControllerBase
+{
+  private readonly IUserService userService;
 
-        public ValuesController(IUserService userService)
-        {
-            this.userService = userService;
-        }
+  public ValuesController(IUserService userService)
+  {
+      this.userService = userService;
+  }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            var list = this.userService.GetUserList("11", Domain.Gender.M);
-	//todo return
-        }
-    }
+  [HttpGet]
+  public ActionResult<IEnumerable<string>> Get()
+  {
+      var list = this.userService.GetUserList("11", Domain.Gender.M);
+      //todo return
+  }
+}
 ```
