@@ -126,6 +126,7 @@ _create `UserDbContext.insql.xml` and modify this file attribute to `embedded fi
 </insql>
 ```
 ### Use DbContext
+_use `UserDbContext` in `Domain Service` or `Web Controller`_
 ```c#
 public class ValuesController : ControllerBase
 {
