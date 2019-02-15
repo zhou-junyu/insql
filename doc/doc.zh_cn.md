@@ -29,6 +29,8 @@ Mybatis 3 sql xml 类似的配置语法，目前支持以下配置节和元素�
 多数据库支持为默认启用，使用时非常简单。
 ### 使用方式
 _`xxx.insql.xml`中如果当前使用的是SqlServer数据库，则会优先使用`InsertUser.SqlServer`，如果未找到后缀是`.SqlServer`的配置节，则使用默认的`InsertUser`_
+
+_目前定义的数据库标志名称为:`SqlServer`, `Sqlite`, `Oracle`, `MySql`, `PostgreSql`_
 ``` xml
 <insert id="InsertUser">
   insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
@@ -79,6 +81,7 @@ _`xxx.insql.xml`中修改为 `InsertUser@SqlServer`_
 </insert>
 ```
 ## 3.动态脚本支持
+动态脚本为Javascript语法
 ### 操作符转换
 _`xxx.insql.xml`中 `test="userGender !=null and userGender == 'W' "` 为动态脚本，因为`&&` 在xml中有特殊意义，所以使用 `and` 来替换 `&&`操作符。_
 ``` xml
