@@ -27,6 +27,8 @@ MyBatis 3 sql xml Similar configuration syntax, currently supports the following
 Multi-database support is enabled by default and is very simple to use.
 ### How to use
 _`xxx.insql.xml` If you are currently using the SqlServer database, it will use `InsertUser.SqlServer` first. If the configuration section with the suffix `.SqlServer` is not found, the default `InsertUser` will be used._
+
+_The currently defined database flag names are: `SqlServer`, `Sqlite`, `Oracle`, `MySql`, `PostgreSql`_
 ``` xml
 <insert id="InsertUser">
   insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
@@ -77,6 +79,7 @@ _`xxx.insql.xml` is modified to `InsertUser@SqlServer`_
 </insert>
 ```
 ## 3. Dynamic script support
+Dynamic script is Javascript syntax
 ### Operator conversion
 _`xxx.insql.xml` `test="userGender !=null and userGender == 'W' "` is a dynamic script, because `&&` has special meaning in xml, so use `and` to replace ` &&` operator._
 ``` xml
