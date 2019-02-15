@@ -1,23 +1,23 @@
 ﻿using Insql.Oracle;
+using Oracle.ManagedDataAccess.Client;
 using System.Data;
 
 namespace Insql
 {
     public static partial class DbContextOptionsExtensions
     {
-        public static DbContextOptions UseOracle(this DbContextOptions options)
+        public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString)
         {
-            options.ConnectionFactory = OracleDbConnectionFactory.Instance;
+            options.SessionFactory = new OracleDbSessionFactory(options, connectionString);
 
             options.SqlResolverEnvironment["DbType"] = "Oracle";
 
             return options;
         }
 
-        public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString)
+        public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString, OracleCredential connectionCredential)
         {
-            options.ConnectionFactory = OracleDbConnectionFactory.Instance;
-            options.ConnectionString = connectionString;
+            options.SessionFactory = new OracleDbSessionFactory(options, connectionString, connectionCredential);
 
             options.SqlResolverEnvironment["DbType"] = "Oracle";
 
@@ -26,9 +26,7 @@ namespace Insql
 
         public static DbContextOptions UseOracle(this DbContextOptions options, IDbConnection connection)
         {
-            options.ConnectionFactory = OracleDbConnectionFactory.Instance;
-            options.ConnectionString = connection.ConnectionString;
-            options.Connection = connection;
+            options.SessionFactory = new OracleDbSessionFactory(options, connection);
 
             options.SqlResolverEnvironment["DbType"] = "Oracle";
 

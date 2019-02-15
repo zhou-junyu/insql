@@ -24,28 +24,19 @@ namespace Insql
 
             this.OnConfiguring(options);
 
+            if (options.SessionFactory == null)
+            {
+                throw new ArgumentNullException(nameof(options.SessionFactory));
+            }
             if (options.SqlResolver == null)
             {
                 throw new ArgumentNullException(nameof(options.SqlResolver));
             }
 
+            this.DbSession = options.SessionFactory.CreateSession();
+
             this.SqlResolver = options.SqlResolver;
             this.sqlResolverEnvironment = options.SqlResolverEnvironment;
-
-            if (options.Connection != null)
-            {
-                this.DbSession = new DbSession(options.Connection)
-                {
-                    CommandTimeout = options.CommandTimeout,
-                };
-            }
-            else
-            {
-                this.DbSession = new DbSession(options.ConnectionFactory, options.ConnectionString)
-                {
-                    CommandTimeout = options.CommandTimeout,
-                };
-            }
         }
 
         protected virtual void OnConfiguring(DbContextOptions options)

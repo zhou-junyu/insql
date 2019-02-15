@@ -3,33 +3,15 @@ using System.Data;
 
 namespace Insql
 {
-    internal class DbSession : IDbSession
+    public class DbSession : IDbSession
     {
-        private readonly bool isConnectionClosed;
-        private readonly bool wasConnectionDisposed;
+        private readonly bool wasDisposed;
+        private readonly bool originalClosed;
 
         private bool wasClosed;
         private bool isDisposed;
 
-        public DbSession(IDbConnectionFactory connectionFactory, string connectionString)
-        {
-            if (connectionFactory == null)
-            {
-                throw new ArgumentNullException(nameof(connectionFactory));
-            }
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new ArgumentNullException(nameof(connectionString));
-            }
-
-            this.CurrentConnection = connectionFactory.CreateConnection();
-            this.CurrentConnection.ConnectionString = connectionString;
-
-            this.isConnectionClosed = this.CurrentConnection.State == ConnectionState.Closed;
-            this.wasConnectionDisposed = true;
-        }
-
-        public DbSession(IDbConnection connection)
+        public DbSession(IDbConnection connection, bool wasDisposed)
         {
             if (connection == null)
             {
@@ -38,7 +20,9 @@ namespace Insql
 
             this.CurrentConnection = connection;
 
-            this.isConnectionClosed = this.CurrentConnection.State == ConnectionState.Closed;
+            this.wasDisposed = wasDisposed;
+
+            this.originalClosed = this.CurrentConnection.State == ConnectionState.Closed;
         }
 
         public IDbConnection CurrentConnection { get; }
@@ -143,12 +127,12 @@ namespace Insql
                 this.CloseTransaction();
             }
 
-            if (this.isConnectionClosed && this.CurrentConnection.State != ConnectionState.Closed)
+            if (this.originalClosed && this.CurrentConnection.State != ConnectionState.Closed)
             {
                 this.CurrentConnection.Close();
             }
 
-            if (this.wasConnectionDisposed)
+            if (this.wasDisposed)
             {
                 this.CurrentConnection.Dispose();
             }
