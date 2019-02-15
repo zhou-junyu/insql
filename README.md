@@ -22,7 +22,7 @@ Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql confi
 - **MyBatis sql xml syntax**
 - **Multiple database support**
 - **Flexible scalability**
-- **Simple to use. Operation directly to the database, no intermediate cache layer. Use intuitive to reduce the presence of pits.**
+- **Simple and intuitive to use**
 
 # Usage
 ### Add Insql
@@ -33,6 +33,7 @@ public void ConfigureServices(IServiceCollection services)
 
     services.AddInsqlDbContext<UserDbContext>(options =>
     {
+      //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
 }
