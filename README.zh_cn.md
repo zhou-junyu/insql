@@ -165,5 +165,10 @@ public class ValuesController : ControllerBase
     }
 }
 ```
+# 其他用法
+* 最精简用法，可以只使用语句解析功能，而不需要创建DbContext，只将Insql用作加载和解析Sql语句来使用。
+* 也可以只创建一个公用的DbContext，而不需要创建多个DbContext类型来使用。
+_以上两种用法，可进入详细说明文档中查看_
+
 # 说明文档
 详细说明文档请看 : [说明文档](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md)
