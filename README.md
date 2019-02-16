@@ -24,7 +24,54 @@ Insql is a lightweight ORM for .Net . Object mapping based on Dapper , Sql confi
 - **Flexible scalability**
 - **Simple and intuitive to use**
 
-# Usage
+# Streamlined usage
+Only use Insql as a load and parse Sql statement to use.
+### Inject ISqlResolver
+_Use the statement parser in the Domain Service, inject `ISqlResolver<T>` into the UserService, where the `T` type we specify as the `UserService` type_
+```C#
+public class UserService : IUserService
+{
+  private readonly ISqlResolver<UserService> sqlResolver;
+
+  public UserService(ISqlResolver<UserService> sqlResolver)
+  {
+      this.sqlResolver = sqlResolver;
+  }
+
+  public void DeleteUser(int userId)
+  {
+      var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
+
+      //If you need to support multiple databases, you need to set the environment parameters of DbType.
+      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+
+      //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
+  }
+}
+```
+### Create UserService.insql.xml
+_Create `UserService.insql.xml`, used as the Sql statement configuration, insql type specified as `ISqlResolver<T>` `T` type_
+```xml
+<insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
+  
+  <delete id="DeleteUser">
+    delete from user_info where user_id = @userId
+  </delete>
+  
+</insql>
+```
+### Add Insql
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql();
+
+  services.AddScoped<IUserService, UserService>();
+}
+```
+
+# Basic usage
+Basic usage can be used by creating DbContext
 ### Add Insql
 ```c#
 public void ConfigureServices(IServiceCollection services)
@@ -161,10 +208,6 @@ public class ValuesController : ControllerBase
     }
 }
 ```
-# Other usage
-* The most streamlined usage, you can use only the sql resolving function, you do not need to create DbContext, only use Insql as a load and parse Sql statement to use.
-* You can also create only one public DbContext without having to create multiple DbContext types to use.
-_The above two usages can be viewed in the detailed description document_
-
+_can also create only a common DbContext, without the need to create multiple DbContext types to use, can be viewed in the detailed document_
 # Documentation
 Please see the detailed [documentation](https://github.com/rainrcn/insql/blob/master/doc/doc.md).
