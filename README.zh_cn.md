@@ -24,7 +24,54 @@ Insql 是一个轻量级的.NET ORM类库. 对象映射基于Dapper, Sql配置�
 - **灵活扩展性**
 - **使用简单直观**
 
+# 精简用法
+只将Insql用作加载和解析Sql语句来使用。
+### 注入ISqlResolver
+_在Domain Service中使用语句解析器，将`ISqlResolver<T>`注入到UserService中，其中`T`类型我们指定为`UserService`类型_
+```C#
+public class UserService : IUserService
+{
+  private readonly ISqlResolver<UserService> sqlResolver;
+
+  public UserService(ISqlResolver<UserService> sqlResolver)
+  {
+      this.sqlResolver = sqlResolver;
+  }
+
+  public void DeleteUser(int userId)
+  {
+      var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
+
+      //如果需要支持多数据库，则需要设置DbType的环境参数
+      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+
+      //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
+  }
+}
+```
+### 创建UserService.insql.xml
+_创建`UserService.insql.xml`，用作Sql语句配置，insql type 指定为`ISqlResolver<T>`的`T`类型_
+```xml
+<insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
+  
+  <delete id="DeleteUser">
+    delete from user_info where user_id = @userId
+  </delete>
+  
+</insql>
+```
+### 添加 Insql
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql();
+
+  services.AddScoped<IUserService, UserService>();
+}
+```
+
 # 基本用法
+基本用法可以通过创建DbContext来使用
 ### 添加 Insql
 ```c#
 public void ConfigureServices(IServiceCollection services)
@@ -165,10 +212,7 @@ public class ValuesController : ControllerBase
     }
 }
 ```
-# 其他用法
-* 最精简用法，可以只使用语句解析功能，而不需要创建DbContext，只将Insql用作加载和解析Sql语句来使用。
-* 也可以只创建一个公用的DbContext，而不需要创建多个DbContext类型来使用。
-_以上两种用法，可进入详细说明文档中查看_
+_也可以只创建一个公用的DbContext，而不需要创建多个DbContext类型来使用，可进行详细文档中查看_
 
 # 说明文档
 详细说明文档请看 : [说明文档](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md)
