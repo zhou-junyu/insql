@@ -31,6 +31,8 @@ namespace Insql
 
         public int? CommandTimeout { get; set; }
 
+        public bool MultipleStatements { get; set; } = true;
+
         public void BeginTransaction()
         {
             if (this.isDisposed)

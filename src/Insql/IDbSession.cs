@@ -11,6 +11,8 @@ namespace Insql
 
         int? CommandTimeout { get; set; }
 
+        bool MultipleStatements { get; set; }
+
         void BeginTransaction();
 
         void BeginTransaction(IsolationLevel isolationLevel);
