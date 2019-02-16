@@ -161,5 +161,10 @@ public class ValuesController : ControllerBase
     }
 }
 ```
+# Other usage
+* The most streamlined usage, you can use only the sql resolving function, you do not need to create DbContext, only use Insql as a load and parse Sql statement to use.
+* You can also create only one public DbContext without having to create multiple DbContext types to use.
+_The above two usages can be viewed in the detailed description document_
+
 # Documentation
 Please see the detailed [documentation](https://github.com/rainrcn/insql/blob/master/doc/doc.md).
