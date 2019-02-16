@@ -95,7 +95,7 @@ public void ConfigureServices(IServiceCollection services)
 {
   services.AddInsql(builder=>
   {
-      builder.AddScriptCodeResolver(options =>
+      builder.AddDefaultScriptResolver(options =>
       {
           options.IsConvertOperator = false; //defaults to true
       });
@@ -115,7 +115,7 @@ public void ConfigureServices(IServiceCollection services)
 {
   services.AddInsql(builder=>
   {
-      builder.AddScriptCodeResolver(options =>
+      builder.AddDefaultScriptResolver(options =>
       {
           options.IsConvertEnum = false; //defaults to true
       });
@@ -146,7 +146,7 @@ public class LogResolveFilter : ISqlResolveFilter
       this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
   }
 
-  public void OnResolving(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
+  public void OnResolving(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
   {
   }
 }
