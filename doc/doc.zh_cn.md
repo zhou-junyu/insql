@@ -182,7 +182,58 @@ select * from user_info where user_name in (@userNameList1,@userNameList2)
 ```
 
 ## 6.其他用法
-### 创建公共 DbContext
+### 1.最精简用法，只使用语句解析功能
+可以只使用语句解析功能，而不需要创建DbContext，只将Insql用作加载和解析Sql语句来使用。
+#### 注入ISqlResolver
+_在Domain Service中使用语句解析器，将`ISqlResolver<T>`注入到UserService中，其中`T`类型我们指定为`UserService`类型_
+```C#
+public class UserService : IUserService
+{
+  private readonly ISqlResolver<UserService> sqlResolver;
+
+  public UserService(ISqlResolver<UserService> sqlResolver)
+  {
+      this.sqlResolver = sqlResolver;
+  }
+
+  public void DeleteUser(int userId)
+  {
+      var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
+
+      //如果需要支持多数据库，则需要设置DbType的环境参数
+      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+
+      //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
+  }
+}
+```
+
+#### 创建UserService.insql.xml
+_创建`UserService.insql.xml`，用作Sql语句配置，insql type 指定为`ISqlResolver<T>`的`T`类型_
+```xml
+<insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
+  
+  <delete id="DeleteUser">
+    delete from user_info where user_id = @userId
+  </delete>
+  
+</insql>
+```
+#### 添加 Insql
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql();
+
+  services.AddScoped<IUserService, UserService>();
+}
+```
+
+---
+
+### 2.使用公用的DbContext用法
+在基本使用的例子中，我们会创建多个DbContext类型，而这里可以只创建一个公用的DbContext类型
+#### 创建公用 DbContext
 ```C#
 public class CommonDbContext<TInsql> : DbContext where TInsql : class
 {
@@ -208,7 +259,7 @@ public class CommonDbContextOptions<TInsql> : DbContextOptions<CommonDbContext<T
   }
 }
 ```
-### 创建 Domain Service
+#### 创建 Domain Service
 ```c#
 public interface IUserService
 {
@@ -231,7 +282,7 @@ public class UserService : IUserService
   }
 }
 ```
-### 创建 Service.insql.xml
+#### 创建 Service.insql.xml
 _创建 `UserService.insql.xml` 文件并且修改这个文件的属性为`嵌入式文件`类型 . `insql type` 与 `UserService` 类型对应._
 ```xml
 <insql type="Example.Domain.Services.UserService,Example.Domain" >
@@ -256,7 +307,7 @@ _创建 `UserService.insql.xml` 文件并且修改这个文件的属性为`嵌�
   
 </insql>
 ```
-### 添加 DbContext
+#### 添加 DbContext
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -268,7 +319,7 @@ public void ConfigureServices(IServiceCollection services)
   services.AddScoped<IUserService, UserService>();
 }
 ```
-### 使用 Domain Service
+#### 使用 Domain Service
 ```c#
 public class ValuesController : ControllerBase
 {
