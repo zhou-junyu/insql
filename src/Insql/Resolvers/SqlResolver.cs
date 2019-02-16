@@ -6,21 +6,21 @@ namespace Insql.Resolvers
 {
     public class SqlResolver : ISqlResolver
     {
-        private readonly InsqlDescriptor descriptor;
+        private readonly InsqlDescriptor insqlDescriptor;
         private readonly IServiceProvider serviceProvider;
         private readonly IInsqlSectionMatcher sectionMatcher;
         private readonly IEnumerable<ISqlResolveFilter> resolveFilters;
 
-        public SqlResolver(InsqlDescriptor descriptor, IServiceProvider serviceProvider)
+        public SqlResolver(InsqlDescriptor insqlDescriptor, IServiceProvider serviceProvider)
         {
-            this.descriptor = descriptor;
+            this.insqlDescriptor = insqlDescriptor;
             this.serviceProvider = serviceProvider;
 
             this.sectionMatcher = serviceProvider.GetRequiredService<IInsqlSectionMatcher>();
             this.resolveFilters = serviceProvider.GetServices<ISqlResolveFilter>();
         }
 
-        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
+        public ResolveResult Resolve(ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
         {
             if (string.IsNullOrWhiteSpace(sqlId))
             {
@@ -31,17 +31,17 @@ namespace Insql.Resolvers
             {
                 sqlParam = new Dictionary<string, object>();
             }
-            if (envParam == null)
+            if (resolveEnviron == null)
             {
-                envParam = new Dictionary<string, string>();
+                resolveEnviron = new ResolveEnviron();
             }
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnResolving(this.descriptor, sqlId, sqlParam, envParam);
+                filter.OnResolving(this.insqlDescriptor, resolveEnviron, sqlId, sqlParam);
             }
 
-            var insqlSection = this.sectionMatcher.Match(this.descriptor, sqlId, sqlParam, envParam);
+            var insqlSection = this.sectionMatcher.Match(this.insqlDescriptor, resolveEnviron, sqlId, sqlParam);
 
             if (insqlSection == null)
             {
@@ -51,10 +51,10 @@ namespace Insql.Resolvers
             var resolveContext = new ResolveContext
             {
                 ServiceProvider = this.serviceProvider,
-                InsqlDescriptor = this.descriptor,
+                InsqlDescriptor = this.insqlDescriptor,
                 InsqlSection = insqlSection,
+                Environ = resolveEnviron,
                 Param = sqlParam,
-                Environment = envParam
             };
 
             var resolveResult = new ResolveResult
@@ -65,7 +65,7 @@ namespace Insql.Resolvers
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnResolved(this.descriptor, resolveContext, resolveResult);
+                filter.OnResolved(this.insqlDescriptor, resolveContext, resolveResult);
             }
 
             return resolveResult;

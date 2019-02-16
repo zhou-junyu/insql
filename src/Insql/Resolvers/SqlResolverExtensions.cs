@@ -15,7 +15,7 @@ namespace Insql.Resolvers
         /// <returns></returns>
         public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, IDictionary<string, object> sqlParam)
         {
-            return sqlResolver.Resolve(sqlId, sqlParam, (IDictionary<string, string>)null);
+            return sqlResolver.Resolve(null, sqlId, sqlParam);
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Insql.Resolvers
         /// <returns></returns>
         public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, object sqlParam)
         {
-            return sqlResolver.Resolve(sqlId, sqlParam, (IDictionary<string, string>)null);
+            return sqlResolver.Resolve(null, sqlId, sqlParam);
         }
 
         /// <summary>
@@ -38,11 +38,11 @@ namespace Insql.Resolvers
         /// <param name="sqlParam"></param>
         /// <param name="envParam"></param>
         /// <returns></returns>
-        public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, object sqlParam, IDictionary<string, string> envParam)
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, ResolveEnviron resolveEnviron, string sqlId, object sqlParam)
         {
             if (sqlParam == null)
             {
-                return sqlResolver.Resolve(sqlId, (IDictionary<string, object>)null, envParam);
+                return sqlResolver.Resolve(resolveEnviron, sqlId, (IDictionary<string, object>)null);
             }
 
             var sqlParamDictionary = sqlParam as IEnumerable<KeyValuePair<string, object>>;
@@ -54,7 +54,7 @@ namespace Insql.Resolvers
                .Select(propInfo => new KeyValuePair<string, object>(propInfo.Name, propInfo.GetValue(sqlParam, null)));
             }
 
-            return sqlResolver.Resolve(sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value), envParam);
+            return sqlResolver.Resolve(resolveEnviron, sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value));
         }
     }
 }

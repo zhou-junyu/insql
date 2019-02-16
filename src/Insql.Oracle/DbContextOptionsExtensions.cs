@@ -10,7 +10,7 @@ namespace Insql
         {
             options.SessionFactory = new OracleDbSessionFactory(options, connectionString);
 
-            options.SqlResolverEnvironment["DbType"] = "Oracle";
+            options.SqlResolveEnv["DbType"] = "Oracle";
 
             return options;
         }
@@ -19,7 +19,7 @@ namespace Insql
         {
             options.SessionFactory = new OracleDbSessionFactory(options, connectionString, connectionCredential);
 
-            options.SqlResolverEnvironment["DbType"] = "Oracle";
+            options.SqlResolveEnv["DbType"] = "Oracle";
 
             return options;
         }
@@ -28,7 +28,7 @@ namespace Insql
         {
             options.SessionFactory = new OracleDbSessionFactory(options, connection);
 
-            options.SqlResolverEnvironment["DbType"] = "Oracle";
+            options.SqlResolveEnv["DbType"] = "Oracle";
 
             return options;
         }

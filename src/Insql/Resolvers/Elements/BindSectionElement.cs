@@ -1,4 +1,4 @@
-﻿using Insql.Resolvers.Codes;
+﻿using Insql.Resolvers.Scripts;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -27,7 +27,7 @@ namespace Insql.Resolvers.Elements
 
         public string Resolve(ResolveContext context)
         {
-            var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlCodeResolver>();
+            var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
 
             var executeResult = codeExecuter.Resolve(typeof(object), this.Value, context.Param);
 

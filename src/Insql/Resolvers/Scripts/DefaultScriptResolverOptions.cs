@@ -1,6 +1,6 @@
-﻿namespace Insql.Resolvers.Codes
+﻿namespace Insql.Resolvers.Scripts
 {
-    public class ScriptCodeResolverOptions
+    public class DefaultScriptResolverOptions
     {
         public bool IsConvertEnum { get; set; }
 

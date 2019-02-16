@@ -12,7 +12,7 @@ namespace Insql.Resolvers.Matchers
             this.options = options;
         }
 
-        public IInsqlSection Match(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam)
+        public IInsqlSection Match(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
         {
             var optionsValue = this.options.Value;
 
@@ -20,7 +20,9 @@ namespace Insql.Resolvers.Matchers
 
             if (optionsValue.CorssDbEnabled)
             {
-                if (envParam.TryGetValue("DbType", out string dbType) && !string.IsNullOrWhiteSpace(dbType))
+                var dbType = resolveEnviron.GetDbType();
+
+                if (!string.IsNullOrWhiteSpace(dbType))
                 {
                     if (insqlDescriptor.Sections.TryGetValue($"{sqlId}{optionsValue.CorssDbSeparator}{dbType}", out insqlSection))
                     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Insql.Resolvers.Codes
+namespace Insql.Resolvers.Scripts
 {
-    public interface IInsqlCodeResolver : IDisposable
+    public interface IInsqlScriptResolver : IDisposable
     {
         object Resolve(Type type, string code, IDictionary<string, object> param);
     }

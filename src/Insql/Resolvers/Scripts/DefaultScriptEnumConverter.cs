@@ -1,11 +1,11 @@
 ﻿using Jint.Native;
 using Jint.Runtime.Interop;
 
-namespace Insql.Resolvers.Codes
+namespace Insql.Resolvers.Scripts
 {
-    internal class ScriptEnumConverter : IObjectConverter
+    internal class DefaultScriptEnumConverter : IObjectConverter
     {
-        public static ScriptEnumConverter Instance = new ScriptEnumConverter();
+        public static DefaultScriptEnumConverter Instance = new DefaultScriptEnumConverter();
 
         public bool TryConvert(object value, out JsValue result)
         {

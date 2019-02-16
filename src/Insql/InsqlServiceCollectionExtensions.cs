@@ -2,8 +2,8 @@
 using Insql.Providers;
 using Insql.Providers.Embedded;
 using Insql.Resolvers;
-using Insql.Resolvers.Codes;
 using Insql.Resolvers.Matchers;
+using Insql.Resolvers.Scripts;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
@@ -28,9 +28,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(ServiceDescriptor.Singleton<ISqlResolverFactory, SqlResolverFactory>());
             services.TryAdd(ServiceDescriptor.Singleton(typeof(ISqlResolver<>), typeof(SqlResolver<>)));
 
-            //code resolver
-            services.TryAdd(ServiceDescriptor.Singleton<IInsqlCodeResolver, ScriptCodeResolver>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ScriptCodeResolverOptions>, ScriptCodeResolverOptionsSetup>());
+            //script resolver
+            services.TryAdd(ServiceDescriptor.Singleton<IInsqlScriptResolver, DefaultScriptResolver>());
+            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultScriptResolverOptions>, DefaultScriptResolverOptionsSetup>());
 
             //descriptor provider
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, EmbeddedDescriptorProvider>());

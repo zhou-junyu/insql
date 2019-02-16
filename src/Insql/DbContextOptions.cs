@@ -1,6 +1,5 @@
 ﻿using Insql.Resolvers;
 using System;
-using System.Collections.Generic;
 
 namespace Insql
 {
@@ -8,19 +7,17 @@ namespace Insql
     {
         public abstract Type ContextType { get; }
 
-        public virtual IServiceProvider ServiceProvider { get; }
+        public IServiceProvider ServiceProvider { get; set; }
 
-        public IDbSessionFactory SessionFactory { get; set; }
+        public IDbSession DbSession { get; set; }
 
         public ISqlResolver SqlResolver { get; set; }
 
-        public IDictionary<string, string> SqlResolverEnvironment { get; }
-
-        public int? CommandTimeout { get; set; }
+        public ResolveEnviron SqlResolveEnv { get; }
 
         public DbContextOptions()
         {
-            this.SqlResolverEnvironment = new Dictionary<string, string>();
+            this.SqlResolveEnv = new ResolveEnviron();
         }
     }
 }

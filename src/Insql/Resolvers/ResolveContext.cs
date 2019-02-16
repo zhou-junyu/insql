@@ -11,8 +11,8 @@ namespace Insql.Resolvers
 
         public IInsqlSection InsqlSection { get; set; }
 
-        public IDictionary<string, object> Param { get; set; }
+        public ResolveEnviron Environ { get; set; }
 
-        public IDictionary<string, string> Environment { get; set; }
+        public IDictionary<string, object> Param { get; set; }
     }
 }

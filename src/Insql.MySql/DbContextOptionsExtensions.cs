@@ -9,7 +9,7 @@ namespace Insql
         {
             options.SessionFactory = new MySqlDbSessionFactory(options, connectionString);
 
-            options.SqlResolverEnvironment["DbType"] = "MySql";
+            options.SqlResolveEnv["DbType"] = "MySql";
 
             return options;
         }
@@ -18,7 +18,7 @@ namespace Insql
         {
             options.SessionFactory = new MySqlDbSessionFactory(options, connection);
 
-            options.SqlResolverEnvironment["DbType"] = "MySql";
+            options.SqlResolveEnv["DbType"] = "MySql";
 
             return options;
         }

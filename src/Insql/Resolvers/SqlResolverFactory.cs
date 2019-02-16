@@ -8,7 +8,7 @@ namespace Insql.Resolvers
     public class SqlResolverFactory : ISqlResolverFactory
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly Dictionary<Type, InsqlDescriptor> descriptors = new Dictionary<Type, InsqlDescriptor>();
+        private readonly Dictionary<Type, InsqlDescriptor> insqlDescriptors = new Dictionary<Type, InsqlDescriptor>();
 
         public SqlResolverFactory(IServiceProvider serviceProvider)
         {
@@ -18,16 +18,16 @@ namespace Insql.Resolvers
             {
                 foreach (var descriptor in provider.GetDescriptors())
                 {
-                    descriptors[descriptor.Type] = descriptor;
+                    insqlDescriptors[descriptor.Type] = descriptor;
                 }
             }
         }
 
         public ISqlResolver GetResolver(Type type)
         {
-            if (descriptors.TryGetValue(type, out InsqlDescriptor descriptor))
+            if (insqlDescriptors.TryGetValue(type, out InsqlDescriptor insqlDescriptor))
             {
-                return new SqlResolver(descriptor, this.serviceProvider);
+                return new SqlResolver(insqlDescriptor, this.serviceProvider);
             }
 
             throw new Exception($"InsqlDescriptor : {type.FullName} not found !");

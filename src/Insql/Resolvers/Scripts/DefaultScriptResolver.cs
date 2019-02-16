@@ -6,18 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Insql.Resolvers.Codes
+namespace Insql.Resolvers.Scripts
 {
-    public class ScriptCodeResolver : IInsqlCodeResolver
+    public class DefaultScriptResolver : IInsqlScriptResolver
     {
         private readonly Regex excludeRegex;
         private readonly Regex operatorRegex;
         private readonly ConcurrentDictionary<string, string> codeCaches;
         private readonly Dictionary<string, string> operatorMappings;
 
-        private readonly IOptions<ScriptCodeResolverOptions> options;
+        private readonly IOptions<DefaultScriptResolverOptions> options;
 
-        public ScriptCodeResolver(IOptions<ScriptCodeResolverOptions> options)
+        public DefaultScriptResolver(IOptions<DefaultScriptResolverOptions> options)
         {
             this.options = options;
 
@@ -66,7 +66,7 @@ namespace Insql.Resolvers.Codes
 
                 if (optionsValue.IsConvertEnum)
                 {
-                    options.AddObjectConverter(ScriptEnumConverter.Instance);
+                    options.AddObjectConverter(DefaultScriptEnumConverter.Instance);
                 }
             });
 

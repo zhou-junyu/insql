@@ -1,4 +1,4 @@
-using Insql.Resolvers.Codes;
+using Insql.Resolvers.Scripts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -16,7 +16,7 @@ namespace Insql.Tests
         [Fact]
         public void Basic()
         {
-            var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
+            var resolver = new DefaultScriptResolver(Options.Create(new DefaultScriptResolverOptions
             {
                 IsConvertEnum = true,
                 IsConvertOperator = true
@@ -47,7 +47,7 @@ namespace Insql.Tests
         [Fact]
         public void ReplaceOperator()
         {
-            var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
+            var resolver = new DefaultScriptResolver(Options.Create(new DefaultScriptResolverOptions
             {
                 IsConvertEnum = true,
                 IsConvertOperator = true
@@ -94,7 +94,7 @@ namespace Insql.Tests
         [Fact]
         public void NotReplaceOperator()
         {
-            var resolver = new ScriptCodeResolver(Options.Create(new ScriptCodeResolverOptions
+            var resolver = new DefaultScriptResolver(Options.Create(new DefaultScriptResolverOptions
             {
                 IsConvertOperator = false,
                 IsConvertEnum = true,

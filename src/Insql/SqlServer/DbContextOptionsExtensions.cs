@@ -1,5 +1,6 @@
-﻿using Insql.SqlServer;
+﻿using System;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace Insql
 {
@@ -7,18 +8,52 @@ namespace Insql
     {
         public static DbContextOptions UseSqlServer(this DbContextOptions options, string connectionString)
         {
-            options.SessionFactory = new SqlServerDbSessionFactory(options, connectionString);
+            return options.UseSqlServer(connectionString, null);
+        }
 
-            options.SqlResolverEnvironment["DbType"] = "SqlServer";
+        public static DbContextOptions UseSqlServer(this DbContextOptions options, string connectionString, Action<DbSessionOptions> configure)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+
+            var sessionOptions = new DbSessionOptions();
+
+            configure?.Invoke(sessionOptions);
+
+            options.SqlResolveEnv.SetDbType("SqlServer");
+
+            options.DbSession = new DbSession(new SqlConnection(connectionString), true)
+            {
+                CommandTimeout = sessionOptions.CommandTimeout
+            };
 
             return options;
         }
 
         public static DbContextOptions UseSqlServer(this DbContextOptions options, IDbConnection connection)
         {
-            options.SessionFactory = new SqlServerDbSessionFactory(options, connection);
+            return options.UseSqlServer(connection, null);
+        }
 
-            options.SqlResolverEnvironment["DbType"] = "SqlServer";
+        public static DbContextOptions UseSqlServer(this DbContextOptions options, IDbConnection connection, Action<DbSessionOptions> configure)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            var sessionOptions = new DbSessionOptions();
+
+            configure?.Invoke(sessionOptions);
+
+            options.SqlResolveEnv.SetDbType("SqlServer");
+
+            options.DbSession = new DbSession(connection, false)
+            {
+                CommandTimeout = sessionOptions.CommandTimeout
+            };
 
             return options;
         }

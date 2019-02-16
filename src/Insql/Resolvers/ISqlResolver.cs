@@ -7,10 +7,10 @@ namespace Insql.Resolvers
         /// <summary>
         /// resolve sql.
         /// </summary>
+        /// <param name="resolveEnviron"></param>
         /// <param name="sqlId"></param>
         /// <param name="sqlParam"></param>
-        /// <param name="envParam"></param>
         /// <returns></returns>
-        ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam, IDictionary<string, string> envParam);
+        ResolveResult Resolve(ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam);
     }
 }

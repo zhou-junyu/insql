@@ -9,7 +9,7 @@ namespace Insql
         {
             options.SessionFactory = new SqliteDbSessionFactory(options, connectionString);
 
-            options.SqlResolverEnvironment["DbType"] = "Sqlite";
+            options.SqlResolveEnv["DbType"] = "Sqlite";
 
             return options;
         }
@@ -18,7 +18,7 @@ namespace Insql
         {
             options.SessionFactory = new SqliteDbSessionFactory(options, connection);
 
-            options.SqlResolverEnvironment["DbType"] = "Sqlite";
+            options.SqlResolveEnv["DbType"] = "Sqlite";
 
             return options;
         }

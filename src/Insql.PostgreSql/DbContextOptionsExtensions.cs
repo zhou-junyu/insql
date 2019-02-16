@@ -9,7 +9,7 @@ namespace Insql
         {
             options.SessionFactory = new PostgreSqlDbSessionFactory(options, connectionString);
 
-            options.SqlResolverEnvironment["DbType"] = "PostgreSql";
+            options.SqlResolveEnv["DbType"] = "PostgreSql";
 
             return options;
         }
@@ -18,7 +18,7 @@ namespace Insql
         {
             options.SessionFactory = new PostgreSqlDbSessionFactory(options, connection);
 
-            options.SqlResolverEnvironment["DbType"] = "PostgreSql";
+            options.SqlResolveEnv["DbType"] = "PostgreSql";
 
             return options;
         }
