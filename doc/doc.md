@@ -178,7 +178,56 @@ _will be converted to:_
 select * from user_info where user_name in (@userNameList1,@userNameList2)
 ```
 ## 6. Other usage
-### Create a common DbContext
+### 1. The most streamlined usage, only use sql resolving
+You can use only the statement parsing function, instead of creating a DbContext, just use Insql as a load and parse Sql statement.
+#### Injecting ISqlResolver
+_Use the sql resolver in the Domain Service, inject `ISqlResolver<T>` into the UserService, where the `T` type we specify as the `UserService` type_
+```C#
+public class UserService : IUserService
+{
+  private readonly ISqlResolver<UserService> sqlResolver;
+
+  public UserService(ISqlResolver<UserService> sqlResolver)
+  {
+      this.sqlResolver = sqlResolver;
+  }
+
+  public void DeleteUser(int userId)
+  {
+      var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
+
+      //If you need to support multiple databases, you need to set the environment parameters of DbType.
+      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+
+      //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
+  }
+}
+```
+#### Create UserService.insql.xml
+_Create `UserService.insql.xml`, used as the Sql statement configuration, insql type specified as `ISqlResolver<T>` `T` type_
+```xml
+<insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
+  
+  <delete id="DeleteUser">
+    delete from user_info where user_id = @userId
+  </delete>
+  
+</insql>
+```
+#### Add Insql
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql();
+
+  services.AddScoped<IUserService, UserService>();
+}
+```
+
+---
+### 2. Use the common DbContext usage
+In the basic use example, we will create multiple DbContext types, and here we can create only one common DbContext type.
+#### Create a common DbContext
 ```C#
 public class CommonDbContext<TInsql> : DbContext where TInsql : class
 {
@@ -205,7 +254,7 @@ public class CommonDbContextOptions<TInsql> : DbContextOptions<CommonDbContext<T
 }
 ```
 
-### Create Domain Service
+#### Create Domain Service
 ```C#
 public interface IUserService
 {
@@ -229,7 +278,7 @@ public class UserService : IUserService
 }
 ```
 
-### Create Service.insql.xml
+#### Create Service.insql.xml
 _Create the `UserService.insql.xml` file and modify the properties of this file to be the `embedded file` type. `insql type` corresponds to the `UserService` type._
 ```xml
     <insql type="Example.Domain.Services.UserService,Example.Domain" >
@@ -255,7 +304,7 @@ _Create the `UserService.insql.xml` file and modify the properties of this file 
     </insql>
 ```
 
-### Add DbContext
+#### Add DbContext
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -268,7 +317,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### Use Domain Service
+#### Use Domain Service
 ```C#
 public class ValuesController : ControllerBase
 {
