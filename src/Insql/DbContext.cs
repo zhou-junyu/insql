@@ -158,7 +158,7 @@ namespace Insql
 
         public ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.SqlResolver.Resolve(this.options.SqlResolveEnv.Clone(), sqlId, sqlParam);
+            return this.SqlResolver.Resolve(this.options.SqlResolveEnviron.Clone(), sqlId, sqlParam);
         }
 
         public void Dispose()

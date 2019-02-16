@@ -1,5 +1,6 @@
-﻿using Insql.Oracle;
+﻿using Insql.Resolvers;
 using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Data;
 
 namespace Insql
@@ -8,27 +9,28 @@ namespace Insql
     {
         public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString)
         {
-            options.SessionFactory = new OracleDbSessionFactory(options, connectionString);
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
 
-            options.SqlResolveEnv["DbType"] = "Oracle";
+            options.SqlResolveEnviron.SetDbType("Oracle");
 
-            return options;
-        }
-
-        public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString, OracleCredential connectionCredential)
-        {
-            options.SessionFactory = new OracleDbSessionFactory(options, connectionString, connectionCredential);
-
-            options.SqlResolveEnv["DbType"] = "Oracle";
+            options.DbSession = new DbSession(new OracleConnection(connectionString), true);
 
             return options;
         }
 
         public static DbContextOptions UseOracle(this DbContextOptions options, IDbConnection connection)
         {
-            options.SessionFactory = new OracleDbSessionFactory(options, connection);
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
 
-            options.SqlResolveEnv["DbType"] = "Oracle";
+            options.SqlResolveEnviron.SetDbType("Oracle");
+
+            options.DbSession = new DbSession(connection, false);
 
             return options;
         }

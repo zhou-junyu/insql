@@ -13,11 +13,11 @@ namespace Insql
 
         public ISqlResolver SqlResolver { get; set; }
 
-        public ResolveEnviron SqlResolveEnv { get; }
+        public ResolveEnviron SqlResolveEnviron { get; }
 
         public DbContextOptions()
         {
-            this.SqlResolveEnv = new ResolveEnviron();
+            this.SqlResolveEnviron = new ResolveEnviron();
         }
     }
 }

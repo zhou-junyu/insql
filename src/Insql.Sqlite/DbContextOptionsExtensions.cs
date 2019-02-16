@@ -1,4 +1,5 @@
-﻿using Insql.Sqlite;
+﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Data;
 
 namespace Insql
@@ -7,18 +8,28 @@ namespace Insql
     {
         public static DbContextOptions UseSqlite(this DbContextOptions options, string connectionString)
         {
-            options.SessionFactory = new SqliteDbSessionFactory(options, connectionString);
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
 
-            options.SqlResolveEnv["DbType"] = "Sqlite";
+            options.SqlResolveEnviron.SetDbType("Sqlite");
+
+            options.DbSession = new DbSession(new SqliteConnection(connectionString), true);
 
             return options;
         }
 
         public static DbContextOptions UseSqlite(this DbContextOptions options, IDbConnection connection)
         {
-            options.SessionFactory = new SqliteDbSessionFactory(options, connection);
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
 
-            options.SqlResolveEnv["DbType"] = "Sqlite";
+            options.SqlResolveEnviron.SetDbType("Sqlite");
+
+            options.DbSession = new DbSession(connection, false);
 
             return options;
         }

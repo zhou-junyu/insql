@@ -1,4 +1,5 @@
-﻿using Insql.PostgreSql;
+﻿using Npgsql;
+using System;
 using System.Data;
 
 namespace Insql
@@ -7,18 +8,28 @@ namespace Insql
     {
         public static DbContextOptions UsePostgreSql(this DbContextOptions options, string connectionString)
         {
-            options.SessionFactory = new PostgreSqlDbSessionFactory(options, connectionString);
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
 
-            options.SqlResolveEnv["DbType"] = "PostgreSql";
+            options.SqlResolveEnviron.SetDbType("PostgreSql");
+
+            options.DbSession = new DbSession(new NpgsqlConnection(connectionString), true);
 
             return options;
         }
 
         public static DbContextOptions UsePostgreSql(this DbContextOptions options, IDbConnection connection)
         {
-            options.SessionFactory = new PostgreSqlDbSessionFactory(options, connection);
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
 
-            options.SqlResolveEnv["DbType"] = "PostgreSql";
+            options.SqlResolveEnviron.SetDbType("PostgreSql");
+
+            options.DbSession = new DbSession(connection, false);
 
             return options;
         }

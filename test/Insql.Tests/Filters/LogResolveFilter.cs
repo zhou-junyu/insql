@@ -18,7 +18,7 @@ namespace Insql.Tests.Filters
             this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
         }
 
-        public void OnResolving(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnv, string sqlId, IDictionary<string, object> sqlParam)
+        public void OnResolving(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
         {
         }
     }

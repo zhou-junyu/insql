@@ -1,4 +1,5 @@
-﻿using Insql.MySql;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
 
 namespace Insql
@@ -7,18 +8,28 @@ namespace Insql
     {
         public static DbContextOptions UseMySql(this DbContextOptions options, string connectionString)
         {
-            options.SessionFactory = new MySqlDbSessionFactory(options, connectionString);
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
 
-            options.SqlResolveEnv["DbType"] = "MySql";
+            options.SqlResolveEnviron.SetDbType("MySql");
+
+            options.DbSession = new DbSession(new MySqlConnection(connectionString), true);
 
             return options;
         }
 
         public static DbContextOptions UseMySql(this DbContextOptions options, IDbConnection connection)
         {
-            options.SessionFactory = new MySqlDbSessionFactory(options, connection);
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
 
-            options.SqlResolveEnv["DbType"] = "MySql";
+            options.SqlResolveEnviron.SetDbType("MySql");
+
+            options.DbSession = new DbSession(connection, false);
 
             return options;
         }

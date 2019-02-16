@@ -19,7 +19,10 @@ namespace Insql.Tests
         {
             this.serviceCollection = new ServiceCollection();
 
-            this.serviceCollection.AddInsql();
+            this.serviceCollection.AddInsql(builder =>
+            {
+
+            });
 
             this.serviceCollection.AddInsqlDbContext<UserDbContext>(options =>
             {
