@@ -53,5 +53,14 @@ namespace Insql.Tests.Domain.Contexts
         {
             this.Execute(nameof(DeleteUser), new { userId });
         }
+
+        public void GetMultiple()
+        {
+            using (var results = this.QueryMultiple(nameof(GetMultiple)))
+            {
+                var al = results.Read<int>();
+                var bl = results.Read<int>();
+            }
+        }
     }
 }

@@ -29,6 +29,11 @@
     where user_name in @userNames order by  user_id
   </select>
 
+  <select id="GetMultiple">
+    select count(*) from user_info;
+    select count(*) from user_info;
+  </select>
+  
   <insert id="InsertUser.Sqlite">
     insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
     select last_insert_rowid() from user_info;
