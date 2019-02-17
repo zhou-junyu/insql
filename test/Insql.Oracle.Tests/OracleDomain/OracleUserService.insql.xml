@@ -18,8 +18,11 @@
       <if test="UserGender != null">
         :UserGender
       </if>
-    </trim>;
-select * from USER_INFO;
+    </trim>
   </insert>
 
+  <select id="SelectInsertUserId">
+    select USER_INFO_SEQ.CURRVAL FROM DUAL
+  </select>
+  
 </insql>

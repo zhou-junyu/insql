@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Dapper;
+﻿using Dapper;
 using Insql.Resolvers;
 using Insql.Tests.Domain.Models;
 using Oracle.ManagedDataAccess.Client;
-using Xunit;
 
 namespace Insql.Tests.OracleDomain
 {
@@ -20,18 +16,21 @@ namespace Insql.Tests.OracleDomain
 
         public void InsertUser(UserInfo userInfo)
         {
-            var resolveResult = this.sqlResolver.Resolve(nameof(InsertUser), userInfo);
+            var insertResolveResult = this.sqlResolver.Resolve("InsertUser", userInfo);
+            var selectResolveResult = this.sqlResolver.Resolve("SelectInsertUserId");
 
             using (var connection = new OracleConnection("user id=root;password=root;data source=//127.0.0.1:1521/XE"))
             {
-                using (var results = connection.QueryMultiple(resolveResult.Sql, resolveResult.Param))
-                {
+                connection.Open();
+                var tt = connection.BeginTransaction();
 
-                }
+                connection.Execute(insertResolveResult.Sql, insertResolveResult.Param);
+                var userId = connection.ExecuteScalar<int>(selectResolveResult.Sql, selectResolveResult.Param);
 
-                //userInfo.UserId = results;
+                tt.Commit();
+
+                userInfo.UserId = userId;
             }
-
         }
     }
 }

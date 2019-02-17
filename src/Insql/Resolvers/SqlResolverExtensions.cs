@@ -7,6 +7,29 @@ namespace Insql.Resolvers
     public static partial class SqlResolverExtensions
     {
         /// <summary>
+        /// resolve sql.
+        /// </summary>
+        /// <param name="sqlResolver"></param>
+        /// <param name="sqlId"></param>
+        /// <returns></returns>
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId)
+        {
+            return sqlResolver.Resolve(null, sqlId, (IDictionary<string, object>)null);
+        }
+
+        /// <summary>
+        ///   resolve sql.
+        /// </summary>
+        /// <param name="sqlResolver"></param>
+        /// <param name="resolveEnviron"></param>
+        /// <param name="sqlId"></param>
+        /// <returns></returns>
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, ResolveEnviron resolveEnviron, string sqlId)
+        {
+            return sqlResolver.Resolve(resolveEnviron, sqlId, (IDictionary<string, object>)null);
+        }
+
+        /// <summary>
         ///  resolve sql.
         /// </summary>
         /// <param name="sqlResolver"></param>

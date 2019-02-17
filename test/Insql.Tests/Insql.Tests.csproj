@@ -22,7 +22,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Insql.Oracle\Insql.Oracle.csproj" />
     <ProjectReference Include="..\..\src\Insql.Sqlite\Insql.Sqlite.csproj" />
     <ProjectReference Include="..\..\src\Insql\Insql.csproj" />
   </ItemGroup>
