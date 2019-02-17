@@ -1,4 +1,4 @@
-﻿using Npgsql;
+﻿using Insql.PostgreSql;
 using System;
 using System.Data;
 
@@ -13,9 +13,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.SqlResolveEnviron.SetDbType("PostgreSql");
+            options.ResolveEnviron.SetDbType("PostgreSql");
 
-            options.DbSession = new DbSession(new NpgsqlConnection(connectionString), true);
+            options.SessionFactory = new PostgreSqlDbSessionFactory(options, connectionString);
 
             return options;
         }
@@ -27,9 +27,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            options.SqlResolveEnviron.SetDbType("PostgreSql");
+            options.ResolveEnviron.SetDbType("PostgreSql");
 
-            options.DbSession = new DbSession(connection, false);
+            options.SessionFactory = new PostgreSqlDbSessionFactory(options, connection);
 
             return options;
         }

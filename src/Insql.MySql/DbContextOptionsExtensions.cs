@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Insql.MySql;
 using System;
 using System.Data;
 
@@ -13,9 +13,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.SqlResolveEnviron.SetDbType("MySql");
+            options.ResolveEnviron.SetDbType("MySql");
 
-            options.DbSession = new DbSession(new MySqlConnection(connectionString), true);
+            options.SessionFactory = new MySqlDbSessionFactory(options, connectionString);
 
             return options;
         }
@@ -27,9 +27,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            options.SqlResolveEnviron.SetDbType("MySql");
+            options.ResolveEnviron.SetDbType("MySql");
 
-            options.DbSession = new DbSession(connection, false);
+            options.SessionFactory = new MySqlDbSessionFactory(options, connection);
 
             return options;
         }

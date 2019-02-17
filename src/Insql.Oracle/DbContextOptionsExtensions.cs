@@ -1,4 +1,4 @@
-﻿using Insql.Resolvers;
+﻿using Insql.Oracle;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
@@ -14,9 +14,23 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.SqlResolveEnviron.SetDbType("Oracle");
+            options.ResolveEnviron.SetDbType("Oracle");
 
-            options.DbSession = new DbSession(new OracleConnection(connectionString), true);
+            options.SessionFactory = new OracleDbSessionFactory(options, connectionString);
+
+            return options;
+        }
+
+        public static DbContextOptions UseOracle(this DbContextOptions options, string connectionString, OracleCredential credential)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+
+            options.ResolveEnviron.SetDbType("Oracle");
+
+            options.SessionFactory = new OracleDbSessionFactory(options, connectionString, credential);
 
             return options;
         }
@@ -28,9 +42,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            options.SqlResolveEnviron.SetDbType("Oracle");
+            options.ResolveEnviron.SetDbType("Oracle");
 
-            options.DbSession = new DbSession(connection, false);
+            options.SessionFactory = new OracleDbSessionFactory(options, connection);
 
             return options;
         }

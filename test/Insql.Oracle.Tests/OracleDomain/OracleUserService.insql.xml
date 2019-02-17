@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<insql type="Insql.Tests.OracleDomain.OracleUserService,Insql.Oracle.Tests" >
+
+  <insert id="InsertUser">
+    insert into USER_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="UserName != null">
+        NAME,
+      </if>
+      <if test="UserGender != null">
+        GENDER
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="UserName != null">
+        :UserName,
+      </if>
+      <if test="UserGender != null">
+        :UserGender
+      </if>
+    </trim>;
+select * from USER_INFO;
+  </insert>
+
+</insql>

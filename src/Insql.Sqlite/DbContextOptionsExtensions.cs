@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Insql.Sqlite;
 using System;
 using System.Data;
 
@@ -13,9 +13,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.SqlResolveEnviron.SetDbType("Sqlite");
+            options.ResolveEnviron.SetDbType("Sqlite");
 
-            options.DbSession = new DbSession(new SqliteConnection(connectionString), true);
+            options.SessionFactory = new SqliteDbSessionFactory(options, connectionString);
 
             return options;
         }
@@ -27,9 +27,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            options.SqlResolveEnviron.SetDbType("Sqlite");
+            options.ResolveEnviron.SetDbType("Sqlite");
 
-            options.DbSession = new DbSession(connection, false);
+            options.SessionFactory = new SqliteDbSessionFactory(options, connection);
 
             return options;
         }

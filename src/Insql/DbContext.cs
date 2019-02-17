@@ -9,11 +9,11 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
-        private readonly DbContextOptions options;
+        private readonly ResolveEnviron resolveEnviron;
 
-        public virtual IDbSession DbSession => this.options.DbSession;
+        public virtual IDbSession DbSession { get; }
 
-        protected virtual ISqlResolver SqlResolver => this.options.SqlResolver;
+        protected virtual ISqlResolver SqlResolver { get; }
 
         public DbContext(DbContextOptions options)
         {
@@ -24,16 +24,20 @@ namespace Insql
 
             this.OnConfiguring(options);
 
-            if (options.DbSession == null)
-            {
-                throw new ArgumentNullException(nameof(options.DbSession));
-            }
             if (options.SqlResolver == null)
             {
                 throw new ArgumentNullException(nameof(options.SqlResolver));
             }
+            if (options.SessionFactory == null)
+            {
+                throw new ArgumentNullException(nameof(options.SessionFactory));
+            }
 
-            this.options = options;
+            this.DbSession = options.SessionFactory.CreateSession();
+
+            this.SqlResolver = options.SqlResolver;
+
+            this.resolveEnviron = options.ResolveEnviron;
         }
 
         protected virtual void OnConfiguring(DbContextOptions options)
@@ -158,7 +162,7 @@ namespace Insql
 
         public ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.SqlResolver.Resolve(this.options.SqlResolveEnviron.Clone(), sqlId, sqlParam);
+            return this.SqlResolver.Resolve(this.resolveEnviron.Clone(), sqlId, sqlParam);
         }
 
         public void Dispose()

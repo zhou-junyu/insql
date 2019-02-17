@@ -11,7 +11,7 @@ namespace Insql
 
         int? CommandTimeout { get; set; }
 
-        bool MultipleStatements { get; set; }
+        bool SupportMultipleStatements { get; }
 
         void BeginTransaction();
 

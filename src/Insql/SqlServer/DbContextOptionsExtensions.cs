@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Insql.SqlServer;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -13,9 +14,23 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.SqlResolveEnviron.SetDbType("SqlServer");
+            options.ResolveEnviron.SetDbType("SqlServer");
 
-            options.DbSession = new DbSession(new SqlConnection(connectionString), true);
+            options.SessionFactory = new SqlServerDbSessionFactory(options, connectionString);
+
+            return options;
+        }
+
+        public static DbContextOptions UseSqlServer(this DbContextOptions options, string connectionString, SqlCredential credential)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentNullException(nameof(connectionString));
+            }
+
+            options.ResolveEnviron.SetDbType("SqlServer");
+
+            options.SessionFactory = new SqlServerDbSessionFactory(options, connectionString, credential);
 
             return options;
         }
@@ -27,9 +42,9 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            options.SqlResolveEnviron.SetDbType("SqlServer");
+            options.ResolveEnviron.SetDbType("SqlServer");
 
-            options.DbSession = new DbSession(connection, false);
+            options.SessionFactory = new SqlServerDbSessionFactory(options, connection);
 
             return options;
         }

@@ -9,15 +9,17 @@ namespace Insql
 
         public IServiceProvider ServiceProvider { get; set; }
 
-        public IDbSession DbSession { get; set; }
+        public IDbSessionFactory SessionFactory { get; set; }
 
         public ISqlResolver SqlResolver { get; set; }
 
-        public ResolveEnviron SqlResolveEnviron { get; }
+        public ResolveEnviron ResolveEnviron { get; }
+
+        public int? CommandTimeout { get; set; }
 
         public DbContextOptions()
         {
-            this.SqlResolveEnviron = new ResolveEnviron();
+            this.ResolveEnviron = new ResolveEnviron();
         }
     }
 }
