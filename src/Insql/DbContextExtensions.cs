@@ -27,146 +27,32 @@ namespace Insql
 
         public static void DoWithTransaction(this DbContext dbContext, Action action)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
-            {
-                action();
-            }
-            else
-            {
-                dbContext.DbSession.BeginTransaction();
-
-                ExecuteTransactionAction(dbContext, action);
-            }
+            dbContext.DbSession.DoWithTransaction(action);
         }
 
         public static void DoWithTransaction(this DbContext dbContext, Action action, IsolationLevel isolationLevel)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
-            {
-                action();
-            }
-            else
-            {
-                dbContext.DbSession.BeginTransaction(isolationLevel);
-
-                ExecuteTransactionAction(dbContext, action);
-            }
+            dbContext.DbSession.DoWithTransaction(action, isolationLevel);
         }
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
-            {
-                return action();
-            }
-            else
-            {
-                dbContext.DbSession.BeginTransaction();
-
-                return ExecuteTransactionAction(dbContext, action);
-            }
+            return dbContext.DbSession.DoWithTransaction<T>(action);
         }
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action, IsolationLevel isolationLevel)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
-            {
-                return action();
-            }
-            else
-            {
-                dbContext.DbSession.BeginTransaction(isolationLevel);
-
-                return ExecuteTransactionAction(dbContext, action);
-            }
+            return dbContext.DbSession.DoWithTransaction<T>(action, isolationLevel);
         }
 
         public static void DoWithOpen(this DbContext dbContext, Action action)
         {
-            var wasClosed = false;
-
-            try
-            {
-                if (dbContext.DbSession.CurrentConnection.State == ConnectionState.Closed)
-                {
-                    wasClosed = true;
-
-                    dbContext.DbSession.CurrentConnection.Open();
-                }
-
-                action();
-            }
-            finally
-            {
-                if (wasClosed)
-                {
-                    dbContext.DbSession.CurrentConnection.Close();
-                }
-            }
+            dbContext.DbSession.DoWithOpen(action);
         }
 
         public static T DoWithOpen<T>(this DbContext dbContext, Func<T> action)
         {
-            var wasClosed = false;
-
-            try
-            {
-                if (dbContext.DbSession.CurrentConnection.State == ConnectionState.Closed)
-                {
-                    wasClosed = true;
-
-                    dbContext.DbSession.CurrentConnection.Open();
-                }
-
-                return action();
-            }
-            finally
-            {
-                if (wasClosed)
-                {
-                    dbContext.DbSession.CurrentConnection.Close();
-                }
-            }
-        }
-
-        static void ExecuteTransactionAction(DbContext dbContext, Action action)
-        {
-            try
-            {
-                action();
-
-                dbContext.DbSession.CommitTransaction();
-            }
-            catch
-            {
-                if (dbContext.DbSession.CurrentTransaction != null)
-                {
-                    dbContext.DbSession.RollbackTransaction();
-                }
-
-                throw;
-            }
-        }
-
-        static T ExecuteTransactionAction<T>(DbContext dbContext, Func<T> action)
-        {
-            try
-            {
-                var result = action();
-
-                dbContext.DbSession.CommitTransaction();
-
-                return result;
-            }
-            catch
-            {
-                if (dbContext.DbSession.CurrentTransaction != null)
-                {
-                    dbContext.DbSession.RollbackTransaction();
-                }
-
-                throw;
-            }
+            return dbContext.DbSession.DoWithOpen<T>(action);
         }
     }
 }
