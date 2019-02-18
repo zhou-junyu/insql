@@ -7,6 +7,11 @@ namespace Insql.Resolvers
     {
         private readonly Dictionary<string, string> items;
 
+        public static ResolveEnviron Create()
+        {
+            return new ResolveEnviron();
+        }
+
         public ResolveEnviron()
         {
             this.items = new Dictionary<string, string>();

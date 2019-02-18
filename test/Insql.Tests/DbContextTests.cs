@@ -169,16 +169,5 @@ namespace Insql.Tests
                 Assert.True(wlist.Count() > 0);
             }
         }
-
-        [Fact]
-        public void GetMultiple()
-        {
-            using (var scopeProvider = this.serviceProvider.CreateScope())
-            {
-                var userDbContext = scopeProvider.ServiceProvider.GetRequiredService<UserDbContext>();
-
-                userDbContext.GetMultiple();
-            }
-        }
     }
 }

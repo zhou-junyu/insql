@@ -65,6 +65,7 @@ namespace Insql
             return this.DbSession.CurrentConnection.Query(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
         }
 
+        [Obsolete("This method will be removed in the new version")]
         public IMultipleDataReader QueryMultiple(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
@@ -123,6 +124,7 @@ namespace Insql
             return await this.DbSession.CurrentConnection.QueryAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
+        [Obsolete("This method will be removed in the new version")]
         public async Task<IMultipleDataReader> QueryMultipleAsync(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);

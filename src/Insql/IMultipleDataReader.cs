@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
+    [Obsolete("This interface will be removed in the new version")]
     public interface IMultipleDataReader : IDisposable
     {
         IEnumerable<dynamic> Read();
@@ -20,6 +21,7 @@ namespace Insql
         Task<IEnumerable<T>> ReadAsync<T>();
     }
 
+    [Obsolete("This class will be removed in the new version")]
     public class GridMultipleDataReader : IMultipleDataReader
     {
         private readonly SqlMapper.GridReader reader;

@@ -19,7 +19,7 @@ namespace Insql
 
         public DbContextOptions()
         {
-            this.ResolveEnviron = new ResolveEnviron();
+            this.ResolveEnviron = ResolveEnviron.Create();
         }
     }
 }

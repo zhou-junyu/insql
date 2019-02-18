@@ -29,31 +29,79 @@ namespace Insql
         {
             dbContext.DbSession.BeginTransaction();
 
-            ExecuteAction(dbContext, action);
+            ExecuteTransactionAction(dbContext, action);
         }
 
         public static void DoWithTransaction(this DbContext dbContext, Action action, IsolationLevel isolationLevel)
         {
             dbContext.DbSession.BeginTransaction(isolationLevel);
 
-            ExecuteAction(dbContext, action);
+            ExecuteTransactionAction(dbContext, action);
         }
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action)
         {
             dbContext.DbSession.BeginTransaction();
 
-            return ExecuteAction(dbContext, action);
+            return ExecuteTransactionAction(dbContext, action);
         }
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action, IsolationLevel isolationLevel)
         {
             dbContext.DbSession.BeginTransaction(isolationLevel);
 
-            return ExecuteAction(dbContext, action);
+            return ExecuteTransactionAction(dbContext, action);
         }
 
-        static void ExecuteAction(DbContext dbContext, Action action)
+        public static void DoWithOpen(this DbContext dbContext, Action action)
+        {
+            var wasClosed = false;
+
+            try
+            {
+                if (dbContext.DbSession.CurrentConnection.State == ConnectionState.Closed)
+                {
+                    wasClosed = true;
+
+                    dbContext.DbSession.CurrentConnection.Open();
+                }
+
+                action();
+            }
+            finally
+            {
+                if (wasClosed)
+                {
+                    dbContext.DbSession.CurrentConnection.Close();
+                }
+            }
+        }
+
+        public static T DoWithOpen<T>(this DbContext dbContext, Func<T> action)
+        {
+            var wasClosed = false;
+
+            try
+            {
+                if (dbContext.DbSession.CurrentConnection.State == ConnectionState.Closed)
+                {
+                    wasClosed = true;
+
+                    dbContext.DbSession.CurrentConnection.Open();
+                }
+
+                return action();
+            }
+            finally
+            {
+                if (wasClosed)
+                {
+                    dbContext.DbSession.CurrentConnection.Close();
+                }
+            }
+        }
+
+        static void ExecuteTransactionAction(DbContext dbContext, Action action)
         {
             try
             {
@@ -72,7 +120,7 @@ namespace Insql
             }
         }
 
-        static T ExecuteAction<T>(DbContext dbContext, Func<T> action)
+        static T ExecuteTransactionAction<T>(DbContext dbContext, Func<T> action)
         {
             try
             {
