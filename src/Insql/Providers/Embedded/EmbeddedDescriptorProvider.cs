@@ -3,7 +3,6 @@ using Insql.Resolvers.Elements;
 using Insql.Resolvers.Sections;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,12 +16,9 @@ namespace Insql.Providers.Embedded
     {
         private readonly IOptions<EmbeddedDescriptorOptions> options;
 
-        private readonly ConcurrentDictionary<Assembly, List<InsqlDescriptor>> insqlDescriptors;
-
         public EmbeddedDescriptorProvider(IOptions<EmbeddedDescriptorOptions> options)
         {
             this.options = options;
-            this.insqlDescriptors = new ConcurrentDictionary<Assembly, List<InsqlDescriptor>>();
         }
 
         public IEnumerable<InsqlDescriptor> GetDescriptors()
@@ -34,33 +30,22 @@ namespace Insql.Providers.Embedded
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
 
-            assemblies = assemblies.Where(assembly => !assembly.IsDynamic && !assembly.ReflectionOnly && !this.insqlDescriptors.Keys.Contains(assembly));
+            return assemblies
+                .Where(assembly => !assembly.IsDynamic && !assembly.ReflectionOnly)
+                .SelectMany(assembly =>
+                {
+                    var resourceNames = assembly.GetManifestResourceNames();
 
-            var descriptorPairs = this.GetAssemblyDescriptors(assemblies);
+                    resourceNames = GlobHelper.Filter(resourceNames, this.options.Value.Locations, new GlobOptions
+                    {
+                        AllowWindowsPaths = true
+                    }).ToArray();
 
-            foreach (var pair in descriptorPairs)
-            {
-                this.insqlDescriptors.TryAdd(pair.Key, pair.Value);
-            }
-
-            return insqlDescriptors.Values.SelectMany(o => o).ToList();
-        }
-
-        private IEnumerable<KeyValuePair<Assembly, List<InsqlDescriptor>>> GetAssemblyDescriptors(IEnumerable<Assembly> assemblies)
-        {
-            return assemblies.Select(assembly =>
-             {
-                 var resourceNames = assembly.GetManifestResourceNames();
-
-                 resourceNames = GlobHelper.Filter(resourceNames, this.options.Value.Locations).ToArray();
-
-                 var resourceDescriptors = resourceNames.Select(name =>
-                 {
-                     return this.ParseDescriptor(assembly.GetManifestResourceStream(name));
-                 }).Where(o => o != null).ToList();
-
-                 return new KeyValuePair<Assembly, List<InsqlDescriptor>>(assembly, resourceDescriptors);
-             }).ToList();
+                    return resourceNames.Select(name =>
+                    {
+                        return this.ParseDescriptor(assembly.GetManifestResourceStream(name));
+                    }).Where(o => o != null);
+                }).ToList();
         }
 
         private InsqlDescriptor ParseDescriptor(Stream stream)
