@@ -27,30 +27,58 @@ namespace Insql
 
         public static void DoWithTransaction(this DbContext dbContext, Action action)
         {
-            dbContext.DbSession.BeginTransaction();
+            if (dbContext.DbSession.CurrentTransaction != null)
+            {
+                action();
+            }
+            else
+            {
+                dbContext.DbSession.BeginTransaction();
 
-            ExecuteTransactionAction(dbContext, action);
+                ExecuteTransactionAction(dbContext, action);
+            }
         }
 
         public static void DoWithTransaction(this DbContext dbContext, Action action, IsolationLevel isolationLevel)
         {
-            dbContext.DbSession.BeginTransaction(isolationLevel);
+            if (dbContext.DbSession.CurrentTransaction != null)
+            {
+                action();
+            }
+            else
+            {
+                dbContext.DbSession.BeginTransaction(isolationLevel);
 
-            ExecuteTransactionAction(dbContext, action);
+                ExecuteTransactionAction(dbContext, action);
+            }
         }
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action)
         {
-            dbContext.DbSession.BeginTransaction();
+            if (dbContext.DbSession.CurrentTransaction != null)
+            {
+                return action();
+            }
+            else
+            {
+                dbContext.DbSession.BeginTransaction();
 
-            return ExecuteTransactionAction(dbContext, action);
+                return ExecuteTransactionAction(dbContext, action);
+            }
         }
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action, IsolationLevel isolationLevel)
         {
-            dbContext.DbSession.BeginTransaction(isolationLevel);
+            if (dbContext.DbSession.CurrentTransaction != null)
+            {
+                return action();
+            }
+            else
+            {
+                dbContext.DbSession.BeginTransaction(isolationLevel);
 
-            return ExecuteTransactionAction(dbContext, action);
+                return ExecuteTransactionAction(dbContext, action);
+            }
         }
 
         public static void DoWithOpen(this DbContext dbContext, Action action)

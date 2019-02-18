@@ -27,9 +27,16 @@ namespace Insql.Tests.Domain.Contexts
 
         public void InsertUser(UserInfo info)
         {
-            var userId = this.ExecuteScalar<int>(nameof(InsertUser), info);
+            if (this.DbSession.SupportMultipleStatements)
+            {
+                var userId = this.ExecuteScalar<int>(nameof(InsertUser), info);
 
-            info.UserId = userId;
+                info.UserId = userId;
+            }
+            else
+            {
+                //todo
+            }
         }
 
         public void InsertUserSelective(UserInfo info)

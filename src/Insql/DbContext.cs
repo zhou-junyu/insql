@@ -65,16 +65,6 @@ namespace Insql
             return this.DbSession.CurrentConnection.Query(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
         }
 
-        [Obsolete("This method will be removed in the new version")]
-        public IMultipleDataReader QueryMultiple(string sqlId, object sqlParam = null)
-        {
-            var resolveResult = this.Resolve(sqlId, sqlParam);
-
-            var gridReader = this.DbSession.CurrentConnection.QueryMultiple(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
-
-            return new GridMultipleDataReader(gridReader);
-        }
-
         public int Execute(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
@@ -122,16 +112,6 @@ namespace Insql
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
             return await this.DbSession.CurrentConnection.QueryAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
-        }
-
-        [Obsolete("This method will be removed in the new version")]
-        public async Task<IMultipleDataReader> QueryMultipleAsync(string sqlId, object sqlParam = null)
-        {
-            var resolveResult = this.Resolve(sqlId, sqlParam);
-
-            var gridReader = await this.DbSession.CurrentConnection.QueryMultipleAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
-
-            return new GridMultipleDataReader(gridReader);
         }
 
         public async Task<int> ExecuteAsync(string sqlId, object sqlParam = null)
