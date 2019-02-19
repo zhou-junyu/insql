@@ -214,5 +214,8 @@ public class ValuesController : ControllerBase
 ```
 _也可以只创建一个公用的DbContext，而不需要创建多个DbContext类型来使用，可进行详细文档中查看_
 
+# 代码生成器
+在`tools`目录下，有CodeSmith生成器文件。可以生成 DbContext,DbContext.insql.xml,Models
+
 # 说明文档
 详细说明文档请看 : [说明文档](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md)
