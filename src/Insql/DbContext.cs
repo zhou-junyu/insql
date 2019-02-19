@@ -25,7 +25,7 @@ namespace Insql
 
             if (options.SqlResolver == null)
             {
-                throw new ArgumentNullException(nameof(options.SqlResolver),$"InsqlDescriptor : `{options.ContextType.FullName}` not found!");
+                throw new ArgumentNullException(nameof(options.SqlResolver));
             }
             if (options.SessionFactory == null)
             {

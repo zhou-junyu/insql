@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <Version>1.2.1</Version>
+    <Version>1.2.3</Version>
     <Authors>rainrcn@qq.com</Authors>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>secret.pfx</AssemblyOriginatorKeyFile>
     <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
-    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
     <RepositoryUrl>https://github.com/rainrcn/insql</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes></PackageReleaseNotes>
@@ -22,10 +22,5 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Mappers\" />
-    <Folder Include="Resolvers\Filters\" />
   </ItemGroup>
 </Project>
