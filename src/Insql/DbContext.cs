@@ -9,11 +9,10 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
+        private readonly ISqlResolver sqlResolver;
         private readonly ResolveEnviron resolveEnviron;
 
-        public virtual IDbSession DbSession { get; }
-
-        protected virtual ISqlResolver SqlResolver { get; }
+        public IDbSession DbSession { get; }
 
         public DbContext(DbContextOptions options)
         {
@@ -26,18 +25,18 @@ namespace Insql
 
             if (options.SqlResolver == null)
             {
-                throw new ArgumentNullException(nameof(options.SqlResolver));
+                throw new ArgumentNullException(nameof(options.SqlResolver),$"InsqlDescriptor : `{options.ContextType.FullName}` not found!");
             }
             if (options.SessionFactory == null)
             {
                 throw new ArgumentNullException(nameof(options.SessionFactory));
             }
 
-            this.DbSession = options.SessionFactory.CreateSession();
-
-            this.SqlResolver = options.SqlResolver;
+            this.sqlResolver = options.SqlResolver;
 
             this.resolveEnviron = options.ResolveEnviron;
+
+            this.DbSession = options.SessionFactory.CreateSession();
         }
 
         protected virtual void OnConfiguring(DbContextOptions options)
@@ -144,7 +143,7 @@ namespace Insql
 
         public ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.SqlResolver.Resolve(this.resolveEnviron.Clone(), sqlId, sqlParam);
+            return this.sqlResolver.Resolve(this.resolveEnviron.Clone(), sqlId, sqlParam);
         }
 
         public void Dispose()

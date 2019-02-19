@@ -30,7 +30,7 @@ namespace Insql.Resolvers
                 return new SqlResolver(insqlDescriptor, this.serviceProvider);
             }
 
-            throw new Exception($"InsqlDescriptor : {type.FullName} not found !");
+            return null;
         }
     }
 }

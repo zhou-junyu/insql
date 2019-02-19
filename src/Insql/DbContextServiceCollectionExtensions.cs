@@ -19,7 +19,7 @@ namespace Insql
 
                 if (contextOptions.SqlResolver == null)
                 {
-                    contextOptions.SqlResolver = serviceProvider.GetRequiredService<ISqlResolver<TContext>>();
+                    contextOptions.SqlResolver = serviceProvider.GetService<ISqlResolver<TContext>>();
                 }
 
                 return contextOptions;
