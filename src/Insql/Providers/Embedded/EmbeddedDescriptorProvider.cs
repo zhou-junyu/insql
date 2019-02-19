@@ -245,6 +245,21 @@ namespace Insql.Providers.Embedded
 
                                  return setSection;
                              }
+                         case "repeat":
+                             {
+                                 var repeatSection = new RepeatSectionElement(
+                                      xelement.Attribute(XName.Get("name", ""))?.Value
+                                      )
+                                 {
+                                     Prefix = xelement.Attribute(XName.Get("prefix", ""))?.Value,
+                                     Suffix = xelement.Attribute(XName.Get("suffix", ""))?.Value,
+                                     Open = xelement.Attribute(XName.Get("open", ""))?.Value,
+                                     Close = xelement.Attribute(XName.Get("close", ""))?.Value,
+                                     Separator = xelement.Attribute(XName.Get("separator", ""))?.Value
+                                 };
+
+                                 return repeatSection;
+                             }
                      }
                  }
 
