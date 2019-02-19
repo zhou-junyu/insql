@@ -9,10 +9,21 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
-        private readonly ISqlResolver sqlResolver;
-        private readonly ResolveEnviron resolveEnviron;
+        private readonly object syncLock = new object();
 
-        public IDbSession DbSession { get; }
+        private readonly DbContextOptions contextOptions;
+
+        private IDbSession dbSession;
+
+        private bool isDisposed;
+
+        public virtual IDbSession DbSession
+        {
+            get
+            {
+                return this.GetSession();
+            }
+        }
 
         public DbContext(DbContextOptions options)
         {
@@ -21,7 +32,7 @@ namespace Insql
                 throw new ArgumentNullException(nameof(options));
             }
 
-            this.OnConfiguring(options);
+            this.ConfigureOptions(options);
 
             if (options.SqlResolver == null)
             {
@@ -32,11 +43,7 @@ namespace Insql
                 throw new ArgumentNullException(nameof(options.SessionFactory));
             }
 
-            this.sqlResolver = options.SqlResolver;
-
-            this.resolveEnviron = options.ResolveEnviron;
-
-            this.DbSession = options.SessionFactory.CreateSession();
+            this.contextOptions = options;
         }
 
         protected virtual void OnConfiguring(DbContextOptions options)
@@ -141,14 +148,63 @@ namespace Insql
             return await this.DbSession.CurrentConnection.ExecuteReaderAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
-        public ResolveResult Resolve(string sqlId, object sqlParam = null)
+        public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.sqlResolver.Resolve(this.resolveEnviron.Clone(), sqlId, sqlParam);
+            return this.contextOptions.SqlResolver.Resolve(this.contextOptions.ResolveEnviron.Clone(), sqlId, sqlParam);
+        }
+
+        private void ConfigureOptions(DbContextOptions options)
+        {
+            if (!options.IsConfigured)
+            {
+                var needConfigure = false;
+
+                lock (this.syncLock)
+                {
+                    if (!options.IsConfigured)
+                    {
+                        options.IsConfigured = true;
+
+                        needConfigure = true;
+                    }
+                }
+
+                if (needConfigure)
+                {
+                    this.OnConfiguring(options);
+                }
+            }
+        }
+
+        private IDbSession GetSession()
+        {
+            if (this.dbSession == null)
+            {
+                lock (this.syncLock)
+                {
+                    if (this.dbSession == null)
+                    {
+                        this.dbSession = this.contextOptions.SessionFactory.CreateSession();
+                    }
+                }
+            }
+
+            return this.dbSession;
         }
 
         public void Dispose()
         {
-            this.DbSession.Dispose();
+            if (this.isDisposed)
+            {
+                return;
+            }
+
+            this.isDisposed = true;
+
+            if (this.dbSession != null)
+            {
+                this.dbSession.Dispose();
+            }
         }
     }
 }

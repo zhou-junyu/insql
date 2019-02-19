@@ -6,7 +6,10 @@ namespace Insql
 {
     public static class DbContextServiceCollectionExtensions
     {
-        public static IServiceCollection AddInsqlDbContext<TContext>(this IServiceCollection services, Action<DbContextOptions<TContext>> options = null, ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        public static IServiceCollection AddInsqlDbContext<TContext>(this IServiceCollection services,
+            Action<DbContextOptions<TContext>> options = null,
+            ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
+            ServiceLifetime optionsLifetime = ServiceLifetime.Singleton)
           where TContext : DbContext
         {
             var contextType = typeof(TContext);
@@ -19,19 +22,13 @@ namespace Insql
 
                 if (contextOptions.SqlResolver == null)
                 {
-                    try
-                    {
-                        contextOptions.SqlResolver = serviceProvider.GetService<ISqlResolver<TContext>>();
-                    }
-                    catch
-                    {
-                    }
+                    contextOptions.SqlResolver = serviceProvider.TryGetService<ISqlResolver<TContext>>();
                 }
 
                 return contextOptions;
-            }, lifetime));
+            }, optionsLifetime));
 
-            services.Add(new ServiceDescriptor(contextType, contextType, lifetime));
+            services.Add(new ServiceDescriptor(contextType, contextType, contextLifetime));
 
             return services;
         }

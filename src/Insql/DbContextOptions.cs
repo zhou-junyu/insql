@@ -17,6 +17,8 @@ namespace Insql
 
         public int? CommandTimeout { get; set; }
 
+        public bool IsConfigured { get; set; }
+
         public DbContextOptions()
         {
             this.ResolveEnviron = ResolveEnviron.Create();
