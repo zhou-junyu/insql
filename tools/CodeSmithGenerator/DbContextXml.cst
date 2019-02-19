@@ -1,0 +1,93 @@
+﻿<%@ CodeTemplate Language="C#" ResponseEncoding="UTF-8" TargetLanguage="C#" Debug="TRUE" Inherits="OutputFileCodeTemplate"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+<%@ Assembly src="Helper.cs" %>
+<%@ Import Namespace="Common" %>
+
+<%@ Property Name="Tables" Type="SchemaExplorer.TableSchemaCollection" Category="Context" Description="Tables" %>
+<%@ Property Name="QuoteOpen" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
+<%@ Property Name="QuoteClose" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
+<%@ Property Name="SqlIdSuffix" Type="String" Category="DbContextXml" Optional="True" Description="DbContext Xml Sql Section Id Suffix" %>
+<%@ Property Name="DbContextAssembly" Type="String" Category="DbContext" Description="DbContext Assembly" %>
+<%@ Property Name="DbContextNamespace" Type="String" Category="DbContext" Description="DbContext Namespace" %>
+<%@ Property Name="DbContextName" Type="String" Category="DbContext" Description="DbContext Name" %>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<insql type="<%=DbContextNamespace%>.<%=DbContextName %>,<%= DbContextAssembly%>">
+<% foreach (TableSchema tableSchema in this.Tables) { %>
+
+  <!-- 
+    <%=tableSchema.Name%>
+  -->
+  <sql id="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>">
+    <%= string.Join(",",tableSchema.Columns.Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} as {QuoteOpen}{Helper.GetModelPropertyName(columnSchema)}{QuoteClose}")) %>
+  </sql>
+  
+  <select id="Select<%=Helper.GetModelClassName(tableSchema)%>CountByPrimaryKey<%=SqlIdSuffix%>">
+    select count(*) from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </select>
+  
+  <select id="Select<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
+    select <include refid="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>" /> from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </select>
+  
+  <insert id="Insert<%=Helper.GetModelClassName(tableSchema)%><%=SqlIdSuffix%>">
+    insert into <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> (<%= string.Join(",",tableSchema.Columns.Select(columnSchema=> $"{QuoteOpen}{columnSchema.Name}{QuoteClose}")) %>) values (<%= string.Join(",",tableSchema.Columns.Select(columnSchema=> $"@{Helper.GetModelPropertyName(columnSchema)}")) %>)
+  </insert>
+  
+  <insert id="Insert<%=Helper.GetModelClassName(tableSchema)%>Selective<%=SqlIdSuffix%>">
+    insert into <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+      <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
+        <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %>,
+      </if>
+    <%} %>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+      <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
+        @<%=Helper.GetModelPropertyName(columnSchema)%>,
+      </if>
+    <%} %>
+    </trim>
+  </insert>
+  
+  <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
+    update <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
+    <set>
+    <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+     <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
+    <%} %>
+    </set>
+    where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </update>
+  
+  <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKeySelective<%=SqlIdSuffix%>">
+    update <%=  $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
+    <set>
+    <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+      <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
+        <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
+      </if>
+    <%} %>
+    </set>
+    where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </update>
+  
+  <delete id="Delete<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
+    delete from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </delete>
+<%} %>
+</insql>

@@ -1,0 +1,30 @@
+﻿<%@ CodeTemplate Language="C#" ResponseEncoding="UTF-8" TargetLanguage="C#" Debug="TRUE" Inherits="OutputFileCodeTemplate"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+<%@ Assembly src="Helper.cs" %>
+<%@ Import Namespace="Common" %>
+
+<%@ Property Name="Table" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table" %>
+<%@ Property Name="Namespace" Type="String" Category="Context" Description="Model Namespace" %>
+<%@ Property Name="Prefix" Type="String" Category="Model" Optional="True" Description="Model Name Prefix" %>
+<%@ Property Name="Suffix" Type="String" Category="Model" Optional="True" Description="Model Name Suffix" %>
+
+using System;
+
+namespace <%= Namespace %>
+{
+	public class <%=Prefix%><%= Helper.GetModelClassName(this.Table) %><%=Suffix%>
+	{   <% foreach (ColumnSchema columnSchema in this.Table.Columns) { %>
+        /// <summary>
+        /// <%= Helper.GetModelPropertyDescription(columnSchema) %>
+        /// </summary>
+        public <%= Helper.GetModelPropertyType(columnSchema) %> <%= Helper.GetModelPropertyName(columnSchema) %> { get; set; }
+        <% } %>
+	}
+}
