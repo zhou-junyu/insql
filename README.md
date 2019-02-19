@@ -209,5 +209,7 @@ public class ValuesController : ControllerBase
 }
 ```
 _can also create only a common DbContext, without the need to create multiple DbContext types to use, can be viewed in the detailed document_
+# Code generator
+In the `tools` directory, there is a CodeSmith generator file. Can generate DbContext, DbContext.insql.xml, Models
 # Documentation
 Please see the detailed [documentation](https://github.com/rainrcn/insql/blob/master/doc/doc.md).
