@@ -50,7 +50,7 @@ public class UserService : IUserService
 }
 ```
 ### Create UserService.insql.xml
-_Create `UserService.insql.xml`, used as the Sql statement configuration, insql type specified as `ISqlResolver<T>` `T` type_
+_Create `UserService.insql.xml`, used as the Sql statement configuration, and modify this file attribute to `embedded file`. insql type specified as `ISqlResolver<T>` `T` type_
 ```xml
 <insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
   
