@@ -152,7 +152,7 @@ namespace Insql.Providers
 
                     return new TextSectionElement(xtext.Value);
                 }
-                if (node.NodeType == XmlNodeType.CDATA)
+                else if (node.NodeType == XmlNodeType.CDATA)
                 {
                     XCData xcdata = (XCData)node;
 

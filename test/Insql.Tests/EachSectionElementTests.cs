@@ -58,5 +58,19 @@ namespace Insql.Tests
                 Assert.True(resolveResult.Param.ContainsKey("userIdList"));
             }
         }
+
+        [Fact]
+        public void CDATATest()
+        {
+            using (var scopeProvider = this.serviceProvider.CreateScope())
+            {
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<EachSectionElementTests>>();
+
+                var resolveResult = sqlResolver.Resolve(nameof(CDATATest));
+
+                Assert.Equal("select * from user_info where create_time >= now()", resolveResult.Sql);
+            }
+        }
+
     }
 }
