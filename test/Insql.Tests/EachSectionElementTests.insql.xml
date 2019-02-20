@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<insql type="Insql.Tests.EachSectionElementTests,Insql.Tests" >
+
+  <select id="EachIn">
+    select * from user_info where user_id in <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
+  </select>
+
+  <select id="EachInNull">
+    select * from user_info
+    <where>
+      <if test="userIdList !=null and userIdList.length >0">
+        user_id in <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
+      </if>
+    </where>
+  </select>
+</insql>

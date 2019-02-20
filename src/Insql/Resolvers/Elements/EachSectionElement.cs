@@ -4,16 +4,21 @@ using System.Linq;
 
 namespace Insql.Resolvers.Elements
 {
-    public class RepeatSectionElement : IInsqlSectionElement
+    public class EachSectionElement : IInsqlSectionElement
     {
         public string Name { get; }
+
         public string Separator { get; set; }
+
         public string Open { get; set; }
+
         public string Close { get; set; }
+
         public string Prefix { get; set; }
+
         public string Suffix { get; set; }
 
-        public RepeatSectionElement(string name)
+        public EachSectionElement(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {

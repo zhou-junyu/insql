@@ -22,13 +22,7 @@ namespace Insql.Resolvers
             this.resolveFilters = serviceProvider.GetServices<ISqlResolveFilter>();
             this.descriptorProviders = serviceProvider.GetServices<IInsqlDescriptorProvider>();
 
-            foreach (var provider in this.descriptorProviders)
-            {
-                foreach (var descriptor in provider.GetDescriptors())
-                {
-                    insqlDescriptors[descriptor.Type] = descriptor;
-                }
-            }
+            this.LoadInsqlDescriptors();
         }
 
         public ISqlResolver GetResolver(Type type)
@@ -39,6 +33,27 @@ namespace Insql.Resolvers
             }
 
             throw new Exception($"InsqlDescriptor : `{type.FullName}` not found !");
+        }
+
+        private void LoadInsqlDescriptors()
+        {
+            foreach (var provider in this.descriptorProviders)
+            {
+                foreach (var descriptor in provider.GetDescriptors())
+                {
+                    if (this.insqlDescriptors.TryGetValue(descriptor.Type, out InsqlDescriptor insqlDescriptor))
+                    {
+                        foreach (var section in descriptor.Sections)
+                        {
+                            insqlDescriptor.Sections[section.Key] = section.Value;
+                        }
+                    }
+                    else
+                    {
+                        this.insqlDescriptors.Add(descriptor.Type, descriptor);
+                    }
+                }
+            }
         }
     }
 }

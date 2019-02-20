@@ -5,12 +5,12 @@ using Xunit;
 
 namespace Insql.Tests
 {
-    public class RepeatSectionElementTests : IDisposable
+    public class EachSectionElementTests : IDisposable
     {
         private readonly IServiceCollection serviceCollection;
         private readonly IServiceProvider serviceProvider;
 
-        public RepeatSectionElementTests()
+        public EachSectionElementTests()
         {
             this.serviceCollection = new ServiceCollection();
 
@@ -28,14 +28,13 @@ namespace Insql.Tests
         }
 
         [Fact]
-        public void RepeatIn()
+        public void EachIn()
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<RepeatSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<EachSectionElementTests>>();
 
-                var resolveResult = sqlResolver.Resolve(nameof(RepeatIn), new { userIdList = new string[] { "Tom", "Jerry" } });
-
+                var resolveResult = sqlResolver.Resolve(nameof(EachIn), new { userIdList = new string[] { "Tom", "Jerry" } });
 
                 Assert.Equal("select * from user_info where user_id in (@userIdList1,@userIdList2)", resolveResult.Sql);
 
@@ -46,13 +45,13 @@ namespace Insql.Tests
         }
 
         [Fact]
-        public void RepeatInNull()
+        public void EachInNull()
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<RepeatSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<EachSectionElementTests>>();
 
-                var resolveResult = sqlResolver.Resolve(nameof(RepeatInNull), new { userIdList = new string[] { } });
+                var resolveResult = sqlResolver.Resolve(nameof(EachInNull), new { userIdList = new string[] { } });
 
                 Assert.Equal("select * from user_info", resolveResult.Sql);
 
