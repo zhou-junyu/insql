@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -6,66 +7,26 @@ namespace Insql.Resolvers
 {
     public static partial class SqlResolverExtensions
     {
-        /// <summary>
-        /// resolve sql.
-        /// </summary>
-        /// <param name="sqlResolver"></param>
-        /// <param name="sqlId"></param>
-        /// <returns></returns>
         public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId)
         {
-            return sqlResolver.Resolve(null, sqlId, (IDictionary<string, object>)null);
+            return sqlResolver.Resolve((string)null, sqlId, (IDictionary<string, object>)null);
         }
 
-        /// <summary>
-        ///   resolve sql.
-        /// </summary>
-        /// <param name="sqlResolver"></param>
-        /// <param name="resolveEnviron"></param>
-        /// <param name="sqlId"></param>
-        /// <returns></returns>
-        public static ResolveResult Resolve(this ISqlResolver sqlResolver, ResolveEnviron resolveEnviron, string sqlId)
-        {
-            return sqlResolver.Resolve(resolveEnviron, sqlId, (IDictionary<string, object>)null);
-        }
-
-        /// <summary>
-        ///  resolve sql.
-        /// </summary>
-        /// <param name="sqlResolver"></param>
-        /// <param name="sqlId"></param>
-        /// <param name="sqlParam"></param>
-        /// <returns></returns>
         public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, IDictionary<string, object> sqlParam)
         {
-            return sqlResolver.Resolve(null, sqlId, sqlParam);
+            return sqlResolver.Resolve((string)null, sqlId, sqlParam);
         }
 
-        /// <summary>
-        /// resolve sql.
-        /// </summary>
-        /// <param name="sqlResolver"></param>
-        /// <param name="sqlId"></param>
-        /// <param name="sqlParam">support plain object or idictionary</param>
-        /// <returns></returns>
         public static ResolveResult Resolve(this ISqlResolver sqlResolver, string sqlId, object sqlParam)
         {
-            return sqlResolver.Resolve(null, sqlId, sqlParam);
+            return sqlResolver.Resolve((string)null, sqlId, sqlParam);
         }
 
-        /// <summary>
-        /// resolve sql.
-        /// </summary>
-        /// <param name="sqlResolver"></param>
-        /// <param name="sqlId"></param>
-        /// <param name="sqlParam"></param>
-        /// <param name="envParam"></param>
-        /// <returns></returns>
-        public static ResolveResult Resolve(this ISqlResolver sqlResolver, ResolveEnviron resolveEnviron, string sqlId, object sqlParam)
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, string dbType, string sqlId, object sqlParam)
         {
             if (sqlParam == null)
             {
-                return sqlResolver.Resolve(resolveEnviron, sqlId, (IDictionary<string, object>)null);
+                return sqlResolver.Resolve(dbType, sqlId, (IDictionary<string, object>)null);
             }
 
             var sqlParamDictionary = sqlParam as IEnumerable<KeyValuePair<string, object>>;
@@ -77,7 +38,19 @@ namespace Insql.Resolvers
                .Select(propInfo => new KeyValuePair<string, object>(propInfo.Name, propInfo.GetValue(sqlParam, null)));
             }
 
-            return sqlResolver.Resolve(resolveEnviron, sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value));
+            return sqlResolver.Resolve(dbType, sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value));
+        }
+
+        [Obsolete("will be removed in the new version")]
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, ResolveEnviron resolveEnviron, string sqlId)
+        {
+            return sqlResolver.Resolve(resolveEnviron.GetDbType(), sqlId, (IDictionary<string, object>)null);
+        }
+
+        [Obsolete("will be removed in the new version")]
+        public static ResolveResult Resolve(this ISqlResolver sqlResolver, ResolveEnviron resolveEnviron, string sqlId, object sqlParam)
+        {
+            return sqlResolver.Resolve(resolveEnviron.GetDbType(), sqlId, sqlParam);
         }
     }
 }

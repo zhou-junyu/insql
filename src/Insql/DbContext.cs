@@ -150,7 +150,7 @@ namespace Insql
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.contextOptions.SqlResolver.Resolve(this.contextOptions.ResolveEnviron.Clone(), sqlId, sqlParam);
+            return this.contextOptions.SqlResolver.Resolve(this.DbSession.DbType, sqlId, sqlParam);
         }
 
         private void ConfigureOptions(DbContextOptions options)

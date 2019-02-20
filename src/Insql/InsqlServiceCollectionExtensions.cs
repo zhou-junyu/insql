@@ -22,8 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddOptions();
 
             //sql resolver
-            services.TryAdd(ServiceDescriptor.Singleton<IInsqlSectionMatcher, DefaultSectionMatcher>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultSectionMatcherOptions>, DefaultSectionMatcherOptionsSetup>());
+            services.TryAdd(ServiceDescriptor.Singleton<ISqlResolveMatcher, DefaultResolveMatcher>());
+            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultResolveMatcherOptions>, DefaultResolveMatcherOptionsSetup>());
 
             services.TryAdd(ServiceDescriptor.Singleton<ISqlResolverFactory, SqlResolverFactory>());
             services.TryAdd(ServiceDescriptor.Singleton(typeof(ISqlResolver<>), typeof(SqlResolver<>)));

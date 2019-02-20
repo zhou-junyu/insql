@@ -4,8 +4,8 @@ namespace Insql.Resolvers
 {
     public interface ISqlResolveFilter
     {
-        void OnResolving(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam);
+        void OnResolving(InsqlDescriptor insqlDescriptor, string dbType, string sqlId, IDictionary<string, object> sqlParam);
 
-        void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult);
+        void OnResolved(ResolveContext resolveContext, ResolveResult resolveResult);
     }
 }

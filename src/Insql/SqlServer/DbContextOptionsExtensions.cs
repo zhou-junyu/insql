@@ -14,8 +14,6 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.ResolveEnviron.SetDbType("SqlServer");
-
             options.SessionFactory = new SqlServerDbSessionFactory(options, connectionString);
 
             return options;
@@ -28,8 +26,6 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.ResolveEnviron.SetDbType("SqlServer");
-
             options.SessionFactory = new SqlServerDbSessionFactory(options, connectionString, credential);
 
             return options;
@@ -41,8 +37,6 @@ namespace Insql
             {
                 throw new ArgumentNullException(nameof(connection));
             }
-
-            options.ResolveEnviron.SetDbType("SqlServer");
 
             options.SessionFactory = new SqlServerDbSessionFactory(options, connection);
 

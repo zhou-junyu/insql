@@ -64,8 +64,9 @@ namespace Insql.Oracle
             {
                 return new DbSession(this.dbConnection, false)
                 {
+                    DbType = "Oracle",
+                    SupportStatements = false,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = false
                 };
             }
 
@@ -73,15 +74,17 @@ namespace Insql.Oracle
             {
                 return new DbSession(new OracleConnection(connectionString, credential), true)
                 {
+                    DbType = "Oracle",
+                    SupportStatements = false,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = false
                 };
             }
 
             return new DbSession(new OracleConnection(connectionString), true)
             {
+                DbType = "Oracle",
+                SupportStatements = false,
                 CommandTimeout = this.contextOptions.CommandTimeout,
-                SupportMultipleStatements = false
             };
         }
     }

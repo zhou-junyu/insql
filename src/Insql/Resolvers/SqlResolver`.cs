@@ -5,7 +5,7 @@ namespace Insql.Resolvers
 {
     public class SqlResolver<T> : ISqlResolver<T> where T : class
     {
-        private readonly ISqlResolver _resolver;
+        private readonly ISqlResolver resolver;
 
         public SqlResolver(ISqlResolverFactory factory)
         {
@@ -14,12 +14,12 @@ namespace Insql.Resolvers
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            this._resolver = factory.GetResolver(typeof(T));
+            this.resolver = factory.GetResolver(typeof(T));
         }
 
-        public ResolveResult Resolve(ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
+        public ResolveResult Resolve(string dbType, string sqlId, IDictionary<string, object> sqlParam)
         {
-            return this._resolver.Resolve(resolveEnviron, sqlId, sqlParam);
+            return this.resolver.Resolve(dbType, sqlId, sqlParam);
         }
     }
 }

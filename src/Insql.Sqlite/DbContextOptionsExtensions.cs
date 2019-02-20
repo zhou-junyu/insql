@@ -13,8 +13,6 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.ResolveEnviron.SetDbType("Sqlite");
-
             options.SessionFactory = new SqliteDbSessionFactory(options, connectionString);
 
             return options;
@@ -26,8 +24,6 @@ namespace Insql
             {
                 throw new ArgumentNullException(nameof(connection));
             }
-
-            options.ResolveEnviron.SetDbType("Sqlite");
 
             options.SessionFactory = new SqliteDbSessionFactory(options, connection);
 

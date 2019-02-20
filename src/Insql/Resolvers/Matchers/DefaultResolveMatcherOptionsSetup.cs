@@ -2,9 +2,9 @@
 
 namespace Insql.Resolvers.Matchers
 {
-    public class DefaultSectionMatcherOptionsSetup : IConfigureOptions<DefaultSectionMatcherOptions>
+    public class DefaultResolveMatcherOptionsSetup : IConfigureOptions<DefaultResolveMatcherOptions>
     {
-        public void Configure(DefaultSectionMatcherOptions options)
+        public void Configure(DefaultResolveMatcherOptions options)
         {
             options.CorssDbEnabled = true;
             options.CorssDbSeparator = ".";

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Insql.Resolvers
@@ -8,19 +7,18 @@ namespace Insql.Resolvers
     {
         private readonly InsqlDescriptor insqlDescriptor;
         private readonly IServiceProvider serviceProvider;
-        private readonly IInsqlSectionMatcher sectionMatcher;
+        private readonly ISqlResolveMatcher resolveMatcher;
         private readonly IEnumerable<ISqlResolveFilter> resolveFilters;
 
-        public SqlResolver(InsqlDescriptor insqlDescriptor, IServiceProvider serviceProvider)
+        public SqlResolver(InsqlDescriptor insqlDescriptor, IServiceProvider serviceProvider, ISqlResolveMatcher resolveMatcher, IEnumerable<ISqlResolveFilter> resolveFilters)
         {
             this.insqlDescriptor = insqlDescriptor;
             this.serviceProvider = serviceProvider;
-
-            this.sectionMatcher = serviceProvider.GetRequiredService<IInsqlSectionMatcher>();
-            this.resolveFilters = serviceProvider.GetServices<ISqlResolveFilter>();
+            this.resolveMatcher = resolveMatcher;
+            this.resolveFilters = resolveFilters;
         }
 
-        public ResolveResult Resolve(ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
+        public ResolveResult Resolve(string dbType, string sqlId, IDictionary<string, object> sqlParam)
         {
             if (string.IsNullOrWhiteSpace(sqlId))
             {
@@ -31,17 +29,13 @@ namespace Insql.Resolvers
             {
                 sqlParam = new Dictionary<string, object>();
             }
-            if (resolveEnviron == null)
-            {
-                resolveEnviron = new ResolveEnviron();
-            }
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnResolving(this.insqlDescriptor, resolveEnviron, sqlId, sqlParam);
+                filter.OnResolving(this.insqlDescriptor, dbType, sqlId, sqlParam);
             }
 
-            var insqlSection = this.sectionMatcher.Match(this.insqlDescriptor, resolveEnviron, sqlId, sqlParam);
+            var insqlSection = this.resolveMatcher.Match(this.insqlDescriptor, dbType, sqlId, sqlParam);
 
             if (insqlSection == null)
             {
@@ -53,7 +47,6 @@ namespace Insql.Resolvers
                 ServiceProvider = this.serviceProvider,
                 InsqlDescriptor = this.insqlDescriptor,
                 InsqlSection = insqlSection,
-                Environ = resolveEnviron,
                 Param = sqlParam,
             };
 
@@ -65,7 +58,7 @@ namespace Insql.Resolvers
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnResolved(this.insqlDescriptor, resolveContext, resolveResult);
+                filter.OnResolved(resolveContext, resolveResult);
             }
 
             return resolveResult;

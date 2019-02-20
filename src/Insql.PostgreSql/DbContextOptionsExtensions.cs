@@ -13,8 +13,6 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.ResolveEnviron.SetDbType("PostgreSql");
-
             options.SessionFactory = new PostgreSqlDbSessionFactory(options, connectionString);
 
             return options;
@@ -26,8 +24,6 @@ namespace Insql
             {
                 throw new ArgumentNullException(nameof(connection));
             }
-
-            options.ResolveEnviron.SetDbType("PostgreSql");
 
             options.SessionFactory = new PostgreSqlDbSessionFactory(options, connection);
 

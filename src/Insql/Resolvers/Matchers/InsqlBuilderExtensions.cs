@@ -9,33 +9,33 @@ namespace Insql
 {
     public static partial class InsqlBuilderExtensions
     {
-        public static IInsqlBuilder AddResolveMatcher(this IInsqlBuilder builder, IInsqlSectionMatcher sectionMatcher)
+        public static IInsqlBuilder AddResolveMatcher(this IInsqlBuilder builder, ISqlResolveMatcher sectionMatcher)
         {
-            builder.Services.RemoveAll<IInsqlSectionMatcher>();
+            builder.Services.RemoveAll<ISqlResolveMatcher>();
 
-            builder.Services.AddSingleton<IInsqlSectionMatcher>(sectionMatcher);
+            builder.Services.AddSingleton<ISqlResolveMatcher>(sectionMatcher);
 
             return builder;
         }
 
-        public static IInsqlBuilder AddResolveMatcher<T>(this IInsqlBuilder builder) where T : class, IInsqlSectionMatcher
+        public static IInsqlBuilder AddResolveMatcher<T>(this IInsqlBuilder builder) where T : class, ISqlResolveMatcher
         {
-            builder.Services.RemoveAll<IInsqlSectionMatcher>();
+            builder.Services.RemoveAll<ISqlResolveMatcher>();
 
-            builder.Services.AddSingleton<IInsqlSectionMatcher, T>();
+            builder.Services.AddSingleton<ISqlResolveMatcher, T>();
 
             return builder;
         }
 
-        public static IInsqlBuilder AddDefaultResolveMatcher(this IInsqlBuilder builder, Action<DefaultSectionMatcherOptions> configure)
+        public static IInsqlBuilder AddDefaultResolveMatcher(this IInsqlBuilder builder, Action<DefaultResolveMatcherOptions> configure)
         {
             if (configure == null)
             {
                 throw new ArgumentNullException(nameof(configure));
             }
 
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlSectionMatcher, DefaultSectionMatcher>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultSectionMatcherOptions>, DefaultSectionMatcherOptionsSetup>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<ISqlResolveMatcher, DefaultResolveMatcher>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultResolveMatcherOptions>, DefaultResolveMatcherOptionsSetup>());
 
             builder.Services.Configure(configure);
 

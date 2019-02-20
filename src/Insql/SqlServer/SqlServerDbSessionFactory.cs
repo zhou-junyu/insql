@@ -64,8 +64,9 @@ namespace Insql.SqlServer
             {
                 return new DbSession(this.dbConnection, false)
                 {
+                    DbType = "SqlServer",
+                    SupportStatements = true,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = true
                 };
             }
 
@@ -73,15 +74,17 @@ namespace Insql.SqlServer
             {
                 return new DbSession(new SqlConnection(connectionString, credential), true)
                 {
+                    DbType = "SqlServer",
+                    SupportStatements = true,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = true
                 };
             }
 
             return new DbSession(new SqlConnection(connectionString), true)
             {
+                DbType = "SqlServer",
+                SupportStatements = true,
                 CommandTimeout = this.contextOptions.CommandTimeout,
-                SupportMultipleStatements = true
             };
         }
     }

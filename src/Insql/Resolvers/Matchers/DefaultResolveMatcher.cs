@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Insql.Resolvers.Matchers
 {
-    public class DefaultSectionMatcher : IInsqlSectionMatcher
+    public class DefaultResolveMatcher : ISqlResolveMatcher
     {
-        private readonly IOptions<DefaultSectionMatcherOptions> options;
+        private readonly IOptions<DefaultResolveMatcherOptions> options;
 
-        public DefaultSectionMatcher(IOptions<DefaultSectionMatcherOptions> options)
+        public DefaultResolveMatcher(IOptions<DefaultResolveMatcherOptions> options)
         {
             this.options = options;
         }
 
-        public IInsqlSection Match(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
+        public IInsqlSection Match(InsqlDescriptor insqlDescriptor, string dbType, string sqlId, IDictionary<string, object> sqlParam)
         {
             var optionsValue = this.options.Value;
 
@@ -20,8 +20,6 @@ namespace Insql.Resolvers.Matchers
 
             if (optionsValue.CorssDbEnabled)
             {
-                var dbType = resolveEnviron.GetDbType();
-
                 if (!string.IsNullOrWhiteSpace(dbType))
                 {
                     if (insqlDescriptor.Sections.TryGetValue($"{sqlId}{optionsValue.CorssDbSeparator}{dbType}", out insqlSection))

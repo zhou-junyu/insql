@@ -29,9 +29,11 @@ namespace Insql
 
         public IDbTransaction CurrentTransaction { get; private set; }
 
-        public int? CommandTimeout { get; set; }
+        public string DbType { get; set; }
 
-        public bool SupportMultipleStatements { get; set; }
+        public bool SupportStatements { get; set; }
+
+        public int? CommandTimeout { get; set; }
 
         public void BeginTransaction()
         {

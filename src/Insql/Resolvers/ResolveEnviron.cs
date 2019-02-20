@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Insql.Resolvers
 {
+    [Obsolete("will be removed in the new version")]
     public class ResolveEnviron
     {
         private readonly Dictionary<string, string> items;

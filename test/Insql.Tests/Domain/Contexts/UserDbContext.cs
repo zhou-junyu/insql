@@ -27,7 +27,7 @@ namespace Insql.Tests.Domain.Contexts
 
         public void InsertUser(UserInfo info)
         {
-            if (this.DbSession.SupportMultipleStatements)
+            if (this.DbSession.SupportStatements)
             {
                 var userId = this.ExecuteScalar<int>(nameof(InsertUser), info);
 

@@ -8,13 +8,21 @@ namespace Insql.Resolvers
     public class SqlResolverFactory : ISqlResolverFactory
     {
         private readonly IServiceProvider serviceProvider;
+        private readonly ISqlResolveMatcher resolveMatcher;
+        private readonly IEnumerable<ISqlResolveFilter> resolveFilters;
+        private readonly IEnumerable<IInsqlDescriptorProvider> descriptorProviders;
+
         private readonly Dictionary<Type, InsqlDescriptor> insqlDescriptors = new Dictionary<Type, InsqlDescriptor>();
 
         public SqlResolverFactory(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
 
-            foreach (var provider in serviceProvider.GetServices<IInsqlDescriptorProvider>())
+            this.resolveMatcher = serviceProvider.GetRequiredService<ISqlResolveMatcher>();
+            this.resolveFilters = serviceProvider.GetServices<ISqlResolveFilter>();
+            this.descriptorProviders = serviceProvider.GetServices<IInsqlDescriptorProvider>();
+
+            foreach (var provider in this.descriptorProviders)
             {
                 foreach (var descriptor in provider.GetDescriptors())
                 {
@@ -27,7 +35,7 @@ namespace Insql.Resolvers
         {
             if (insqlDescriptors.TryGetValue(type, out InsqlDescriptor insqlDescriptor))
             {
-                return new SqlResolver(insqlDescriptor, this.serviceProvider);
+                return new SqlResolver(insqlDescriptor, this.serviceProvider, this.resolveMatcher, this.resolveFilters);
             }
 
             throw new Exception($"InsqlDescriptor : `{type.FullName}` not found !");

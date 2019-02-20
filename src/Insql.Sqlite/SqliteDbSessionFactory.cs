@@ -46,15 +46,17 @@ namespace Insql.Sqlite
             {
                 return new DbSession(this.dbConnection, false)
                 {
+                    DbType = "Sqlite",
+                    SupportStatements = true,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = true
                 };
             }
 
             return new DbSession(new SqliteConnection(connectionString), true)
             {
+                DbType = "Sqlite",
+                SupportStatements = true,
                 CommandTimeout = this.contextOptions.CommandTimeout,
-                SupportMultipleStatements = true
             };
         }
     }

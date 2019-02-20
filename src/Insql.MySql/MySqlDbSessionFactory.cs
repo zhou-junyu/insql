@@ -46,15 +46,17 @@ namespace Insql.MySql
             {
                 return new DbSession(this.dbConnection, false)
                 {
+                    DbType = "MySql",
+                    SupportStatements = true,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = true
                 };
             }
 
             return new DbSession(new MySqlConnection(connectionString), true)
             {
+                DbType = "MySql",
+                SupportStatements = true,
                 CommandTimeout = this.contextOptions.CommandTimeout,
-                SupportMultipleStatements = true
             };
         }
     }

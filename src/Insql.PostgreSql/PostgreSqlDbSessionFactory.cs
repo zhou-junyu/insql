@@ -46,15 +46,17 @@ namespace Insql.PostgreSql
             {
                 return new DbSession(this.dbConnection, false)
                 {
+                    DbType = "PostgreSql",
+                    SupportStatements = true,
                     CommandTimeout = this.contextOptions.CommandTimeout,
-                    SupportMultipleStatements = true
                 };
             }
 
             return new DbSession(new NpgsqlConnection(connectionString), true)
             {
+                DbType = "PostgreSql",
+                SupportStatements = true,
                 CommandTimeout = this.contextOptions.CommandTimeout,
-                SupportMultipleStatements = true
             };
         }
     }
