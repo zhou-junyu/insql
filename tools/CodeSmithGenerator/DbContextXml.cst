@@ -30,12 +30,12 @@
   </sql>
   
   <select id="Select<%=Helper.GetModelClassName(tableSchema)%>CountByPrimaryKey<%=SqlIdSuffix%>">
-    select count(*) from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    select count(*) from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </select>
   
   <select id="Select<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
-    select <include refid="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>" /> from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    select <include refid="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>" /> from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </select>
   
@@ -68,7 +68,7 @@
      <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
     <%} %>
     </set>
-    where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </update>
   
@@ -81,12 +81,12 @@
       </if>
     <%} %>
     </set>
-    where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </update>
   
   <delete id="Delete<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
-    delete from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    delete from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </delete>
 <%} %>
