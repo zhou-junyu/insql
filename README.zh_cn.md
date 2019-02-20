@@ -6,6 +6,8 @@ Insql 是一个轻量级的.NET ORM类库. 对象映射基于Dapper, Sql配置�
 
 [中文](https://github.com/rainrcn/insql/blob/master/README.zh_cn.md) | [English](https://github.com/rainrcn/insql/blob/master/README.md)
 
+QQ交流群：737771272
+
 # Packages
 
 | Package  |  Nuget Stable  |  Downloads  |
