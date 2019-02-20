@@ -212,8 +212,8 @@ public class UserService : IUserService
   {
       var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
 
-      //If you need to support multiple databases, you need to set the environment parameters of DbType.
-      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+      //If you need to specify the database (matching the SqlId suffix to .SqlServer), you need to set the parameters of the DbType.
+      //var resolveResult = this.sqlResolver.Resolve("SqlServer", "DeleteUser", new { userId });
 
       //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
   }
