@@ -24,6 +24,7 @@ Mybatis 3 sql xml 类似的配置语法，目前支持以下配置节和元素�
     - **where** ：_添加 `where` sql 语句并且移除开头的and 或者or_ 
     - **set** ：_添加 `set` sql 语句到update后. 并且删除最后的 `,`_
     - **trim** `[prefix]` `[suffix]` `[prefixOverrides]` `[suffixOverrides]` _可以添加和移除开头和结尾自定义的字符_
+    - **each** `[name]` `[open]` `[close]` `[prefix]` `[suffix]` `[separator]` _可以通过循环列表参数，实现select in params的功能_
 
 ## 2.多数据库支持
 多数据库支持为默认启用，使用时非常简单。
@@ -144,12 +145,12 @@ public class LogResolveFilter : ISqlResolveFilter
       this.logger = logger;
   }
 
-  public void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult)
+  public void OnResolved(ResolveContext resolveContext, ResolveResult resolveResult)
   {
       this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
   }
 
-  public void OnResolving(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
+  public void OnResolving(InsqlDescriptor insqlDescriptor, string dbType, string sqlId, IDictionary<string, object> sqlParam)
   {
   }
 }
@@ -167,18 +168,33 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 5.查询语法
 ### SELECT IN 查询
-_使用Dapper支持的列表参数转换功能_
+#### 使用each配置元素
 ``` C#
-var sqlParam = new { userNameList = new string[] { 'love1','love2' } };
+var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
+```
+```xml
+<select id="EachIn">
+  select * from user_info where user_id in <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
+</select>
+```
+_Sql Resolve之后将被转换为：_
+``` sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
+```
+***在each执行后，原先的userIdList参数将会被删除，会被拆分成@userIdList1,@userIdList2..***
+#### 使用Dapper支持的列表参数转换功能
+_如果没有使用each配置元素，则userIdList参数不会被删除,之后在经过Dapper执行时，会使用Dapper的列表参数转换功能_
+``` C#
+var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
 ```
 ``` xml
 <select id="selectInList">
-  select * from user_info where user_name in @userNameList
+  select * from user_info where user_id in @userIdList
 </select>
 ```
-_将被转换为：_
+_Dapper执行时将被转换为：_
 ``` sql
-select * from user_info where user_name in (@userNameList1,@userNameList2)
+select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 
 ## 6.其他用法
@@ -200,8 +216,8 @@ public class UserService : IUserService
   {
       var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
 
-      //如果需要支持多数据库，则需要设置DbType的环境参数
-      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+      //如果需要指定数据库(匹配SqlId后缀为.SqlServer)，则需要设置DbType的参数
+      //var resolveResult = this.sqlResolver.Resolve("SqlServer", "DeleteUser", new { userId });
 
       //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
   }
