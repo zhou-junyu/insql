@@ -42,8 +42,8 @@ public class UserService : IUserService
   {
       var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
 
-      //如果需要支持多数据库，则需要设置DbType的环境参数
-      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+      //如果需要指定数据库(匹配SqlId后缀为.SqlServer)，则需要设置DbType的参数
+      //var resolveResult = this.sqlResolver.Resolve("SqlServer", "DeleteUser", new { userId });
 
       //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
   }
