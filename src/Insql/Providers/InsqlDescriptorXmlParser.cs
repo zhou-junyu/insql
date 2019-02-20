@@ -152,6 +152,12 @@ namespace Insql.Providers
 
                     return new TextSectionElement(xtext.Value);
                 }
+                if (node.NodeType == XmlNodeType.CDATA)
+                {
+                    XCData xcdata = (XCData)node;
+
+                    return new TextSectionElement(xcdata.Value);
+                }
                 else if (node.NodeType == XmlNodeType.Element)
                 {
                     XElement xelement = (XElement)node;
