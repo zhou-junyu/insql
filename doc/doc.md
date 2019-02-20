@@ -22,6 +22,7 @@ MyBatis 3 sql xml Similar configuration syntax, currently supports the following
   - **where** : _add the `where` sql statement and remove the beginning `and`,`or`_
   - **set** : _add the `set` sql statement to the update. and delete the last `,`_
   - **trim** : `[prefix]` `suffix]` `[prefixOverrides]` `[suffixOverrides]`    _can add and remove custom characters at the beginning and end_
+  - **each** `[name]` `[open]` `[close]` `[prefix]` `[suffix]` `[separator]` _the function of select in params can be implemented by looping list parameters_
 
 ## 2.Multi-database support
 Multi-database support is enabled by default and is very simple to use.
@@ -141,12 +142,12 @@ public class LogResolveFilter : ISqlResolveFilter
       this.logger = logger;
   }
 
-  public void OnResolved(InsqlDescriptor insqlDescriptor, ResolveContext resolveContext, ResolveResult resolveResult)
+  public void OnResolved(ResolveContext resolveContext, ResolveResult resolveResult)
   {
       this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
   }
 
-  public void OnResolving(InsqlDescriptor insqlDescriptor, ResolveEnviron resolveEnviron, string sqlId, IDictionary<string, object> sqlParam)
+  public void OnResolving(InsqlDescriptor insqlDescriptor, string dbType, string sqlId, IDictionary<string, object> sqlParam)
   {
   }
 }
@@ -164,18 +165,33 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 5. Query syntax
 ### SELECT IN Query
-_Use Dapper's supported list parameter conversion function_
+#### Use each configuration element
 ``` C#
-var sqlParam = new { userNameList = new string[] { 'love1','love2' } };
+var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
+```
+```xml
+<select id="EachIn">
+  select * from user_info where user_id in <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
+</select>
+```
+_After Sql Resolve will be converted to：_
+``` sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
+```
+***After each execution, the original userIdList parameter will be deleted and will be split into @userIdList1, @userIdList2..***
+#### Use Dapper's supported list parameter conversion function
+_If the each configuration element is not used, the `userIdList` parameter will not be deleted, and then Dapper's list parameter conversion function will be used when Dapper executes_
+``` C#
+var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
 ```
 ``` xml
 <select id="selectInList">
-  select * from user_info where user_name in @userNameList
+  select * from user_info where user_id in @userIdList
 </select>
 ```
-_will be converted to:_
+_Dapper will be converted to:_
 ``` sql
-select * from user_info where user_name in (@userNameList1,@userNameList2)
+select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 ## 6. Other usage
 ### 1. The most streamlined usage, only use sql resolving
@@ -196,8 +212,8 @@ public class UserService : IUserService
   {
       var resolveResult = this.sqlResolver.Resolve("DeleteUser", new { userId });
 
-      //If you need to support multiple databases, you need to set the environment parameters of DbType.
-      //var resolveResult = this.sqlResolver.Resolve(new ResolveEnviron().SetDbType("SqlServer"), "DeleteUser", new { userId });
+      //If you need to specify the database (matching the SqlId suffix to .SqlServer), you need to set the parameters of the DbType.
+      //var resolveResult = this.sqlResolver.Resolve("SqlServer", "DeleteUser", new { userId });
 
       //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
   }
