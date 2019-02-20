@@ -52,7 +52,7 @@ public class UserService : IUserService
 }
 ```
 ### 创建UserService.insql.xml
-_创建`UserService.insql.xml`，用作Sql语句配置，insql type 指定为`ISqlResolver<T>`的`T`类型_
+_创建`UserService.insql.xml`，用作Sql语句配置，并且修改这个文件的属性为`嵌入式文件`类型 .insql type 指定为`ISqlResolver<T>`的`T`类型_
 ```xml
 <insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
   
