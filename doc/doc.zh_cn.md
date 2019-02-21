@@ -168,7 +168,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 5.查询语法
 ### SELECT IN 查询
-#### 使用each配置元素
+#### 使用each配置元素（推荐）
 ``` C#
 var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
 ```

@@ -165,7 +165,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 5. Query syntax
 ### SELECT IN Query
-#### Use each configuration element
+#### Use each configuration element (recommended)
 ``` C#
 var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
 ```
