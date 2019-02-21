@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Insql.Resolvers
 {
-    public class DapperTypeMap : SqlMapper.ITypeMap
+    internal class DapperTypeMap : SqlMapper.ITypeMap
     {
         private readonly CustomPropertyTypeMap typeMap;
         private readonly IInsqlMapSection mapSection;

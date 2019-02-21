@@ -5,6 +5,6 @@ namespace Insql.Resolvers.Scripts
 {
     public interface IInsqlScriptResolver : IDisposable
     {
-        object Resolve(Type type, string code, IDictionary<string, object> param);
+        object Resolve(TypeCode type, string code, IDictionary<string, object> param);
     }
 }

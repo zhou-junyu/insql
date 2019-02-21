@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Insql.Resolvers.Scripts
 {
@@ -16,6 +17,7 @@ namespace Insql.Resolvers.Scripts
         private readonly Dictionary<string, string> operatorMappings;
 
         private readonly IOptions<DefaultScriptResolverOptions> options;
+        private readonly ThreadLocal<Engine> localEngine;
 
         public DefaultScriptResolver(IOptions<DefaultScriptResolverOptions> options)
         {
@@ -37,13 +39,43 @@ namespace Insql.Resolvers.Scripts
 
             this.excludeRegex = new Regex("(['\"]).*?[^\\\\]\\1");
             this.operatorRegex = new Regex($"\\s+({string.Join("|", this.operatorMappings.Keys)})\\s+");
+
+            this.localEngine = new ThreadLocal<Engine>(() =>
+            {
+                var optionsValue = this.options.Value;
+
+                var dateTimeConverter = optionsValue.IsConvertDateTimeMin ? new ScriptDateTimeConverter() : null;
+
+                var engine = new Engine(engineOptions =>
+                {
+                    engineOptions.DebugMode(false);
+                    engineOptions.AllowDebuggerStatement(false);
+
+                    if (optionsValue.IsConvertEnum)
+                    {
+                        engineOptions.AddObjectConverter(ScriptEnumConverter.Instance);
+                    }
+                    if (optionsValue.IsConvertDateTimeMin)
+                    {
+                        engineOptions.AddObjectConverter(dateTimeConverter);
+                    }
+                });
+
+                if (optionsValue.IsConvertDateTimeMin)
+                {
+                    dateTimeConverter.SetEngine(engine);
+                }
+
+                return engine;
+            });
         }
 
         public void Dispose()
         {
+            this.localEngine.Dispose();
         }
 
-        public object Resolve(Type type, string code, IDictionary<string, object> param)
+        public object Resolve(TypeCode type, string code, IDictionary<string, object> param)
         {
             if (string.IsNullOrWhiteSpace(code))
             {
@@ -53,6 +85,7 @@ namespace Insql.Resolvers.Scripts
             {
                 throw new ArgumentNullException(nameof(param));
             }
+
             var optionsValue = this.options.Value;
 
             if (optionsValue.IsConvertOperator)
@@ -60,27 +93,7 @@ namespace Insql.Resolvers.Scripts
                 code = this.codeCaches.GetOrAdd(code, (key) => this.ReplaceOperator(code));
             }
 
-            var dateTimeConverter = optionsValue.IsConvertDateTimeMin ? new ScriptDateTimeConverter() : null;
-
-            var engine = new Engine(options =>
-            {
-                options.DebugMode(false);
-                options.AllowDebuggerStatement(false);
-
-                if (optionsValue.IsConvertEnum)
-                {
-                    options.AddObjectConverter(ScriptEnumConverter.Instance);
-                }
-                if (optionsValue.IsConvertDateTimeMin)
-                {
-                    options.AddObjectConverter(dateTimeConverter);
-                }
-            });
-
-            if (optionsValue.IsConvertDateTimeMin)
-            {
-                dateTimeConverter.SetEngine(engine);
-            }
+            var engine = localEngine.Value;
 
             foreach (var item in param)
             {
@@ -92,6 +105,11 @@ namespace Insql.Resolvers.Scripts
             var value = engine.GetCompletionValue();
 
             var result = value.ToObject();
+
+            foreach (var item in param)
+            {
+                engine.Global.Delete(item.Key, false);
+            };
 
             if (result == null)
             {

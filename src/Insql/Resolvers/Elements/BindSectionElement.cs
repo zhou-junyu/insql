@@ -6,9 +6,31 @@ namespace Insql.Resolvers.Elements
 {
     public class BindSectionElement : IInsqlSectionElement
     {
+        private TypeCode valueType = TypeCode.Object;
+
         public string Name { get; }
 
         public string Value { get; }
+
+        public string ValueType
+        {
+            get
+            {
+                return this.valueType.ToString();
+            }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    this.valueType = TypeCode.Object; return;
+                }
+
+                if (!Enum.TryParse<TypeCode>(value, out this.valueType))
+                {
+                    throw new Exception($"insql bind section `valueType` not convert to `TypeCode`.");
+                }
+            }
+        }
 
         public BindSectionElement(string name, string value)
         {
@@ -29,7 +51,7 @@ namespace Insql.Resolvers.Elements
         {
             var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
 
-            var executeResult = codeExecuter.Resolve(typeof(object), this.Value, context.Param);
+            var executeResult = codeExecuter.Resolve(this.valueType, this.Value, context.Param);
 
             context.Param[this.Name] = executeResult;
 

@@ -22,21 +22,21 @@ namespace Insql.Tests
                 IsConvertOperator = true
             }));
 
-            var result = (bool)resolver.Resolve(typeof(bool), " userId != null ", new Dictionary<string, object>
+            var result = (bool)resolver.Resolve( TypeCode.Boolean, " userId != null ", new Dictionary<string, object>
             {
                 { "userId","aa" }
             });
 
             Assert.True(result);
 
-            result = (bool)resolver.Resolve(typeof(bool), " userId == null ", new Dictionary<string, object>
+            result = (bool)resolver.Resolve(TypeCode.Boolean, " userId == null ", new Dictionary<string, object>
             {
                 { "userId",null }
             });
 
             Assert.True(result);
 
-            result = (bool)resolver.Resolve(typeof(bool), " userId == null ", new Dictionary<string, object>
+            result = (bool)resolver.Resolve(TypeCode.Boolean, " userId == null ", new Dictionary<string, object>
             {
                 { "userId","" }
             });
@@ -55,7 +55,7 @@ namespace Insql.Tests
 
             var code = " userId != null and userId == 'aa' ";
 
-            var result = (bool)resolver.Resolve(typeof(bool), code, new Dictionary<string, object>
+            var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
             {
                 { "userId","aa" }
             });
@@ -64,7 +64,7 @@ namespace Insql.Tests
 
             code = " userId == null or userId != 'aa' or userId == \" \\\" ' and sdfsssdf '\" or userId gte \" s or ' s \" or userId eq 'aa' ";
 
-            result = (bool)resolver.Resolve(typeof(bool), code, new Dictionary<string, object>
+            result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
             {
                 { "userId","aa" }
             });
@@ -73,7 +73,7 @@ namespace Insql.Tests
 
             code = " userId != null and userId eq '\"' ";
 
-            result = (bool)resolver.Resolve(typeof(bool), code, new Dictionary<string, object>
+            result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
             {
                 { "userId","\"" }
             });
@@ -82,7 +82,7 @@ namespace Insql.Tests
 
             code = " userId != null and userId == '\\\'' ";
 
-            result = (bool)resolver.Resolve(typeof(bool), code, new Dictionary<string, object>
+            result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
             {
                 { "userId","'" }
             });
@@ -102,7 +102,7 @@ namespace Insql.Tests
 
             var code = @"var and = 'aa'; userId == and ";
 
-            var result = (bool)resolver.Resolve(typeof(bool), code, new Dictionary<string, object>
+            var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
             {
                 { "userId","aa" }
             });

@@ -167,7 +167,10 @@ namespace Insql.Providers
                                 return new BindSectionElement(
                                     xelement.Attribute(XName.Get("name", ""))?.Value,
                                     xelement.Attribute(XName.Get("value", ""))?.Value
-                                );
+                                )
+                                {
+                                    ValueType = xelement.Attribute(XName.Get("valueType", ""))?.Value
+                                };
                             }
                         case "if":
                             {

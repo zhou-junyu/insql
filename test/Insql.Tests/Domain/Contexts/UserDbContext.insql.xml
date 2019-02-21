@@ -12,6 +12,7 @@
 
   <select id="GetUserList">
     <include refid="selectUserColumns" />
+    <bind name="offsetSize" value="1 * 15" valueType="Int32" />
     <where>
       <if test="userName != null">
         <bind name="likeUserName" value="'%' + userName + '%'" />
