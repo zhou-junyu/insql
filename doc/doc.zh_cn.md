@@ -166,7 +166,7 @@ _`xxx.insql.xml`中需要修改为`userGender == 1`_
   and user_gender = @userGender
 </if>
 ```
-### DateTime.Min转换为null
+### DateTime.Min转换
 _如果Model实体中有时间类型，并且没有设置过时间值，默认为DateTime.Min,在经过JavaScript转换时会报异常，因为JavaScript Date最小时间为1970.1.1所以默认会启用此转换_
 ```c#
 public void ConfigureServices(IServiceCollection services)
@@ -175,7 +175,7 @@ public void ConfigureServices(IServiceCollection services)
   {
       builder.AddDefaultScriptResolver(options => 
       {
-          options.IsConvertDateTimeMinToNull = false; //默认为 true, 如果不需要转换则可以设置为false关闭
+          options.IsConvertDateTimeMin = false; //默认为 true, 如果不需要转换则可以设置为false关闭
       });
   });
 }
