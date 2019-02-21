@@ -137,12 +137,14 @@ _创建 `UserDbContext.insql.xml` 文件并且修改这个文件的属性为`嵌
 ```xml
 <insql type="Example.Domain.Contexts.UserDbContext,Example.Domain" >
   
-    <sql id="selectUserColumns">
-      select user_id as UserId,user_name as UserName,user_gender as UserGender from user_info
-    </sql>
+    <map type="Example.Domain.Model.UserInfo,Example.Domain">
+      <column name="user_id" to="UserId" />
+      <column name="user_name" to="UserName" />
+      <column name="user_gender" to="UserGender" />
+    </map>
 
     <select id="GetUserList">
-      <include refid="selectUserColumns" />
+      select * from user_info
       <where>
         <if test="userName != null">
           <bind name="likeUserName" value="'%' + userName + '%'" />
