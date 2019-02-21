@@ -40,6 +40,17 @@ namespace Common
             return $"{column.Name}\r\n {column.Description}";
         }
         
+        
+        public static bool IsNullableType(ColumnSchema column)
+        {
+            if(column.AllowDBNull || !column.SystemType.IsValueType)
+            {
+                return true;
+            }
+            
+            return false;
+        }
+        
         static string GetTypeName(Type type)
         {
             if(type == typeof(string)){

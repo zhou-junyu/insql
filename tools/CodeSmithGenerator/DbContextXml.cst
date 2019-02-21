@@ -47,16 +47,24 @@
     insert into <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <trim prefix="(" suffix=")" suffixOverrides=",">
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+    <% if(Helper.IsNullableType(columnSchema)) { %>
       <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
         <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %>,
       </if>
+    <% } else { %>
+      <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %>,
+      <%} %>
     <%} %>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+    <% if(Helper.IsNullableType(columnSchema)){ %>
       <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
         @<%=Helper.GetModelPropertyName(columnSchema)%>,
       </if>
+    <% } else { %>
+      @<%=Helper.GetModelPropertyName(columnSchema)%>,
+      <%} %>
     <%} %>
     </trim>
   </insert>
@@ -76,9 +84,13 @@
     update <%=  $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <set>
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+    <% if(Helper.IsNullableType(columnSchema)){ %>
       <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
         <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
       </if>
+    <% } else { %>
+      <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
+      <%} %>
     <%} %>
     </set>
     where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
