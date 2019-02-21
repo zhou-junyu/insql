@@ -49,6 +49,7 @@ MyBatis 3 sql xml Similar configuration syntax, currently supports the following
   - **insert**  : _sql section alias_
   - **update**  : _sql section alias_
   - **delete**  : _sql section alias_
+  - **map** : _Database to object attribute mapping_
 - elements
   - **include** `[refid(ref sql section)]`
   - **bind** `[name]` `[value(javascript syntax)]`
@@ -57,6 +58,7 @@ MyBatis 3 sql xml Similar configuration syntax, currently supports the following
   - **set** : _add the `set` sql statement to the update. and delete the last `,`_
   - **trim** : `[prefix]` `suffix]` `[prefixOverrides]` `[suffixOverrides]`    _can add and remove custom characters at the beginning and end_
   - **each** `[name]` `[open]` `[close]` `[prefix]` `[suffix]` `[separator]` _the function of select in params can be implemented by looping list parameters_
+  _ **column** `[name]` `[to]` _Column mapping elements under map configuration section, name as column name and to as attribute name_
 
 ## 2.Multi-database support
 Multi-database support is enabled by default and is very simple to use.
@@ -243,7 +245,7 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 ## 6. Other usage
 ### 1. The most streamlined usage, only use sql resolving
-You can use only the statement parsing function, instead of creating a DbContext, just use Insql as a load and parse Sql statement.
+Just use Insql as a load and parse Sql statement.
 #### Injecting ISqlResolver
 _Use the sql resolver in the Domain Service, inject `ISqlResolver<T>` into the UserService, where the `T` type we specify as the `UserService` type_
 ```C#
@@ -287,8 +289,10 @@ public void ConfigureServices(IServiceCollection services)
   services.AddScoped<IUserService, UserService>();
 }
 ```
+***Note: If you only use ISqlResover.Resolve, the map configuration section will not work because the map configuration section is currently working when Dapper executes and maps object properties.***
 
 ---
+
 ### 2. Use the common DbContext usage
 In the basic use example, we will create multiple DbContext types, and here we can create only one common DbContext type.
 #### Create a common DbContext
