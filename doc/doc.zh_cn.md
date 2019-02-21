@@ -51,6 +51,7 @@ Mybatis 3 sql xml 类似的配置语法，目前支持以下配置节和元素�
     - **insert** : _sql节的别名_
     - **update** : _sql节的别名_
     - **delete** : _sql节的别名_
+    - **map** : _数据库到对象属性的映射_
  - elements
     - **include** `[refid(引用sql配置节)]`
     - **bind** `[name]` `[value(javascript 语法)]`
@@ -59,6 +60,7 @@ Mybatis 3 sql xml 类似的配置语法，目前支持以下配置节和元素�
     - **set** ：_添加 `set` sql 语句到update后. 并且删除最后的 `,`_
     - **trim** `[prefix]` `[suffix]` `[prefixOverrides]` `[suffixOverrides]` _可以添加和移除开头和结尾自定义的字符_
     - **each** `[name]` `[open]` `[close]` `[prefix]` `[suffix]` `[separator]` _可以通过循环列表参数，实现select in params的功能_
+    - **column** `[name]` `[to]` _在`map`配置节下的列映射元素，`name`为列名,`to`为属性名_
 
 ## 2.多数据库支持
 多数据库支持为默认启用，使用时非常简单。
@@ -247,7 +249,7 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
 
 ## 6.其他用法
 ### 1.最精简用法，只使用语句解析功能
-可以只使用语句解析功能，而不需要创建DbContext，只将Insql用作加载和解析Sql语句来使用。
+只将Insql用作加载和解析Sql语句来使用
 #### 注入ISqlResolver
 _在Domain Service中使用语句解析器，将`ISqlResolver<T>`注入到UserService中，其中`T`类型我们指定为`UserService`类型_
 ```C#
@@ -292,6 +294,7 @@ public void ConfigureServices(IServiceCollection services)
   services.AddScoped<IUserService, UserService>();
 }
 ```
+***注意：如果只使用ISqlResover.Resolve，map配置节将不会起作用，因为目前map配置节是在Dapper执行并映射对象属性时起作用***
 
 ---
 
