@@ -1,5 +1,5 @@
 ﻿using Insql.Providers;
-using Insql.Providers.Embedded;
+using Insql.Providers.EmbeddedXml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;

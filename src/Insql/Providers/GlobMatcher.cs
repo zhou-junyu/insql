@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Insql.Providers.Embedded
+namespace Insql.Providers
 {
     ///<summary>Contains options that control how Minimatch matches strings.</summary>
-    internal class GlobOptions
+    internal class GlobMatcherOptions
     {
         ///<summary>Suppresses the behavior of treating # at the start of a pattern as a comment.</summary>
         public bool NoComment { get; set; }
@@ -46,21 +46,21 @@ namespace Insql.Providers.Embedded
     }
 
     ///<summary>Parses a single glob pattern and tests strings against it.</summary>
-    internal class GlobHelper
+    internal class GlobMatcher
     {
         ///<summary>Creates a filter function that tests input against a pattern.</summary>
-        public static Func<string, bool> CreateFilter(string pattern, GlobOptions options = null)
+        public static Func<string, bool> CreateFilter(string pattern, GlobMatcherOptions options = null)
         {
             if (pattern == null) throw new ArgumentNullException("pattern");
             // "" only matches ""
             if (String.IsNullOrWhiteSpace(pattern)) return String.IsNullOrEmpty;
 
-            var m = new GlobHelper(pattern, options);
+            var m = new GlobMatcher(pattern, options);
             return m.IsMatch;
         }
         ///<summary>Tests a single input against a pattern.</summary>
         ///<remarks>This function reparses this input on each invocation.  For performance, avoid this function and reuse a Minimatcher instance instead.</remarks>
-        public static bool Check(string input, string pattern, GlobOptions options = null)
+        public static bool Check(string input, string pattern, GlobMatcherOptions options = null)
         {
             if (input == null) throw new ArgumentNullException("input");
             if (pattern == null) throw new ArgumentNullException("pattern");
@@ -74,14 +74,14 @@ namespace Insql.Providers.Embedded
             // "" only matches ""
             if (String.IsNullOrWhiteSpace(pattern)) return input == "";
 
-            return new GlobHelper(pattern, options).IsMatch(input);
+            return new GlobMatcher(pattern, options).IsMatch(input);
         }
 
         ///<summary>Filters a list of inputs against a single pattern.</summary>
         ///<remarks>This function reparses this input on each invocation.  For performance, avoid this function and reuse a Minimatcher instance instead.</remarks>
-        public static IEnumerable<string> Filter(IEnumerable<string> list, string pattern, GlobOptions options = null)
+        public static IEnumerable<string> Filter(IEnumerable<string> list, string pattern, GlobMatcherOptions options = null)
         {
-            var mm = new GlobHelper(pattern, options);
+            var mm = new GlobMatcher(pattern, options);
             list = list.Where(mm.IsMatch);
             if (options != null && options.NoNull)
                 list = list.DefaultIfEmpty(pattern);
@@ -89,13 +89,13 @@ namespace Insql.Providers.Embedded
         }
 
         ///<summary>Compiles a pattern into a single regular expression.</summary>
-        public static Regex CreateRegex(string pattern, GlobOptions options = null)
+        public static Regex CreateRegex(string pattern, GlobMatcherOptions options = null)
         {
-            return new GlobHelper(pattern, options).MakeRegex();
+            return new GlobMatcher(pattern, options).MakeRegex();
         }
 
 
-        readonly GlobOptions options;
+        readonly GlobMatcherOptions options;
 
         string pattern;
         bool negate = false;
@@ -103,10 +103,10 @@ namespace Insql.Providers.Embedded
         bool empty = false;
 
         ///<summary>Creates a new Minimatcher instance, parsing the pattern into a regex.</summary>
-        public GlobHelper(string pattern, GlobOptions options = null)
+        public GlobMatcher(string pattern, GlobMatcherOptions options = null)
         {
             if (pattern == null) throw new ArgumentNullException("pattern");
-            this.options = options ?? new GlobOptions();
+            this.options = options ?? new GlobMatcherOptions();
             this.pattern = pattern.Trim();
             if (this.options.AllowWindowsPaths)
                 this.pattern = this.pattern.Replace('\\', '/');
@@ -217,7 +217,7 @@ namespace Insql.Providers.Embedded
         // a{2..}b -> a{2..}b
         // a{b}c -> a{b}c
         ///<summary>Expands all brace ranges in a pattern, returning a sequence containing every possible combination.</summary>
-        public static IEnumerable<string> BraceExpand(string pattern, GlobOptions options)
+        public static IEnumerable<string> BraceExpand(string pattern, GlobMatcherOptions options)
         {
             if (options.NoBrace || !hasBraces.IsMatch(pattern))
             {
@@ -405,30 +405,30 @@ namespace Insql.Providers.Embedded
 
             public static readonly ParseItem Empty = new LiteralItem("");
             public static ParseItem Literal(string source) { return new LiteralItem(source); }
-            public abstract string RegexSource(GlobOptions options);
+            public abstract string RegexSource(GlobMatcherOptions options);
 
-            public abstract bool Match(string input, GlobOptions options);
+            public abstract bool Match(string input, GlobMatcherOptions options);
         }
         class LiteralItem : ParseItem
         {
             public LiteralItem(string source) { Source = source; }
-            public override string RegexSource(GlobOptions options) { return Regex.Escape(Source); }
-            public override bool Match(string input, GlobOptions options)
+            public override string RegexSource(GlobMatcherOptions options) { return Regex.Escape(Source); }
+            public override bool Match(string input, GlobMatcherOptions options)
             {
                 return input.Equals(Source, options.NoCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
             }
         }
         class MagicItem : ParseItem
         {
-            public MagicItem(string source, GlobOptions options)
+            public MagicItem(string source, GlobMatcherOptions options)
             {
                 Source = source;
                 regex = new Lazy<Regex>(() => new Regex("^" + source + "$", options.RegexOptions));
             }
             readonly Lazy<Regex> regex;
 
-            public override string RegexSource(GlobOptions options) { return Source; }
-            public override bool Match(string input, GlobOptions options)
+            public override string RegexSource(GlobMatcherOptions options) { return Source; }
+            public override bool Match(string input, GlobMatcherOptions options)
             {
                 return regex.Value.IsMatch(input);
             }
@@ -438,14 +438,14 @@ namespace Insql.Providers.Embedded
             private GlobStar() { }
             public static readonly ParseItem Instance = new GlobStar();
 
-            public override string RegexSource(GlobOptions options)
+            public override string RegexSource(GlobMatcherOptions options)
             {
                 return options.NoGlobStar ? star
                 : options.Dot ? twoStarDot
                 : twoStarNoDot;
             }
 
-            public override bool Match(string input, GlobOptions options) { throw new NotSupportedException(); }
+            public override bool Match(string input, GlobMatcherOptions options) { throw new NotSupportedException(); }
         }
 
         static readonly Regex escapeCheck = new Regex(@"((?:\\{2})*)(\\?)\|");

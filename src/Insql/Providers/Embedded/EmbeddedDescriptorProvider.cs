@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Insql.Providers.Embedded
+namespace Insql.Providers.EmbeddedXml
 {
     public class EmbeddedDescriptorProvider : IInsqlDescriptorProvider
     {
@@ -20,12 +20,17 @@ namespace Insql.Providers.Embedded
         {
             var optionsValue = this.options.Value;
 
-            if (string.IsNullOrWhiteSpace(optionsValue.Locations))
+            if (!optionsValue.Enabled)
             {
                 return new List<InsqlDescriptor>();
             }
 
-            GlobHelper glob = new GlobHelper(optionsValue.Locations);
+            if (string.IsNullOrWhiteSpace(optionsValue.Matches))
+            {
+                throw new ArgumentNullException(nameof(optionsValue.Matches), $"{nameof(EmbeddedDescriptorOptions)} `Matches` is null!");
+            }
+
+            GlobMatcher globMatcher = new GlobMatcher(optionsValue.Matches);
 
             IEnumerable<Assembly> assemblies = optionsValue.Assemblies;
 
@@ -40,7 +45,7 @@ namespace Insql.Providers.Embedded
             {
                 var resourceNames = assembly.GetManifestResourceNames();
 
-                resourceNames = glob.Filter(resourceNames).ToArray();
+                resourceNames = globMatcher.Filter(resourceNames).ToArray();
 
                 return resourceNames
                 .Select(name => InsqlDescriptorXmlParser.Instance.ParseDescriptor(assembly.GetManifestResourceStream(name), optionsValue.Namespace))

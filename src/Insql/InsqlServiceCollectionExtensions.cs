@@ -1,6 +1,6 @@
 ﻿using Insql;
 using Insql.Providers;
-using Insql.Providers.Embedded;
+using Insql.Providers.EmbeddedXml;
 using Insql.Resolvers;
 using Insql.Resolvers.Matchers;
 using Insql.Resolvers.Scripts;

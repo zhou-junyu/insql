@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace Insql.Providers.Embedded
+namespace Insql.Providers.EmbeddedXml
 {
     public class EmbeddedDescriptorOptionsSetup : IConfigureOptions<EmbeddedDescriptorOptions>
     {
         public void Configure(EmbeddedDescriptorOptions options)
         {
-            options.Locations = "**/*.insql.xml";
+            options.Enabled = true;
+            options.Matches = "**/*.insql.xml";
             options.Namespace = "";
         }
     }
