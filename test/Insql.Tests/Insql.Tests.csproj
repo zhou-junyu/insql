@@ -5,10 +5,12 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Domain\Contexts\UserDbContext.insql.xml" />
+    <None Remove="Domain\Contexts\UserDbContext.Map.insql.xml" />
     <None Remove="Domain\Services\CommonUserService.insql.xml" />
     <None Remove="EachSectionElementTests.insql.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Domain\Contexts\UserDbContext.Map.insql.xml" />
     <EmbeddedResource Include="Domain\Contexts\UserDbContext.insql.xml" />
     <EmbeddedResource Include="Domain\Services\CommonUserService.insql.xml" />
     <EmbeddedResource Include="EachSectionElementTests.insql.xml" />

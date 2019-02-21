@@ -34,25 +34,23 @@ namespace Insql.Providers
                     return null;
                 }
 
-                var type = Type.GetType(typeAttr.Value);
+                var descriptor = new InsqlDescriptor(typeAttr.Value);
 
-                if (type == null)
-                {
-                    throw new Exception($"insql type : {typeAttr.Value} not found !");
-                }
-
-                var descriptor = new InsqlDescriptor(type);
-
-                foreach (var section in this.ParseSectionDescriptors(root))
+                foreach (var section in this.ParseSections(root))
                 {
                     descriptor.Sections.Add(section.Id, section);
+                }
+
+                foreach (var map in this.ParseMapSections(root))
+                {
+                    descriptor.Maps.Add(map.Type, map);
                 }
 
                 return descriptor;
             }
         }
 
-        private IEnumerable<IInsqlSection> ParseSectionDescriptors(XElement root)
+        private IEnumerable<IInsqlSection> ParseSections(XElement root)
         {
             var sqlSections = root.Elements(XName.Get("sql", "")).Select(element =>
             {
@@ -60,12 +58,12 @@ namespace Insql.Providers
 
                 if (id == null || string.IsNullOrWhiteSpace(id.Value))
                 {
-                    throw new Exception("insql sql section element `id` is empty !");
+                    throw new Exception("insql sql section `id` is empty !");
                 }
 
                 var section = new SqlInsqlSection(id.Value);
 
-                section.Elements.AddRange(this.ParseSqlSections(element));
+                section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
                 return section;
             }).Cast<IInsqlSection>();
@@ -81,7 +79,7 @@ namespace Insql.Providers
 
                 var section = new SqlInsqlSection(id.Value);
 
-                section.Elements.AddRange(this.ParseSqlSections(element));
+                section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
                 return section;
             }).Cast<IInsqlSection>();
@@ -97,7 +95,7 @@ namespace Insql.Providers
 
                 var section = new SqlInsqlSection(id.Value);
 
-                section.Elements.AddRange(this.ParseSqlSections(element));
+                section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
                 return section;
             }).Cast<IInsqlSection>();
@@ -113,7 +111,7 @@ namespace Insql.Providers
 
                 var section = new SqlInsqlSection(id.Value);
 
-                section.Elements.AddRange(this.ParseSqlSections(element));
+                section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
                 return section;
             }).Cast<IInsqlSection>();
@@ -129,7 +127,7 @@ namespace Insql.Providers
 
                 var section = new SqlInsqlSection(id.Value);
 
-                section.Elements.AddRange(this.ParseSqlSections(element));
+                section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
                 return section;
             }).Cast<IInsqlSection>();
@@ -142,7 +140,7 @@ namespace Insql.Providers
                 .ToList();
         }
 
-        private IEnumerable<IInsqlSectionElement> ParseSqlSections(XElement element)
+        private IEnumerable<IInsqlSectionElement> ParseSqlSectionElements(XElement element)
         {
             return element.Nodes().Select(node =>
             {
@@ -177,7 +175,7 @@ namespace Insql.Providers
                                     xelement.Attribute(XName.Get("test", ""))?.Value
                                 );
 
-                                ifSection.Children.AddRange(this.ParseSqlSections(xelement));
+                                ifSection.Children.AddRange(this.ParseSqlSectionElements(xelement));
 
                                 return ifSection;
                             }
@@ -197,7 +195,7 @@ namespace Insql.Providers
                                     SuffixOverrides = xelement.Attribute(XName.Get("suffixOverrides", ""))?.Value,
                                 };
 
-                                trimSection.Children.AddRange(this.ParseSqlSections(xelement));
+                                trimSection.Children.AddRange(this.ParseSqlSectionElements(xelement));
 
                                 return trimSection;
                             }
@@ -205,7 +203,7 @@ namespace Insql.Providers
                             {
                                 var whereSection = new WhereSectionElement();
 
-                                whereSection.Children.AddRange(this.ParseSqlSections(xelement));
+                                whereSection.Children.AddRange(this.ParseSqlSectionElements(xelement));
 
                                 return whereSection;
                             }
@@ -213,7 +211,7 @@ namespace Insql.Providers
                             {
                                 var setSection = new SetSectionElement();
 
-                                setSection.Children.AddRange(this.ParseSqlSections(xelement));
+                                setSection.Children.AddRange(this.ParseSqlSectionElements(xelement));
 
                                 return setSection;
                             }
@@ -236,6 +234,52 @@ namespace Insql.Providers
                 }
 
                 return (IInsqlSectionElement)null;
+            }).Where(o => o != null).ToList();
+        }
+
+        private IEnumerable<IInsqlMapSection> ParseMapSections(XElement root)
+        {
+            return root.Elements(XName.Get("map", "")).Select(element =>
+            {
+                var type = element.Attribute(XName.Get("type", ""));
+
+                if (type == null || string.IsNullOrWhiteSpace(type.Value))
+                {
+                    throw new Exception("insql map section `type` is empty !");
+                }
+
+                var section = new MapInsqlSection(type.Value);
+
+                foreach (var ele in this.ParseMapSectionElements(element))
+                {
+                    section.Elements.Add(ele.Name, ele);
+                }
+
+                return section;
+            }).Cast<IInsqlMapSection>().ToList();
+        }
+
+        private IEnumerable<IInsqlMapSectionElement> ParseMapSectionElements(XElement element)
+        {
+            return element.Nodes().Select(node =>
+            {
+                if (node.NodeType == XmlNodeType.Element)
+                {
+                    XElement xelement = (XElement)node;
+
+                    switch (xelement.Name.LocalName)
+                    {
+                        case "column":
+                            {
+                                return new ColumnMapSectionElement(
+                                    xelement.Attribute(XName.Get("name", ""))?.Value,
+                                    xelement.Attribute(XName.Get("to", ""))?.Value
+                                );
+                            }
+                    }
+                }
+
+                return (IInsqlMapSectionElement)null;
             }).Where(o => o != null).ToList();
         }
     }

@@ -169,5 +169,29 @@ namespace Insql.Tests
                 Assert.True(wlist.Count() > 0);
             }
         }
+
+        [Fact]
+        public void GetMapUser()
+        {
+            using (var scopeProvider = this.serviceProvider.CreateScope())
+            {
+                var userDbContext = scopeProvider.ServiceProvider.GetRequiredService<UserDbContext>();
+
+                var userInfo = new Domain.Models.UserInfo
+                {
+                    UserName = new Random().Next().ToString(),
+                    UserGender = Domain.Models.UserGender.W
+                };
+
+                userDbContext.InsertUser(userInfo);
+
+                Assert.True(userInfo.UserId > 0);
+
+                var selectUserInfo = userDbContext.GetMapUser(userInfo.UserId);
+
+                Assert.True(selectUserInfo.MUserId == userInfo.UserId);
+                Assert.True(selectUserInfo.MUserName == userInfo.UserName);
+            }
+        }
     }
 }

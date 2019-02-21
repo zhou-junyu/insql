@@ -60,5 +60,10 @@ namespace Insql.Tests.Domain.Contexts
         {
             this.Execute(nameof(DeleteUser), new { userId });
         }
+
+        public MapUserInfo GetMapUser(int userId)
+        {
+            return this.Query<MapUserInfo>(nameof(GetMapUser), new { userId }).SingleOrDefault();
+        }
     }
 }

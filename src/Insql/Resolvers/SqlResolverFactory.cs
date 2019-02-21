@@ -1,4 +1,5 @@
-﻿using Insql.Providers;
+﻿using Dapper;
+using Insql.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace Insql.Resolvers
             this.descriptorProviders = serviceProvider.GetServices<IInsqlDescriptorProvider>();
 
             this.LoadInsqlDescriptors();
+            this.RegisterTypeMaps();
         }
 
         public ISqlResolver GetResolver(Type type)
@@ -43,15 +45,32 @@ namespace Insql.Resolvers
                 {
                     if (this.insqlDescriptors.TryGetValue(descriptor.Type, out InsqlDescriptor insqlDescriptor))
                     {
+                        //sections
                         foreach (var section in descriptor.Sections)
                         {
                             insqlDescriptor.Sections[section.Key] = section.Value;
+                        }
+                        //maps
+                        foreach (var map in descriptor.Maps)
+                        {
+                            insqlDescriptor.Maps[map.Key] = map.Value;
                         }
                     }
                     else
                     {
                         this.insqlDescriptors.Add(descriptor.Type, descriptor);
                     }
+                }
+            }
+        }
+
+        private void RegisterTypeMaps()
+        {
+            foreach (var descriptor in this.insqlDescriptors.Values)
+            {
+                foreach (var map in descriptor.Maps.Values)
+                {
+                    SqlMapper.SetTypeMap(map.Type, new DapperTypeMap(map));
                 }
             }
         }
