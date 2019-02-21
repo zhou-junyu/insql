@@ -20,12 +20,6 @@ namespace Insql
 
                 options?.Invoke(contextOptions);
 
-                //todo : remove to DbContext OnConfiging After
-                if (contextOptions.SqlResolver == null)
-                {
-                    contextOptions.SqlResolver = serviceProvider.TryGetService<ISqlResolver<TContext>>();
-                }
-
                 return contextOptions;
             }, optionsLifetime));
 

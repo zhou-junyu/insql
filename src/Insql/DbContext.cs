@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Insql.Resolvers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -172,6 +173,13 @@ namespace Insql
                 if (needConfigure)
                 {
                     this.OnConfiguring(options);
+
+                    if (options.SqlResolver == null)
+                    {
+                        var sqlResolverType = typeof(ISqlResolver<>).MakeGenericType(options.ContextType);
+
+                        options.SqlResolver = (ISqlResolver)options.ServiceProvider.GetRequiredService(sqlResolverType);
+                    }
                 }
             }
         }
