@@ -9,9 +9,9 @@ namespace Insql.Resolvers.Scripts
     {
         private static readonly DateTime Min = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        private readonly Engine engine;
+        private Engine engine;
 
-        public ScriptDateTimeConverter(Engine engine)
+        public void SetEngine(Engine engine)
         {
             this.engine = engine;
         }

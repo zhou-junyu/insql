@@ -60,21 +60,27 @@ namespace Insql.Resolvers.Scripts
                 code = this.codeCaches.GetOrAdd(code, (key) => this.ReplaceOperator(code));
             }
 
-            Engine engine = null;
+            var dateTimeConverter = optionsValue.IsConvertDateTimeMin ? new ScriptDateTimeConverter() : null;
 
-            engine = new Engine(options =>
-           {
-               options.DebugMode(false);
+            var engine = new Engine(options =>
+            {
+                options.DebugMode(false);
+                options.AllowDebuggerStatement(false);
 
-               if (optionsValue.IsConvertEnum)
-               {
-                   options.AddObjectConverter(ScriptEnumConverter.Instance);
-               }
-               if (optionsValue.IsConvertDateTimeMin)
-               {
-                   options.AddObjectConverter(new ScriptDateTimeConverter(engine));
-               }
-           });
+                if (optionsValue.IsConvertEnum)
+                {
+                    options.AddObjectConverter(ScriptEnumConverter.Instance);
+                }
+                if (optionsValue.IsConvertDateTimeMin)
+                {
+                    options.AddObjectConverter(dateTimeConverter);
+                }
+            });
+
+            if (optionsValue.IsConvertDateTimeMin)
+            {
+                dateTimeConverter.SetEngine(engine);
+            }
 
             foreach (var item in param)
             {
