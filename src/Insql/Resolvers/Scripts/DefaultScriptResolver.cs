@@ -66,7 +66,11 @@ namespace Insql.Resolvers.Scripts
 
                 if (optionsValue.IsConvertEnum)
                 {
-                    options.AddObjectConverter(DefaultScriptEnumConverter.Instance);
+                    options.AddObjectConverter(ScriptEnumConverter.Instance);
+                }
+                if (optionsValue.IsConvertDateTimeMinToNull)
+                {
+                    options.AddObjectConverter(ScriptDateTimeConverter.Instance);
                 }
             });
 
