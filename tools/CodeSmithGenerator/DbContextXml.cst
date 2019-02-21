@@ -26,7 +26,7 @@
     <%=tableSchema.Name%>
   -->
   <sql id="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>">
-    <%= string.Join(",",tableSchema.Columns.Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} as {QuoteOpen}{Helper.GetModelPropertyName(columnSchema)}{QuoteClose}")) %>
+    <%= string.Join(",",tableSchema.Columns.Select(columnSchema=>$"{QuoteOpen}{tableSchema.Name}{QuoteClose}.{QuoteOpen}{columnSchema.Name}{QuoteClose} as {QuoteOpen}{Helper.GetModelPropertyName(columnSchema)}{QuoteClose}")) %>
   </sql>
   
   <select id="Select<%=Helper.GetModelClassName(tableSchema)%>CountByPrimaryKey<%=SqlIdSuffix%>">
