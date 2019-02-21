@@ -1,4 +1,4 @@
-﻿# Insql documentation
+# Insql documentation
 ## table of Contents
 * **[MyBatis Sql Xml syntax](https://github.com/rainrcn/insql/blob/master/doc/doc.md#1mybatis-sql-xml-syntax)**
 * **[Multiple database support](https://github.com/rainrcn/insql/blob/master/doc/doc.md#2multi-database-support)**
@@ -7,7 +7,39 @@
 * **[Query Syntax](https://github.com/rainrcn/insql/blob/master/doc/doc.md#5-query-syntax)**
 * **[Other usage](https://github.com/rainrcn/insql/blob/master/doc/doc.md#6-other-usage)**
 
-### 1.MyBatis Sql Xml syntax
+## Multiple SQL configuration sources
+### Embedded file source is enabled by default
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=> 
+  {
+      //Embedded file source will be enabled by default, no manual Add is required, if you need to configure embedded parameters, you can set this
+      builder.AddEmbeddedXml(options=>
+      {
+         //options.Matches = "**/*.insql.xml"; //Glob file filter expression, default to `**/*.insql.xml`, can also be manually configured
+      });
+  });
+}
+```
+### Enable external profile source
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=> 
+  {
+      //External profile sources are not enabled by default, so you need to do this if you need to enable them.
+      builder.AddDirectoryXml(options=>
+      {
+         options.Directory = "D:\\Insqls"; //Set a directory to prevent configuration files. If not set, the default program runs the directory. File lookups are recursive and subfolders are also scanned.
+         //options.Matches = "**/*.insql.xml"; //Glob file filter expression, default to `**/*.insql.xml`, can also be manually configured
+      });
+  });
+}
+```
+_`AddEmbeddedXml` and `AddDirectoryXml` can be enabled at the same time, the latter will override the former SqlId_
+
+## 1.MyBatis Sql Xml syntax
 MyBatis 3 sql xml Similar configuration syntax, currently supports the following configuration sections and elements. Can view [MyBatis documentation](http://www.mybatis.org/mybatis-3/dynamic-sql.html)
 - sections
   - **sql** `[id]`
