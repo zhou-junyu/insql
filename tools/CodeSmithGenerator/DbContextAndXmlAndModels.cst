@@ -16,6 +16,7 @@
 <%@ Property Name="QuoteOpen" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
 <%@ Property Name="QuoteClose" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
 <%@ Property Name="SqlIdSuffix" Type="String" Category="DbContextXml" Optional="True" Description="DbContext Xml Sql Section Id Suffix" %>
+<%@ Property Name="SqlRefGenerate" Type="Boolean" Default="False" Category="DbContextXml" Optional="True" Description="Whether to generate sql configuration sections for other configuration sections include" %>
 
 <%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
 <%@ Property Name="ModelPrefix" Type="String" Category="Model" Optional="True" Description="Model Name Prefix" %>
@@ -65,9 +66,16 @@ dbcx.Tables = this.Tables;
 dbcx.QuoteOpen = this.QuoteOpen;
 dbcx.QuoteClose = this.QuoteClose;
 dbcx.SqlIdSuffix = this.SqlIdSuffix;
+dbcx.SqlRefGenerate = this.SqlRefGenerate;
+
 dbcx.DbContextAssembly = this.DbContextAssembly;
 dbcx.DbContextNamespace = this.DbContextNamespace;
 dbcx.DbContextName = this.DbContextName;
+
+dbcx.ModelNamespace = this.ModelNamespace;
+dbcx.ModelPrefix = this.ModelPrefix;
+dbcx.ModelSuffix = this.ModelSuffix;
+
 dbcx.OutputFile = dirGeneratedDbContext +"\\" + DbContextName + ".insql.xml";
 dbcx.Render(this.Response);
 

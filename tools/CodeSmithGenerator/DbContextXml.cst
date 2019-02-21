@@ -14,28 +14,41 @@
 <%@ Property Name="QuoteOpen" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
 <%@ Property Name="QuoteClose" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
 <%@ Property Name="SqlIdSuffix" Type="String" Category="DbContextXml" Optional="True" Description="DbContext Xml Sql Section Id Suffix" %>
+<%@ Property Name="SqlRefGenerate" Type="Boolean" Default="False" Category="DbContextXml" Optional="True" Description="Whether to generate sql configuration sections for other configuration sections include" %>
+
 <%@ Property Name="DbContextAssembly" Type="String" Category="DbContext" Description="DbContext Assembly" %>
 <%@ Property Name="DbContextNamespace" Type="String" Category="DbContext" Description="DbContext Namespace" %>
 <%@ Property Name="DbContextName" Type="String" Category="DbContext" Description="DbContext Name" %>
 
+<%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
+<%@ Property Name="ModelPrefix" Type="String" Category="Model" Optional="True" Description="Model Name Prefix" %>
+<%@ Property Name="ModelSuffix" Type="String" Category="Model" Optional="True" Description="Model Name Suffix" %>
+
 <?xml version="1.0" encoding="utf-8" ?>
 <insql type="<%=DbContextNamespace%>.<%=DbContextName %>,<%= DbContextAssembly%>">
 <% foreach (TableSchema tableSchema in this.Tables) { %>
-
   <!-- 
     <%=tableSchema.Name%>
   -->
+  <map type="<%=ModelNamespace%>.<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>,<%= DbContextAssembly%>">
+   <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+   <column name="<%=columnSchema.Name%>" to="<%=Helper.GetModelPropertyName(columnSchema)%>" />
+   <%} %>
+  </map>
+  
+  <%if(SqlRefGenerate) {%>
   <sql id="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>">
     <%= string.Join(",",tableSchema.Columns.Select(columnSchema=>$"{QuoteOpen}{tableSchema.Name}{QuoteClose}.{QuoteOpen}{columnSchema.Name}{QuoteClose} as {QuoteOpen}{Helper.GetModelPropertyName(columnSchema)}{QuoteClose}")) %>
   </sql>
   
+  <%} %>
   <select id="Select<%=Helper.GetModelClassName(tableSchema)%>CountByPrimaryKey<%=SqlIdSuffix%>">
     select count(*) from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </select>
   
   <select id="Select<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
-    select <include refid="<%=Helper.GetModelClassName(tableSchema)%>_Column_List<%=SqlIdSuffix%>" /> from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    select * from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </select>
   
