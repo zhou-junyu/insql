@@ -30,7 +30,10 @@ namespace Insql.Providers.DirectoryXml
                 throw new ArgumentNullException(nameof(optionsValue.Matches), $"{nameof(DirectoryDescriptorOptions)} `Matches` is null!");
             }
 
-            GlobMatcher globMatcher = new GlobMatcher(optionsValue.Matches);
+            GlobMatcher globMatcher = new GlobMatcher(optionsValue.Matches, new GlobMatcherOptions
+            {
+                AllowWindowsPaths = true
+            });
 
             var directory = optionsValue.Directory;
 
