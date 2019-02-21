@@ -163,6 +163,20 @@ _`xxx.insql.xml` needs to be modified to `userGender == 1`_
   and user_gender = @userGender
 </if>
 ```
+### DateTime.Min conversion
+_If there is a time type in the Model entity and no time value is set, the default is DateTime.Min, which will be reported when converted via JavaScript. Because the JavaScript Date minimum time is 1970.1.1, this conversion is enabled by default_
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=> 
+  {
+      builder.AddDefaultScriptResolver(options => 
+      {
+          options.IsConvertDateTimeMin = false; //The default is true, if you don't need to convert it can be set to false to close
+      });
+  });
+}
+```
 ## 4. Sql Resolve Filter for logging
 ### Creating and using filters
 _`OnResolving` is executed before the statement is parsed, and `OnResoved` is executed after parsing the statement._
