@@ -17,6 +17,7 @@ public void ConfigureServices(IServiceCollection services)
       //Embedded file source will be enabled by default, no manual Add is required, if you need to configure embedded parameters, you can set this
       builder.AddEmbeddedXml(options=>
       {
+         //options.Enabled = true; //Default is true
          //options.Matches = "**/*.insql.xml"; //Glob file filter expression, default to `**/*.insql.xml`, can also be manually configured
       });
   });
@@ -31,13 +32,14 @@ public void ConfigureServices(IServiceCollection services)
       //External profile sources are not enabled by default, so you need to do this if you need to enable them.
       builder.AddDirectoryXml(options=>
       {
-         options.Directory = "D:\\Insqls"; //Set a directory to prevent configuration files. If not set, the default program runs the directory. File lookups are recursive and subfolders are also scanned.
+         options.Directory = "D:\\Insqls"; //Set a directory to place the configuration file. If not set, the default is the program run directory. File lookups are recursive and subfolders are also scanned.
+         //options.Enabled = true; //Default is true
          //options.Matches = "**/*.insql.xml"; //Glob file filter expression, default to `**/*.insql.xml`, can also be manually configured
       });
   });
 }
 ```
-_`AddEmbeddedXml` and `AddDirectoryXml` can be enabled at the same time, the latter will override the former SqlId_
+_`AddEmbeddedXml` and `AddDirectoryXml` can be enabled at the same time, the latter will override the same SqlId of the former_
 
 ## 1.MyBatis Sql Xml syntax
 MyBatis 3 sql xml Similar configuration syntax, currently supports the following configuration sections and elements. Can view [MyBatis documentation](http://www.mybatis.org/mybatis-3/dynamic-sql.html)
