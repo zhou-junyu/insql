@@ -13,15 +13,8 @@ namespace Insql
 
         public ISqlResolver SqlResolver { get; set; }
 
-        public ResolveEnviron ResolveEnviron { get; }
-
         public int? CommandTimeout { get; set; }
 
         public bool IsConfigured { get; set; }
-
-        public DbContextOptions()
-        {
-            this.ResolveEnviron = ResolveEnviron.Create();
-        }
     }
 }
