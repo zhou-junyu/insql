@@ -165,7 +165,8 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 5. Query syntax
 ### SELECT IN Query
-#### Use each configuration element
+#### Use each configuration element (recommended)
+_This method is recommended. It is not excluded that Dapper will be deprecated in future versions and other object mapping mechanisms will be used, so try to use this method_
 ``` C#
 var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
 ```
