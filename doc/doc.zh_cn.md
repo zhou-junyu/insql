@@ -168,7 +168,8 @@ public void ConfigureServices(IServiceCollection services)
 
 ## 5.查询语法
 ### SELECT IN 查询
-#### 使用each配置元素
+#### 使用each配置元素（推荐）
+_推荐使用此方式，不排除在以后的版本会弃用Dapper而使用其他的对象映射机制，所以尽量使用此方式_
 ``` C#
 var sqlParam = new { userIdList = new string[] { 'Tom','Jerry' } };
 ```
