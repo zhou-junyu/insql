@@ -85,7 +85,7 @@
   <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
     update <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <set>
-    <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+    <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(columnSchema=> !columnSchema.IsPrimaryKeyMember)) { %>
      <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
     <%} %>
     </set>
@@ -96,7 +96,7 @@
   <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKeySelective<%=SqlIdSuffix%>">
     update <%=  $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <set>
-    <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+    <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(columnSchema=> !columnSchema.IsPrimaryKeyMember)) { %>
     <% if(Helper.IsNullableType(columnSchema)){ %>
       <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
         <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %> = @<%=Helper.GetModelPropertyName(columnSchema)%>,
