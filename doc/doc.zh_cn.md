@@ -8,7 +8,39 @@
 * **[查询语法](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#5%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%B3%95)**
 * **[其他用法](https://github.com/rainrcn/insql/blob/master/doc/doc.zh_cn.md#6%E5%85%B6%E4%BB%96%E7%94%A8%E6%B3%95)**
 
-### 1.MyBatis Sql Xml 语法
+## 多种SQL配置来源
+### 默认会启用嵌入式文件来源
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=> 
+  {
+      //嵌入式文件来源会默认启用，不需要手动Add，如果需要配置嵌入式参数，则可以这样设置
+      builder.AddEmbeddedXml(options=>
+      {
+         options.Matches = "**/*.insql.xml"; //glob文件筛选表达式，默认为 `**/*.insql.xml`，也可手动配置
+      });
+  });
+}
+```
+### 启用外部配置文件来源
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=> 
+  {
+      //外部配置文件来源不会默认启用，如果需要启用则需要这样设置，
+      builder.AddDirectoryXml(options=>
+      {
+         options.Directory = "D:\\Insqls"; //设置一个防止配置文件的目录，如果不设置，默认程序运行目录。文件查找是递归方式，子文件夹也会扫描。
+         options.Matches = "**/*.insql.xml"; //glob文件筛选表达式，默认为 `**/*.insql.xml`，也可手动配置
+      });
+  });
+}
+```
+_`AddEmbeddedXml`和`AddDirectoryXml`可以同时启用，后者会覆盖前者的SqlId_
+
+## 1.MyBatis Sql Xml 语法
 Mybatis 3 sql xml 类似的配置语法，目前支持以下配置节和元素。可以查看 [Mybatis文档](http://www.mybatis.org/mybatis-3/zh/dynamic-sql.html)
 - sections
     - **sql**
@@ -131,6 +163,20 @@ _`xxx.insql.xml`中需要修改为`userGender == 1`_
 <if test="userGender !=null and userGender == 1 ">
   and user_gender = @userGender
 </if>
+```
+### DateTime.Min转换为null
+_如果Model实体中有时间类型，并且没有设置过时间值，默认为DateTime.Min,在经过JavaScript转换时会报异常，因为JavaScript Date最小时间为1970.1.1所以默认会启用此转换_
+```c#
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=> 
+  {
+      builder.AddDefaultScriptResolver(options => 
+      {
+          options.IsConvertDateTimeMinToNull = false; //默认为 true, 如果不需要转换则可以设置为false关闭
+      });
+  });
+}
 ```
 ## 4.语句解析过滤器，实现日志记录
 ### 创建并使用过滤器
