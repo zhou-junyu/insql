@@ -8,7 +8,7 @@ namespace Insql.Resolvers.Scripts
         {
             options.IsConvertEnum = true;
             options.IsConvertOperator = true;
-            options.IsConvertDateTimeMinToNull = true;
+            options.IsConvertDateTimeMin = true;
         }
     }
 }

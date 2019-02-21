@@ -1,4 +1,5 @@
-﻿using Jint.Native;
+﻿using Jint;
+using Jint.Native;
 using Jint.Runtime.Interop;
 using System;
 
@@ -6,7 +7,14 @@ namespace Insql.Resolvers.Scripts
 {
     internal class ScriptDateTimeConverter : IObjectConverter
     {
-        public static ScriptDateTimeConverter Instance = new ScriptDateTimeConverter();
+        private static readonly DateTime Min = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        private readonly Engine engine;
+
+        public ScriptDateTimeConverter(Engine engine)
+        {
+            this.engine = engine;
+        }
 
         public bool TryConvert(object value, out JsValue result)
         {
@@ -19,14 +27,14 @@ namespace Insql.Resolvers.Scripts
             {
                 if (dateTimeValue == DateTime.MinValue)
                 {
-                    result = JsValue.Null; return true;
+                    result = JsValue.FromObject(this.engine, Min); return true;
                 }
             }
             if (value is DateTimeOffset dateTimeOffsetValue)
             {
                 if (dateTimeOffsetValue == DateTimeOffset.MinValue)
                 {
-                    result = JsValue.Null; return true;
+                    result = JsValue.FromObject(this.engine, Min); return true;
                 }
             }
 

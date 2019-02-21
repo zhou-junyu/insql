@@ -6,6 +6,6 @@
 
         public bool IsConvertOperator { get; set; }
 
-        public bool IsConvertDateTimeMinToNull { get; set; }
+        public bool IsConvertDateTimeMin { get; set; }
     }
 }

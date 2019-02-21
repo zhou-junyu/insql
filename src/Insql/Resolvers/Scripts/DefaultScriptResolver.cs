@@ -60,19 +60,21 @@ namespace Insql.Resolvers.Scripts
                 code = this.codeCaches.GetOrAdd(code, (key) => this.ReplaceOperator(code));
             }
 
-            var engine = new Engine(options =>
-            {
-                options.DebugMode(false);
+            Engine engine = null;
 
-                if (optionsValue.IsConvertEnum)
-                {
-                    options.AddObjectConverter(ScriptEnumConverter.Instance);
-                }
-                if (optionsValue.IsConvertDateTimeMinToNull)
-                {
-                    options.AddObjectConverter(ScriptDateTimeConverter.Instance);
-                }
-            });
+            engine = new Engine(options =>
+           {
+               options.DebugMode(false);
+
+               if (optionsValue.IsConvertEnum)
+               {
+                   options.AddObjectConverter(ScriptEnumConverter.Instance);
+               }
+               if (optionsValue.IsConvertDateTimeMin)
+               {
+                   options.AddObjectConverter(new ScriptDateTimeConverter(engine));
+               }
+           });
 
             foreach (var item in param)
             {
