@@ -1,6 +1,6 @@
 # Insql 说明文档
 
-## 介绍
+## 1. 介绍
 
 **Insql是一个轻量级的.NET ORM 类库。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
 
@@ -12,7 +12,7 @@ TA的宗旨：让你用起来感觉到自由、直观与舒爽。🚀
 
 QQ交流群：737771272
 
-## 安装
+## 2. 安装
 
 | Package                                                              | Nuget Stable                                                                                                                            | Downloads                                                                                                                                |
 | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -22,7 +22,7 @@ QQ交流群：737771272
 | [Insql.PostgreSql](https://www.nuget.org/packages/Insql.PostgreSql/) | [![Insql.PostgreSql](https://img.shields.io/nuget/v/Insql.PostgreSql.svg?style=flat)](https://www.nuget.org/packages/Insql.PostgreSql/) | [![Insql.PostgreSql](https://img.shields.io/nuget/dt/Insql.PostgreSql.svg?style=flat)](https://www.nuget.org/packages/Insql.PostgreSql/) |
 | [Insql.Sqlite](https://www.nuget.org/packages/Insql.Sqlite/)         | [![Insql.Sqlite](https://img.shields.io/nuget/v/Insql.Sqlite.svg?style=flat)](https://www.nuget.org/packages/Insql.Sqlite/)             | [![Insql.Sqlite](https://img.shields.io/nuget/dt/Insql.Sqlite.svg?style=flat)](https://www.nuget.org/packages/Insql.Sqlite/)             |
 
-## 特性
+## 3. 特性
 
 - **支持 DotNet Core 2.0+ & DotNet Framework 4.6.1+**
 - **支持依赖注入系统**
@@ -32,16 +32,16 @@ QQ交流群：737771272
 - **灵活扩展性**
 - **使用简单直观**
 
-## 使用
+## 4. 使用
 
-### 1. 使用 Insql
+### 4.1 使用 Insql
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
   services.AddInsql();  //会使用默认配置
 }
 ```
-### 2. 设置 Insql
+### 4.2 设置 Insql
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -69,8 +69,8 @@ public void ConfigureServices(IServiceCollection services)
 ```
 我们平常使用时，使用默认配置即可，可以无需理睬这些设置项。
 这些只是部分示例设置，其中的各个设置参数会在以后或者其他章节进行说明。
-### 示例代码
-#### 1. 只使用语句加载与解析功能示例
+### 4.3 示例代码
+#### 4.3.1 只使用语句加载与解析功能示例
 `User.insql.xml`
 ```xml
 <insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
@@ -123,7 +123,7 @@ public class UserService : IUserService
 
 ***注意：在默认的设置下User.insql.xml文件需要右键属性选择`嵌入式程序集方式`类型才能被找到***
 
-#### 2. 基本用法示例
+#### 4.3.2 基本用法示例
 `UserDbContext.insql.xml`
 ```xml
 <insql type="Insql.Tests.Domain.Contexts.UserDbContext,Insql.Tests" >
@@ -193,7 +193,7 @@ public void ConfigureServices(IServiceCollection services)
 ```
 这就是完整的使用流程，例子是使用领域驱动模型方式，自己使用时可以看情况而定。例如可以在Controller中注入UserDbContext使用，而不需要UserService。
 
-## 配置语法
+## 5. 配置语法
 **xxx.insql.xml** 中的配置语法类似于Mybatis的配置语法，目前支持以下配置节：
 - **map**
   - **key**
@@ -211,7 +211,7 @@ public void ConfigureServices(IServiceCollection services)
 - **update** = **sql**
 - **delete** = **sql**
 
-### map
+### 5.1 map
 `map`配置节用于数据库表字段到对象属性的映射，这样只要通过`DbContext.Query<UserInfo>`查询的都将使用此映射
 ```xml
 <map type="Insql.Tests.Domain.Models.UserInfo,Insql.Tests">
@@ -229,8 +229,10 @@ public void ConfigureServices(IServiceCollection services)
 |          | `name` | 表列名     |            |
 |          | `to`   | 对象属性名 |            |
 
-### sql
+### 5.2 sql
+
 `sql`配置节用于配置数据库执行语句。`select`,`insert`,`update`,`delete`与`sql`具有相同功能，只是`sql`配置节的别名。
+
 ```xml
 <sql id="userColumns">
   user_id as UserId,user_name as UserName,user_gender as UserGender
@@ -343,7 +345,7 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
 
 _小提示：在select in list上也可以使用Dapper自带的参数列表转换功能_
 
-## 动态脚本
+## 6. 动态脚本
 动态脚本语法为JAVASCRIPT。支持ECMAScript 6的常用对象属性。
 ```xml
 <if test="userGender !=null and userGender == 'W' ">
@@ -351,7 +353,7 @@ _小提示：在select in list上也可以使用Dapper自带的参数列表转�
 </if>
 ```
 `userGender !=null and userGender == 'W'`部分为动态脚本。
-### 操作符转换
+### 6.1 操作符转换
 因为`&`,`<`这些在XML中有特殊意义，所以支持将在动态脚本中这些符号转换。目前支持下列符号转换：
 | 转换前 | 转换后 |
 | ------ | ------ |
@@ -366,9 +368,9 @@ _小提示：在select in list上也可以使用Dapper自带的参数列表转�
 
 _操作符转换功能可以被禁用，也可以排除其中部分操作符的转换_
 
-### 枚举转换为字符串
+### 6.2 枚举转换为字符串
 `userGender == 'W'` `userGender`属性为枚举类型，在动态脚本中会默认转换为字符换格式。可以禁用此转换功能，禁用后枚举会被转换为`number`类型。
-### 设置动态脚本
+### 6.3 设置动态脚本
 ```C#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -387,8 +389,8 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-## 多配置来源
-### 嵌入程序集文件方式来源
+## 7. 多配置来源
+### 7.1 嵌入程序集文件方式来源
 ![file](embedded_file.zh_cn.png)
 
 **设置来源参数：**
@@ -407,7 +409,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 外部文件目录方式来源
+### 7.2 外部文件目录方式来源
 ```C#
 public void ConfigureServices(IServiceCollection services)
 {
@@ -422,11 +424,11 @@ public void ConfigureServices(IServiceCollection services)
     });
 }
 ```
-### 多配置来源合并功能
+### 7.3 多配置来源合并功能
 `EmbeddedXml`和`ExternalXml`方式可以同时启用，对于insql type相同的文件，后者会覆盖前者sqlId相同的语句配置，以及map type相同的映射配置。
 
-## 扩展功能
-### 语句解析过滤器
+## 8. 扩展功能
+### 8.1 语句解析过滤器
 创建一个语句解析后的日志记录过滤器
 ```C#
 public class LogResolveFilter : ISqlResolveFilter
@@ -460,7 +462,7 @@ public void ConfigureServices(IServiceCollection services)
   });
 }
 ```
-### 语句配置描述提供器
+### 8.2 语句配置描述提供器
 ```C#
 public interface IInsqlDescriptorProvider
 {
@@ -468,8 +470,8 @@ public interface IInsqlDescriptorProvider
 }
 ```
 实现上面的接口即可实现，具体实现细节可以参考`EmbeddedXml`或`ExternalXml`部分的源码。详细实现细节以后会写文档说明。
-## 工具
-### 代码生成器
+## 9. 工具
+### 9.1 代码生成器
 在源码的`tools`目录下包含CodeSmith的生成器文件，安装CodeSmith后直接运行这些文件就可。
 
 ![code_generator](code_generator.zh_cn.png)
@@ -634,10 +636,10 @@ public class TestDbContext : DbContext
 </insql>
 ```
 
-## 体会
-### 自己这些年在数据访问上的感受
+## 10. 体会
+### 10.1 自己这些年在数据访问上的感受
 在数据访问工具上其实自己一直想要一个性能强，操作能直达数据库，没有中间缓存，使用简洁并且使用方式一致（例如某些类库即需要写Linq又需要写Sql，混乱而且坑多，用起来会很心累），灵活并且能充分利用各种数据库的特性，对于一个ORM来说想要满足这些其实很不容易。我走过了从写SQL用Linq的这些路，而我现在又回到了开始，但是这一次回来体会却不同，因为工具变成了我想要的Insql，也许TA还有很多不足，但我会尽力完美TA。其实写SQL没有那么可怕，恰恰这是访问数据库最亲近的表达。
 
-## 更新
+## 11. 更新
 
-## 计划
+## 12. 计划
