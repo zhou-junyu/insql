@@ -2,7 +2,7 @@
 
 namespace Insql.Providers.DirectoryXml
 {
-    public class DirectoryDescriptorOptionsSetup : IConfigureOptions<DirectoryDescriptorOptions>
+    internal class DirectoryDescriptorOptionsSetup : IConfigureOptions<DirectoryDescriptorOptions>
     {
         public void Configure(DirectoryDescriptorOptions options)
         {

@@ -1,4 +1,5 @@
 ﻿using Insql;
+using Insql.Mappers;
 using Insql.Providers;
 using Insql.Providers.EmbeddedXml;
 using Insql.Resolvers;
@@ -35,6 +36,9 @@ namespace Microsoft.Extensions.DependencyInjection
             //descriptor provider
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, EmbeddedDescriptorProvider>());
             services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<EmbeddedDescriptorOptions>, EmbeddedDescriptorOptionsSetup>());
+
+            //descriptor mapper
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, DapperDescriptorMapper>());
 
             return services;
         }

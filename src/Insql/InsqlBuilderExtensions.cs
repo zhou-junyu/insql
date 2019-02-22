@@ -1,4 +1,5 @@
-﻿using Insql.Providers;
+﻿using Insql.Mappers;
+using Insql.Providers;
 using Insql.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -48,5 +49,20 @@ namespace Insql
 
             return builder;
         }
+
+        public static IInsqlBuilder AddDescriptorMapper(this IInsqlBuilder builder, IInsqlDescriptorMapper mapper)
+        {
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton(mapper));
+
+            return builder;
+        }
+
+        public static IInsqlBuilder AddDescriptorMapper<T>(this IInsqlBuilder builder) where T : class, IInsqlDescriptorMapper
+        {
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, T>());
+
+            return builder;
+        }
+
     }
 }

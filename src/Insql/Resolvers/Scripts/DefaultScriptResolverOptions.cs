@@ -7,5 +7,7 @@
         public bool IsConvertOperator { get; set; }
 
         public bool IsConvertDateTimeMin { get; set; }
+
+        public string[] ExcludeOperators { get; set; }
     }
 }

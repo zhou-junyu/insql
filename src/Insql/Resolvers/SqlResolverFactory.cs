@@ -1,4 +1,4 @@
-﻿using Dapper;
+﻿using Insql.Mappers;
 using Insql.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -6,10 +6,11 @@ using System.Collections.Generic;
 
 namespace Insql.Resolvers
 {
-    public class SqlResolverFactory : ISqlResolverFactory
+    internal class SqlResolverFactory : ISqlResolverFactory
     {
         private readonly IServiceProvider serviceProvider;
         private readonly ISqlResolveMatcher resolveMatcher;
+        private readonly IInsqlDescriptorMapper descriptorMapper;
         private readonly IEnumerable<ISqlResolveFilter> resolveFilters;
         private readonly IEnumerable<IInsqlDescriptorProvider> descriptorProviders;
 
@@ -20,11 +21,13 @@ namespace Insql.Resolvers
             this.serviceProvider = serviceProvider;
 
             this.resolveMatcher = serviceProvider.GetRequiredService<ISqlResolveMatcher>();
+            this.descriptorMapper = serviceProvider.GetRequiredService<IInsqlDescriptorMapper>();
             this.resolveFilters = serviceProvider.GetServices<ISqlResolveFilter>();
             this.descriptorProviders = serviceProvider.GetServices<IInsqlDescriptorProvider>();
 
             this.LoadInsqlDescriptors();
-            this.RegisterTypeMaps();
+
+            this.descriptorMapper.Mapping(this.insqlDescriptors.Values);
         }
 
         public ISqlResolver GetResolver(Type type)
@@ -60,17 +63,6 @@ namespace Insql.Resolvers
                     {
                         this.insqlDescriptors.Add(descriptor.Type, descriptor);
                     }
-                }
-            }
-        }
-
-        private void RegisterTypeMaps()
-        {
-            foreach (var descriptor in this.insqlDescriptors.Values)
-            {
-                foreach (var map in descriptor.Maps.Values)
-                {
-                    SqlMapper.SetTypeMap(map.Type, new DapperTypeMap(map));
                 }
             }
         }

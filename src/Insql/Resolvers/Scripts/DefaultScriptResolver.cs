@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Insql.Resolvers.Scripts
 {
-    public class DefaultScriptResolver : IInsqlScriptResolver
+    internal class DefaultScriptResolver : IInsqlScriptResolver
     {
         private readonly Regex excludeRegex;
         private readonly Regex operatorRegex;
@@ -25,49 +25,12 @@ namespace Insql.Resolvers.Scripts
 
             this.codeCaches = new ConcurrentDictionary<string, string>();
 
-            this.operatorMappings = new Dictionary<string, string>
-            {
-                { "and","&&" },
-                { "or","||" },
-                { "gt",">" },
-                { "gte",">=" },
-                { "lt","<" },
-                { "lte","<=" },
-                { "eq","==" },
-                { "neq","!=" },
-            };
+            this.operatorMappings = this.CreateOperatorMappings();
 
             this.excludeRegex = new Regex("(['\"]).*?[^\\\\]\\1");
             this.operatorRegex = new Regex($"\\s+({string.Join("|", this.operatorMappings.Keys)})\\s+");
 
-            this.localEngine = new ThreadLocal<Engine>(() =>
-            {
-                var optionsValue = this.options.Value;
-
-                var dateTimeConverter = optionsValue.IsConvertDateTimeMin ? new ScriptDateTimeConverter() : null;
-
-                var engine = new Engine(engineOptions =>
-                {
-                    engineOptions.DebugMode(false);
-                    engineOptions.AllowDebuggerStatement(false);
-
-                    if (optionsValue.IsConvertEnum)
-                    {
-                        engineOptions.AddObjectConverter(ScriptEnumConverter.Instance);
-                    }
-                    if (optionsValue.IsConvertDateTimeMin)
-                    {
-                        engineOptions.AddObjectConverter(dateTimeConverter);
-                    }
-                });
-
-                if (optionsValue.IsConvertDateTimeMin)
-                {
-                    dateTimeConverter.SetEngine(engine);
-                }
-
-                return engine;
-            });
+            this.localEngine = new ThreadLocal<Engine>(this.CreateEngine);
         }
 
         public void Dispose()
@@ -90,7 +53,7 @@ namespace Insql.Resolvers.Scripts
 
             if (optionsValue.IsConvertOperator)
             {
-                code = this.codeCaches.GetOrAdd(code, (key) => this.ReplaceOperator(code));
+                code = this.codeCaches.GetOrAdd(code, (key) => this.ConvertOperator(code));
             }
 
             var engine = localEngine.Value;
@@ -119,7 +82,66 @@ namespace Insql.Resolvers.Scripts
             return Convert.ChangeType(result, type);
         }
 
-        private string ReplaceOperator(string code)
+        private Engine CreateEngine()
+        {
+            var optionsValue = this.options.Value;
+
+            var dateTimeConverter = optionsValue.IsConvertDateTimeMin ? new ScriptDateTimeConverter() : null;
+
+            var engine = new Engine(engineOptions =>
+            {
+                engineOptions.DebugMode(false);
+                engineOptions.AllowDebuggerStatement(false);
+
+                if (optionsValue.IsConvertEnum)
+                {
+                    engineOptions.AddObjectConverter(ScriptEnumConverter.Instance);
+                }
+                if (optionsValue.IsConvertDateTimeMin)
+                {
+                    engineOptions.AddObjectConverter(dateTimeConverter);
+                }
+            });
+
+            if (optionsValue.IsConvertDateTimeMin)
+            {
+                dateTimeConverter.SetEngine(engine);
+            }
+
+            return engine;
+        }
+
+        private Dictionary<string, string> CreateOperatorMappings()
+        {
+            var optionsValue = this.options.Value;
+
+            var operatorMappings = new Dictionary<string, string>
+            {
+                { "and","&&" },
+                { "or","||" },
+                { "gt",">" },
+                { "gte",">=" },
+                { "lt","<" },
+                { "lte","<=" },
+                { "eq","==" },
+                { "neq","!=" },
+            };
+
+            if (optionsValue.ExcludeOperators != null && optionsValue.ExcludeOperators.Length > 0)
+            {
+                foreach (var item in optionsValue.ExcludeOperators)
+                {
+                    if (operatorMappings.ContainsKey(item))
+                    {
+                        operatorMappings.Remove(item);
+                    }
+                }
+            }
+
+            return operatorMappings;
+        }
+
+        private string ConvertOperator(string code)
         {
             var excludeMatchs = excludeRegex.Matches(code);
 

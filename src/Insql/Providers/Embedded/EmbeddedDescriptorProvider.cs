@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Insql.Providers.EmbeddedXml
 {
-    public class EmbeddedDescriptorProvider : IInsqlDescriptorProvider
+    internal class EmbeddedDescriptorProvider : IInsqlDescriptorProvider
     {
         private readonly IOptions<EmbeddedDescriptorOptions> options;
 

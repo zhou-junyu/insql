@@ -1,6 +1,5 @@
 using Insql.Resolvers.Scripts;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -16,98 +15,125 @@ namespace Insql.Tests
         [Fact]
         public void Basic()
         {
-            var resolver = new DefaultScriptResolver(Options.Create(new DefaultScriptResolverOptions
-            {
-                IsConvertEnum = true,
-                IsConvertOperator = true
-            }));
+            var serviceCollection = new ServiceCollection();
 
-            var result = (bool)resolver.Resolve( TypeCode.Boolean, " userId != null ", new Dictionary<string, object>
+           serviceCollection.AddInsql(builder =>
             {
-                { "userId","aa" }
             });
 
-            Assert.True(result);
-
-            result = (bool)resolver.Resolve(TypeCode.Boolean, " userId == null ", new Dictionary<string, object>
+            using (var serviceProvider =serviceCollection.BuildServiceProvider())
             {
-                { "userId",null }
-            });
+                using (var scopeProvider = serviceProvider.CreateScope())
+                {
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
 
-            Assert.True(result);
+                    var result = (bool)resolver.Resolve(TypeCode.Boolean, " userId != null ", new Dictionary<string, object>
+                    {
+                        { "userId","aa" }
+                    });
 
-            result = (bool)resolver.Resolve(TypeCode.Boolean, " userId == null ", new Dictionary<string, object>
-            {
-                { "userId","" }
-            });
+                    Assert.True(result);
 
-            Assert.False(result);
+                    result = (bool)resolver.Resolve(TypeCode.Boolean, " userId == null ", new Dictionary<string, object>
+                    {
+                        { "userId",null }
+                    });
+
+                    Assert.True(result);
+
+                    result = (bool)resolver.Resolve(TypeCode.Boolean, " userId == null ", new Dictionary<string, object>
+                    {
+                        { "userId","" }
+                    });
+
+                    Assert.False(result);
+                }
+            }
         }
 
         [Fact]
         public void ReplaceOperator()
         {
-            var resolver = new DefaultScriptResolver(Options.Create(new DefaultScriptResolverOptions
-            {
-                IsConvertEnum = true,
-                IsConvertOperator = true
-            }));
+            var serviceCollection = new ServiceCollection();
 
-            var code = " userId != null and userId == 'aa' ";
-
-            var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+           serviceCollection.AddInsql(builder =>
             {
-                { "userId","aa" }
             });
 
-            Assert.True(result);
-
-            code = " userId == null or userId != 'aa' or userId == \" \\\" ' and sdfsssdf '\" or userId gte \" s or ' s \" or userId eq 'aa' ";
-
-            result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+            using (var serviceProvider =serviceCollection.BuildServiceProvider())
             {
-                { "userId","aa" }
-            });
+                using (var scopeProvider = serviceProvider.CreateScope())
+                {
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
 
-            Assert.True(result);
+                    var code = " userId != null and userId == 'aa' ";
 
-            code = " userId != null and userId eq '\"' ";
+                    var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId","aa" }
+                    });
 
-            result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
-            {
-                { "userId","\"" }
-            });
+                    Assert.True(result);
 
-            Assert.True(result);
+                    code = " userId == null or userId != 'aa' or userId == \" \\\" ' and sdfsssdf '\" or userId gte \" s or ' s \" or userId eq 'aa' ";
 
-            code = " userId != null and userId == '\\\'' ";
+                    result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId","aa" }
+                    });
 
-            result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
-            {
-                { "userId","'" }
-            });
+                    Assert.True(result);
 
-            Assert.True(result);
+                    code = " userId != null and userId eq '\"' ";
+
+                    result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId","\"" }
+                    });
+
+                    Assert.True(result);
+
+                    code = " userId != null and userId == '\\\'' ";
+
+                    result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId","'" }
+                    });
+
+                    Assert.True(result);
+                }
+            }
         }
-
 
         [Fact]
         public void NotReplaceOperator()
         {
-            var resolver = new DefaultScriptResolver(Options.Create(new DefaultScriptResolverOptions
-            {
-                IsConvertOperator = false,
-                IsConvertEnum = true,
-            }));
+            var serviceCollection = new ServiceCollection();
 
-            var code = @"var and = 'aa'; userId == and ";
-
-            var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+           serviceCollection.AddInsql(builder =>
             {
-                { "userId","aa" }
+                builder.AddDefaultScriptResolver(options=> 
+                {
+                    options.IsConvertOperator = false;
+                });
             });
 
-            Assert.True(result);
+            using (var serviceProvider =serviceCollection.BuildServiceProvider())
+            {
+                using (var scopeProvider = serviceProvider.CreateScope())
+                {
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+
+                    var code = @"var and = 'aa'; userId == and ";
+
+                    var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId","aa" }
+                    });
+
+                    Assert.True(result);
+                }
+            }
         }
     }
 }

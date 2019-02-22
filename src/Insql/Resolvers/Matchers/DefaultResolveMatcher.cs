@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Insql.Resolvers.Matchers
 {
-    public class DefaultResolveMatcher : ISqlResolveMatcher
+    internal class DefaultResolveMatcher : ISqlResolveMatcher
     {
         private readonly IOptions<DefaultResolveMatcherOptions> options;
 

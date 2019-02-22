@@ -2,7 +2,7 @@
 
 namespace Insql.Providers.EmbeddedXml
 {
-    public class EmbeddedDescriptorOptionsSetup : IConfigureOptions<EmbeddedDescriptorOptions>
+    internal class EmbeddedDescriptorOptionsSetup : IConfigureOptions<EmbeddedDescriptorOptions>
     {
         public void Configure(EmbeddedDescriptorOptions options)
         {

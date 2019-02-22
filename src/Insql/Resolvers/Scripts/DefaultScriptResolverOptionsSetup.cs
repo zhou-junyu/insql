@@ -2,7 +2,7 @@
 
 namespace Insql.Resolvers.Scripts
 {
-    public class DefaultScriptResolverOptionsSetup : IConfigureOptions<DefaultScriptResolverOptions>
+    internal class DefaultScriptResolverOptionsSetup : IConfigureOptions<DefaultScriptResolverOptions>
     {
         public void Configure(DefaultScriptResolverOptions options)
         {

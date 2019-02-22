@@ -2,7 +2,7 @@
 
 namespace Insql.Resolvers.Matchers
 {
-    public class DefaultResolveMatcherOptionsSetup : IConfigureOptions<DefaultResolveMatcherOptions>
+    internal class DefaultResolveMatcherOptionsSetup : IConfigureOptions<DefaultResolveMatcherOptions>
     {
         public void Configure(DefaultResolveMatcherOptions options)
         {

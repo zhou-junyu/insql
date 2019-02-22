@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Insql.Resolvers
 {
-    public class SqlResolver<T> : ISqlResolver<T> where T : class
+    internal class SqlResolver<T> : ISqlResolver<T> where T : class
     {
         private readonly ISqlResolver resolver;
 

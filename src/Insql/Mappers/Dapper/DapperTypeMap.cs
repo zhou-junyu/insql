@@ -1,8 +1,9 @@
 ﻿using Dapper;
+using Insql.Resolvers;
 using System;
 using System.Reflection;
 
-namespace Insql.Resolvers
+namespace Insql.Mappers
 {
     internal class DapperTypeMap : SqlMapper.ITypeMap
     {

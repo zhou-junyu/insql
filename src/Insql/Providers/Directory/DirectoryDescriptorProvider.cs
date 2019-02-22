@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Insql.Providers.DirectoryXml
 {
-    public class DirectoryDescriptorProvider : IInsqlDescriptorProvider
+    internal class DirectoryDescriptorProvider : IInsqlDescriptorProvider
     {
         private readonly IOptions<DirectoryDescriptorOptions> options;
 
