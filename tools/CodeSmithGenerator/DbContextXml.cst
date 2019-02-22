@@ -45,12 +45,12 @@
   </sql>
   
   <%} %>
-  <select id="Select<%=Helper.GetModelClassName(tableSchema)%>CountByPrimaryKey<%=SqlIdSuffix%>">
+  <select id="Select<%=Helper.GetModelClassName(tableSchema)%>CountByKey<%=SqlIdSuffix%>">
     select count(*) from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </select>
   
-  <select id="Select<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
+  <select id="Select<%=Helper.GetModelClassName(tableSchema)%>ByKey<%=SqlIdSuffix%>">
     select * from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </select>
@@ -85,7 +85,7 @@
     </trim>
   </insert>
   
-  <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
+  <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByKey<%=SqlIdSuffix%>">
     update <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <set>
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(columnSchema=> !columnSchema.IsPrimaryKeyMember)) { %>
@@ -96,7 +96,7 @@
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </update>
   
-  <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKeySelective<%=SqlIdSuffix%>">
+  <update id="Update<%=Helper.GetModelClassName(tableSchema)%>SelectiveByKey<%=SqlIdSuffix%>">
     update <%=  $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <set>
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(columnSchema=> !columnSchema.IsPrimaryKeyMember)) { %>
@@ -113,7 +113,7 @@
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </update>
   
-  <delete id="Delete<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey<%=SqlIdSuffix%>">
+  <delete id="Delete<%=Helper.GetModelClassName(tableSchema)%>ByKey<%=SqlIdSuffix%>">
     delete from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </delete>
