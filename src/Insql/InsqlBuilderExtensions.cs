@@ -52,14 +52,18 @@ namespace Insql
 
         public static IInsqlBuilder AddDescriptorMapper(this IInsqlBuilder builder, IInsqlDescriptorMapper mapper)
         {
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton(mapper));
+            builder.Services.RemoveAll<IInsqlDescriptorMapper>();
+
+            builder.Services.AddSingleton<IInsqlDescriptorMapper>(mapper);
 
             return builder;
         }
 
         public static IInsqlBuilder AddDescriptorMapper<T>(this IInsqlBuilder builder) where T : class, IInsqlDescriptorMapper
         {
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, T>());
+            builder.Services.RemoveAll<IInsqlDescriptorMapper>();
+
+            builder.Services.AddSingleton<IInsqlDescriptorMapper, T>();
 
             return builder;
         }

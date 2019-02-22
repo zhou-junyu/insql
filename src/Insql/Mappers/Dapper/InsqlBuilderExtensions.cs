@@ -8,7 +8,7 @@ namespace Insql
     {
         public static IInsqlBuilder AddDefaultDescriptorMapper(this IInsqlBuilder builder)
         {
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, DapperDescriptorMapper>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, DapperDescriptorMapper>());
 
             return builder;
         }

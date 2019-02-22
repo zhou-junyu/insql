@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<EmbeddedDescriptorOptions>, EmbeddedDescriptorOptionsSetup>());
 
             //descriptor mapper
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, DapperDescriptorMapper>());
+            services.TryAdd(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, DapperDescriptorMapper>());
 
             return services;
         }
