@@ -39,7 +39,7 @@ namespace <%=DbContextNamespace%>
         public int Select<%=Helper.GetModelClassName(tableSchema)%>CountByKey(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=> $"{Helper.GetModelPropertyType(columnSchema)} {Helper.GetModelPropertyName(columnSchema)}")) %>)
         {
-            return this.Query<<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>>(nameof(Select<%=Helper.GetModelClassName(tableSchema)%>CountByPrimaryKey),new 
+            return this.Query<<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>>(nameof(Select<%=Helper.GetModelClassName(tableSchema)%>CountByKey),new 
             {
               <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{Helper.GetModelPropertyName(columnSchema)}")) %>
@@ -49,7 +49,7 @@ namespace <%=DbContextNamespace%>
         public <%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%> Select<%=Helper.GetModelClassName(tableSchema)%>ByKey(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{Helper.GetModelPropertyType(columnSchema)} {Helper.GetModelPropertyName(columnSchema)}")) %>)
         {
-            return this.Query<<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>>(nameof(Select<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey),new 
+            return this.Query<<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>>(nameof(Select<%=Helper.GetModelClassName(tableSchema)%>ByKey),new 
             {
               <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{Helper.GetModelPropertyName(columnSchema)}")) %>
@@ -68,18 +68,18 @@ namespace <%=DbContextNamespace%>
         
         public void Update<%=Helper.GetModelClassName(tableSchema)%>ByKey(<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%> info)
         {
-            this.Execute(nameof(Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey),info);
+            this.Execute(nameof(Update<%=Helper.GetModelClassName(tableSchema)%>ByKey),info);
         }
         
         public void Update<%=Helper.GetModelClassName(tableSchema)%>SelectiveByKey(<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%> info)
         {
-            this.Execute(nameof(Update<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKeySelective),info);
+            this.Execute(nameof(Update<%=Helper.GetModelClassName(tableSchema)%>SelectiveByKey),info);
         }
         
         public void Delete<%=Helper.GetModelClassName(tableSchema)%>ByKey(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=> $"{Helper.GetModelPropertyType(columnSchema)} {Helper.GetModelPropertyName(columnSchema)}")) %>)
         {
-            this.Execute(nameof(Delete<%=Helper.GetModelClassName(tableSchema)%>ByPrimaryKey),new 
+            this.Execute(nameof(Delete<%=Helper.GetModelClassName(tableSchema)%>ByKey),new 
             {
               <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{Helper.GetModelPropertyName(columnSchema)}")) %>
