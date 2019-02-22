@@ -191,6 +191,7 @@ namespace Insql.Tests
 
                 Assert.True(selectUserInfo.MUserId == userInfo.UserId);
                 Assert.True(selectUserInfo.MUserName == userInfo.UserName);
+                Assert.True(selectUserInfo.user_gender == null);
             }
         }
     }

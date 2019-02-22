@@ -4,7 +4,7 @@
   <map type="Insql.Tests.Domain.Models.MapUserInfo,Insql.Tests">
     <column name="user_id" to="MUserId" />
     <column name="user_name" to="MUserName" />
-    <column name="user_gender" to="MUserGender" />
+    <!--<column name="user_gender" to="MUserGender" />-->
   </map>
 
   <select id="GetMapUser">

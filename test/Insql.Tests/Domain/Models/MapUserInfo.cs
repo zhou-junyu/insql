@@ -6,6 +6,6 @@
 
         public string MUserName { get; set; }
 
-        public UserGender? MUserGender { get; set; }
+        public UserGender? user_gender { get; set; }
     }
 }
