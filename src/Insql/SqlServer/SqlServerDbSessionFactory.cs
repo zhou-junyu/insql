@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace Insql.SqlServer
 {
-    public class SqlServerDbSessionFactory : IDbSessionFactory
+    internal class SqlServerDbSessionFactory : IDbSessionFactory
     {
         private readonly DbContextOptions contextOptions;
         private readonly IDbConnection dbConnection;
