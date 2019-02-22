@@ -272,6 +272,13 @@ namespace Insql.Providers
 
                     switch (xelement.Name.LocalName)
                     {
+                        case "key":
+                            {
+                                return new KeyMapSectionElement(
+                                    xelement.Attribute(XName.Get("name", ""))?.Value,
+                                    xelement.Attribute(XName.Get("to", ""))?.Value
+                                );
+                            }
                         case "column":
                             {
                                 return new ColumnMapSectionElement(
