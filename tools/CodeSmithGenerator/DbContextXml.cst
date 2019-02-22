@@ -31,7 +31,10 @@
     <%=tableSchema.Name%>
   -->
   <map type="<%=ModelNamespace%>.<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>,<%= DbContextAssembly%>">
-   <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
+   <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(c=> c.IsPrimaryKeyMember)) { %>
+   <key name="<%=columnSchema.Name%>" to="<%=Helper.GetModelPropertyName(columnSchema)%>" />
+   <%} %>
+   <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(c=> !c.IsPrimaryKeyMember)) { %>
    <column name="<%=columnSchema.Name%>" to="<%=Helper.GetModelPropertyName(columnSchema)%>" />
    <%} %>
   </map>
