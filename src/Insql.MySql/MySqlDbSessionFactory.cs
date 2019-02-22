@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Insql.MySql
 {
-    public class MySqlDbSessionFactory : IDbSessionFactory
+    internal class MySqlDbSessionFactory : IDbSessionFactory
     {
         private readonly DbContextOptions contextOptions;
         private readonly IDbConnection dbConnection;

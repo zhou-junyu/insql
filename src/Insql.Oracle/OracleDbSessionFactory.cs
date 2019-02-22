@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Insql.Oracle
 {
-    public class OracleDbSessionFactory : IDbSessionFactory
+    internal class OracleDbSessionFactory : IDbSessionFactory
     {
         private readonly DbContextOptions contextOptions;
         private readonly IDbConnection dbConnection;

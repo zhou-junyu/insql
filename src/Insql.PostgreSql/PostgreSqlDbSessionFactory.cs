@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Insql.PostgreSql
 {
-    public class PostgreSqlDbSessionFactory : IDbSessionFactory
+    internal class PostgreSqlDbSessionFactory : IDbSessionFactory
     {
         private readonly DbContextOptions contextOptions;
         private readonly IDbConnection dbConnection;

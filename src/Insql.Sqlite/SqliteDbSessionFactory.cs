@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Insql.Sqlite
 {
-    public class SqliteDbSessionFactory : IDbSessionFactory
+    internal class SqliteDbSessionFactory : IDbSessionFactory
     {
         private readonly DbContextOptions contextOptions;
         private readonly IDbConnection dbConnection;
