@@ -2,7 +2,7 @@
 <insql type="Insql.Tests.Domain.Contexts.UserDbContext,Insql.Tests" >
 
   <map type="Insql.Tests.Domain.Models.MapUserInfo,Insql.Tests">
-    <column name="user_id" to="MUserId" />
+    <key name="user_id" to="MUserId" />
     <column name="user_name" to="MUserName" />
     <!--<column name="user_gender" to="MUserGender" />-->
   </map>
