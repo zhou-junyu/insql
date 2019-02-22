@@ -9,22 +9,22 @@ namespace Insql
 {
     public static partial class InsqlBuilderExtensions
     {
-        public static IInsqlBuilder AddDirectoryXml(this IInsqlBuilder builder)
+        public static IInsqlBuilder AddExternalXml(this IInsqlBuilder builder)
         {
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, DirectoryDescriptorProvider>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DirectoryDescriptorOptions>, DirectoryDescriptorOptionsSetup>());
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, ExternalDescriptorProvider>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ExternalDescriptorOptions>, ExternalDescriptorOptionsSetup>());
 
             return builder;
         }
 
-        public static IInsqlBuilder AddDirectoryXml(this IInsqlBuilder builder, Action<DirectoryDescriptorOptions> configure)
+        public static IInsqlBuilder AddExternalXml(this IInsqlBuilder builder, Action<ExternalDescriptorOptions> configure)
         {
             if (configure == null)
             {
                 throw new ArgumentNullException(nameof(configure));
             }
 
-            builder.AddDirectoryXml();
+            builder.AddExternalXml();
 
             builder.Services.Configure(configure);
 

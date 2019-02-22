@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Insql.Providers.DirectoryXml
 {
-    internal class DirectoryDescriptorProvider : IInsqlDescriptorProvider
+    internal class ExternalDescriptorProvider : IInsqlDescriptorProvider
     {
-        private readonly IOptions<DirectoryDescriptorOptions> options;
+        private readonly IOptions<ExternalDescriptorOptions> options;
 
-        public DirectoryDescriptorProvider(IOptions<DirectoryDescriptorOptions> options)
+        public ExternalDescriptorProvider(IOptions<ExternalDescriptorOptions> options)
         {
             this.options = options;
         }
@@ -27,7 +27,7 @@ namespace Insql.Providers.DirectoryXml
 
             if (string.IsNullOrWhiteSpace(optionsValue.Matches))
             {
-                throw new ArgumentNullException(nameof(optionsValue.Matches), $"{nameof(DirectoryDescriptorOptions)} `Matches` is null!");
+                throw new ArgumentNullException(nameof(optionsValue.Matches), $"{nameof(ExternalDescriptorOptions)} `Matches` is null!");
             }
 
             GlobMatcher globMatcher = new GlobMatcher(optionsValue.Matches, new GlobMatcherOptions

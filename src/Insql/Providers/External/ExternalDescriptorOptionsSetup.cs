@@ -2,9 +2,9 @@
 
 namespace Insql.Providers.DirectoryXml
 {
-    internal class DirectoryDescriptorOptionsSetup : IConfigureOptions<DirectoryDescriptorOptions>
+    internal class ExternalDescriptorOptionsSetup : IConfigureOptions<ExternalDescriptorOptions>
     {
-        public void Configure(DirectoryDescriptorOptions options)
+        public void Configure(ExternalDescriptorOptions options)
         {
             options.Enabled = true;
             options.Matches = "**/*.insql.xml";

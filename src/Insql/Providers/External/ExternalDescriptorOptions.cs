@@ -1,6 +1,6 @@
 ﻿namespace Insql.Providers.DirectoryXml
 {
-    public class DirectoryDescriptorOptions
+    public class ExternalDescriptorOptions
     {
         public string Directory { get; set; }
 
