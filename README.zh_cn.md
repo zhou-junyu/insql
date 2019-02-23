@@ -5,13 +5,11 @@
 
 **Insql 是一个轻量级的.NET ORM 类库。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
 
-TA 的追求：简洁、优雅、性能与质量
-
-TA 的宗旨：让你用起来感觉到自由、直观与舒爽。🚀
+🚀 追求简洁、优雅、性能与质量
 
 QQ 交流群：737771272 欢迎加入
 
-[详细说明文档](https://rainrcn.github.io/insql)
+[详细说明文档](https://rainrcn.gitee.io/insql)
 
 ## Packages
 

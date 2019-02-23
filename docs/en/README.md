@@ -2,16 +2,13 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
-[![GitHub stars](https://img.shields.io/github/stars/rainrcn/insql.svg?style=social)](https://github.com/rainrcn/insql)
 [![star](https://gitee.com/rainrcn/insql/badge/star.svg?theme=white)](https://gitee.com/rainrcn/insql)
 
 ## 1. Introduction
 
 **Insql is a lightweight .NET ORM class library. The object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
 
-The pursuit: simplicity, elegance, performance and quality
-
-The purpose: Let you feel free, intuitive and comfortable. 🚀
+🚀 Pursuit of simplicity, elegance, performance and quality
 
 ## 2. Installation
 
@@ -434,9 +431,77 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-## 7. Multiple configuration sources
+## 7. Multiple database matching
 
-### 7.1 Embedding assembly file mode source
+```xml
+<!--By default, the example uses the MySql database-->
+<insert id="InsertUser">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select LAST_INSERT_ID();
+</insert>
+<!--Sqlite-->
+<insert id="InsertUser.Sqlite">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select last_insert_rowid() from user_info;
+</insert>
+<!--SqlServer-->
+<insert id="InsertUser.SqlServer">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
+</insert>
+```
+
+### 7.1 Set up multiple database matching
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=>
+  {
+      builder.AddDefaultResolveMatcher(options=>
+      {
+          options.CorssDbEnabled = false; //Whether to enable multi-database matching, enabled by default
+          options.CorssDbSeparator = "@"; //Multi-database match separator, default is `.`
+      });
+  });
+}
+```
+
+_The match separator will change to the following:_
+
+```xml
+<insert id="InsertUser">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select LAST_INSERT_ID();
+</insert>
+<!--SqlServer-->
+<insert id="InsertUser@SqlServer">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
+</insert>
+```
+
+### 7.2 Matching rule
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsqlDbContext<UserDbContext>(options =>
+    {
+      //Which SqlId to match, which database to use
+      options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
+      //options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
+    });
+
+    services.AddScoped<IUserService,UserService>();
+}
+```
+
+**_If you are currently using SqlServer, the suffix with `.SqlServer` will be matched first. Matches the default statement without a suffix if it is not found._**
+
+## 8. Multiple configuration sources
+
+### 8.1 Embedding assembly file mode source
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -453,7 +518,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 7.2 External file directory mode source
+### 8.2 External file directory mode source
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -470,13 +535,13 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 7.3 Multi-configuration source merge function
+### 8.3 Multi-configuration source merge function
 
 `EmbeddedXml` and the `ExternalXml` mode can be enabled at the same time. For the same file with insql type, the latter will overwrite the same statement configuration with the former sqlId and the same mapping configuration with map type.
 
-## 8. Extended function
+## 9. Extended function
 
-### 8.1 Statement Parsing Filter
+### 9.1 Statement Parsing Filter
 
 Create a statement-resolved logging filter
 
@@ -515,7 +580,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 8.2 Statement Configuration Description Provider
+### 9.2 Statement Configuration Description Provider
 
 ```csharp
 public interface IInsqlDescriptorProvider
@@ -526,9 +591,9 @@ public interface IInsqlDescriptorProvider
 
 The implementation of the above interface can be achieved, the specific implementation details can refer to `EmbeddedXml` or `ExternalXml`part of the source code. The detailed implementation details will be written in the future.
 
-## 9. Tools
+## 10. Tools
 
-### 9.1 Code Generator
+### 10.1 Code Generator
 
 The `tools` CodeSmith generator file is included in the source directory, and you can run these files directly after installing CodeSmith.
 
@@ -697,13 +762,13 @@ public class TestDbContext : DbContext
 </insql>
 ```
 
-## 10. Experience
+## 11. Experience
 
-### 10.1 How do you feel about data access in these years?
+### 11.1 How do you feel about data access in these years?
 
 In the data access tool, I always want a strong performance, the operation can directly reach the database, there is no intermediate cache, the use is concise and the usage is consistent (for example, some libraries need to write Linq and need to write Sql, chaos and pits, use It will be very tiring. It is flexible and can make full use of the characteristics of various databases. It is not easy for an ORM to satisfy these. I walked through these roads from writing SQL with Linq, and I am back to the beginning now, but this time I came back to experience differently, because the tool becomes the Insql I want, maybe TA has a lot of deficiencies, but I will Try to be the perfect TA. In fact, writing SQL is not so terrible, just this is the closest expression to access the database.
 
-## 11. Update
+## 12. Update
 
 - 1.8.2
 
@@ -716,7 +781,7 @@ In the data access tool, I always want a strong performance, the operation can d
   - Supports SQL configuration file directory source, can load SQL configuration from specified file directory, and supports merge with embedded SQL configuration
   - Optimize dynamic script parsing for conversion of DateTime.Min
 
-## 12. Planning
+## 13. Planning
 
 - Parameter placeholders that support the #{} syntax and are backward compatible with existing parameter syntax
 - Support mybatis foreach code block

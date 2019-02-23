@@ -2,16 +2,13 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
-[![GitHub stars](https://img.shields.io/github/stars/rainrcn/insql.svg?style=social)](https://github.com/rainrcn/insql)
 [![star](https://gitee.com/rainrcn/insql/badge/star.svg?theme=white)](https://gitee.com/rainrcn/insql)
 
 ## 1. 介绍
 
 **Insql 是一个轻量级的.NET ORM 类库。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
 
-TA 的追求：简洁、优雅、性能与质量
-
-TA 的宗旨：让你用起来感觉到自由、直观与舒爽。🚀
+🚀 追求简洁、优雅、性能与质量
 
 QQ 交流群：737771272 欢迎加入
 
@@ -437,9 +434,77 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-## 7. 多配置来源
+## 7. 多数据库匹配
 
-### 7.1 嵌入程序集文件方式来源
+```xml
+<!--默认，例子用MySql数据库-->
+<insert id="InsertUser">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select LAST_INSERT_ID();
+</insert>
+<!--Sqlite-->
+<insert id="InsertUser.Sqlite">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select last_insert_rowid() from user_info;
+</insert>
+<!--SqlServer-->
+<insert id="InsertUser.SqlServer">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
+</insert>
+```
+
+### 7.1 设置多数据库匹配
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddInsql(builder=>
+  {
+      builder.AddDefaultResolveMatcher(options=>
+      {
+          options.CorssDbEnabled = false; //是否启用多数据库匹配功能，默认启用
+          options.CorssDbSeparator = "@"; //多数据库匹配分隔符，默认为 `.`
+      });
+  });
+}
+```
+
+_匹配分隔符将变为如下：_
+
+```xml
+<insert id="InsertUser">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select LAST_INSERT_ID();
+</insert>
+<!--SqlServer-->
+<insert id="InsertUser@SqlServer">
+  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
+  select SCOPE_IDENTITY();
+</insert>
+```
+
+### 7.2 匹配规则
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsqlDbContext<UserDbContext>(options =>
+    {
+      //匹配哪个SqlId，决定于使用何种数据库
+      options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
+      //options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
+    });
+
+    services.AddScoped<IUserService,UserService>();
+}
+```
+
+**_如果当前使用的是 SqlServer，则会优先匹配后缀带`.SqlServer`的语句。如果未找到则匹配默认不带后缀的语句。_**
+
+## 8. 多配置来源
+
+### 8.1 嵌入程序集文件方式来源
 
 ![file](embedded_file.zh_cn.png)
 
@@ -460,7 +525,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 7.2 外部文件目录方式来源
+### 8.2 外部文件目录方式来源
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -477,13 +542,13 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 7.3 多配置来源合并功能
+### 8.3 多配置来源合并功能
 
 `EmbeddedXml`和`ExternalXml`方式可以同时启用，对于 insql type 相同的文件，后者会覆盖前者 sqlId 相同的语句配置，以及 map type 相同的映射配置。
 
-## 8. 扩展功能
+## 9. 扩展功能
 
-### 8.1 语句解析过滤器
+### 9.1 语句解析过滤器
 
 创建一个语句解析后的日志记录过滤器
 
@@ -522,7 +587,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 8.2 语句配置描述提供器
+### 9.2 语句配置描述提供器
 
 ```csharp
 public interface IInsqlDescriptorProvider
@@ -533,9 +598,9 @@ public interface IInsqlDescriptorProvider
 
 实现上面的接口即可实现，具体实现细节可以参考`EmbeddedXml`或`ExternalXml`部分的源码。详细实现细节以后会写文档说明。
 
-## 9. 工具
+## 10. 工具
 
-### 9.1 代码生成器
+### 10.1 代码生成器
 
 在源码的`tools`目录下包含 CodeSmith 的生成器文件，安装 CodeSmith 后直接运行这些文件就可。
 
@@ -704,13 +769,13 @@ public class TestDbContext : DbContext
 </insql>
 ```
 
-## 10. 体会
+## 11. 体会
 
-### 10.1 自己这些年在数据访问上的感受
+### 11.1 自己这些年在数据访问上的感受
 
 在数据访问工具上其实自己一直想要一个性能强，操作能直达数据库，没有中间缓存，使用简洁并且使用方式一致（例如某些类库即需要写 Linq 又需要写 Sql，混乱而且坑多，用起来会很心累），灵活并且能充分利用各种数据库的特性，对于一个 ORM 来说想要满足这些其实很不容易。我走过了从写 SQL 用 Linq 的这些路，而我现在又回到了开始，但是这一次回来体会却不同，因为工具变成了我想要的 Insql，也许 TA 还有很多不足，但我会尽力完美 TA。其实写 SQL 没有那么可怕，恰恰这是访问数据库最亲近的表达。
 
-## 11. 更新
+## 12. 更新
 
 - 1.8.2
 
@@ -723,7 +788,7 @@ public class TestDbContext : DbContext
   - 支持 SQL 配置文件目录来源，可以从指定的文件目录加载 SQL 配置，并支持与嵌入式 SQL 配置合并
   - 优化动态脚本解析对 DateTime.Min 的转换功能
 
-## 12. 计划
+## 13. 计划
 
 - 支持 #{} 语法的参数占位符，并向后兼容现有的参数语法
 - 支持 mybatis foreach 代码块
