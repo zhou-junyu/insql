@@ -9,7 +9,7 @@
 
 QQ 交流群：737771272 欢迎加入
 
-[详细说明文档](https://rainrcn.gitee.io/insql)
+[详细说明文档](https://rainrcn.github.io/insql/#/zh-cn)
 
 ## Packages
 

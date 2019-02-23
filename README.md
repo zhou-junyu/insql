@@ -7,7 +7,7 @@
 
 🚀 Pursuit of simplicity, elegance, performance and quality
 
-[Detailed documentation](https://rainrcn.gitee.io/insql/#/en/)
+[Detailed documentation](https://rainrcn.github.io/insql/)
 
 ## Packages
 

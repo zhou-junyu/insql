@@ -1,18 +1,16 @@
-# Insql 说明文档
+# Insql documentation
 
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 [![star](https://gitee.com/rainrcn/insql/badge/star.svg?theme=white)](https://gitee.com/rainrcn/insql)
 
-## 1. 介绍
+## 1. Introduction
 
-**Insql 是一个轻量级的.NET ORM 类库。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
+**Insql is a lightweight .NET ORM class library. The object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
 
-🚀 追求简洁、优雅、性能与质量
+🚀 Pursuit of simplicity, elegance, performance and quality
 
-QQ 交流群：737771272 欢迎加入
-
-## 2. 安装
+## 2. Installation
 
 | Package                                                              | Nuget Stable                                                                                                                            | Downloads                                                                                                                                |
 | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -22,61 +20,60 @@ QQ 交流群：737771272 欢迎加入
 | [Insql.PostgreSql](https://www.nuget.org/packages/Insql.PostgreSql/) | [![Insql.PostgreSql](https://img.shields.io/nuget/v/Insql.PostgreSql.svg?style=flat)](https://www.nuget.org/packages/Insql.PostgreSql/) | [![Insql.PostgreSql](https://img.shields.io/nuget/dt/Insql.PostgreSql.svg?style=flat)](https://www.nuget.org/packages/Insql.PostgreSql/) |
 | [Insql.Sqlite](https://www.nuget.org/packages/Insql.Sqlite/)         | [![Insql.Sqlite](https://img.shields.io/nuget/v/Insql.Sqlite.svg?style=flat)](https://www.nuget.org/packages/Insql.Sqlite/)             | [![Insql.Sqlite](https://img.shields.io/nuget/dt/Insql.Sqlite.svg?style=flat)](https://www.nuget.org/packages/Insql.Sqlite/)             |
 
-## 3. 特性
+## 3. Features
 
-- **支持 DotNet Core 2.0+ & DotNet Framework 4.6.1+**
-- **支持依赖注入系统**
-- **类似 MyBatis sql xml 配置语法**
-- **多数据库支持**
-- **高性能**
-- **灵活扩展性**
-- **使用简单直观**
+- **Support DotNet Core 2.0+ & DotNet Framework 4.6.1+**
+- **Support for dependency injection systems**
+- **Similar to MyBatis sql xml configuration syntax**
+- **Multiple database support**
+- **high performance**
+- **Flexible scalability**
+- **Simple and intuitive to use**
 
-## 4. 使用
+## 4. Use
 
-### 4.1 使用 Insql
+### 4.1 Using Insql
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-  services.AddInsql();  //会使用默认配置
+  services.AddInsql();  //Will use the default configuration
 }
 ```
 
-### 4.2 设置 Insql
+### 4.2 Setting up Insql
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
   services.AddInsql(builder =>
   {
-      //添加嵌入程序集式的SQL XML配置文件
+      //Add an embedded assembly SQL XML configuration file
       builder.AddEmbeddedXml();
 
-      //添加外部文件目录中的SQL XML配置文件，可指定目录地址
+      //Add a SQL XML configuration file in the external file directory to specify the directory address
       builder.AddExternalXml();
 
-      //添加SQL解析过滤器，可用于日志记录
+      //Add SQL parsing filter for logging
       builder.AddResolveFilter();
 
-      //添加SQL解析描述提供器，可扩展用于从多种来源加载SQL XML配置文件，例如从数据库中加载SQL XML配置。EmbeddedXml和ExternalXml就是其中的扩展
+      //Add a SQL parsing description provider that can be extended to load SQL XML configuration files from multiple sources, such as loading SQL XML configuration from a database. EmbeddedXml and ExternalXml are the extensions
       builder.AddDescriptorProvider();
 
-      //设置默认动态脚本解析器参数
+      //Set default dynamic script parser parameters
       builder.AddDefaultScriptResolver();
 
-      //设置默认多种数据库匹配器参数
+      //Set default multiple database matcher parameters
       builder.AddDefaultResolveMatcher();
   });
 }
 ```
 
-我们平常使用时，使用默认配置即可，可以无需理睬这些设置项。
-这些只是部分示例设置，其中的各个设置参数会在以后或者其他章节进行说明。
+When we use it normally, we can use the default configuration, and we can ignore these settings. These are just a few example settings, each of which will be explained later or in other chapters.
 
-### 4.3 示例代码
+### 4.3 Sample Code
 
-#### 4.3.1 只使用语句加载与解析功能示例
+#### 4.3.1 Using only statement loading and parsing function examples
 
 `User.insql.xml`
 
@@ -108,7 +105,7 @@ public class UserService : IUserService
 {
   private readonly ISqlResolver<UserService> sqlResolver;
 
-  //注入ISqlResolver<T>，insql.xml中的`type`需要与`T`对应
+  //Inject ISqlResolver<T>, `type` in insql.xml needs to correspond to `T`
   public UserService(ISqlResolver<UserService> sqlResolver)
   {
       this.sqlResolver = sqlResolver;
@@ -116,7 +113,7 @@ public class UserService : IUserService
 
   public void UpdateUserSelective()
   {
-      //解析SQL语句
+      //Parsing SQL statements
       var resolveResult = this.sqlResolver.Resolve("UpdateUserSelective", new UserInfo
       {
         UserId="10000",
@@ -124,24 +121,24 @@ public class UserService : IUserService
         UserGender = UserGender.W
       });
 
-      //执行语句
+      //Execution statement
       //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
   }
 }
 ```
 
-这样就可以实现语句加载与执行了。就这么简单。
+This allows the statement to be loaded and executed. It's that simple.
 
-**_注意：在默认的设置下 User.insql.xml 文件需要右键属性选择`嵌入式程序集方式`类型才能被找到_**
+**_Note: The User.insql.xml file requires the right-click property selection `Embedded assembly` file mode type to be found under the default settings._**
 
-#### 4.3.2 基本用法示例
+#### 4.3.2 Basic usage examples
 
 `UserDbContext.insql.xml`
 
 ```xml
 <insql type="Insql.Tests.Domain.Contexts.UserDbContext,Insql.Tests" >
 
-  <!--定义UserInfo类型数据库字段到对象属性映射-->
+  <!--Define UserInfo type database fields to object attribute mappings-->
   <map type="Insql.Tests.Domain.Models.UserInfo,Insql.Tests">
     <key name="user_id" to="UserId" />
     <column name="user_name" to="UserName" />
@@ -158,7 +155,7 @@ public class UserService : IUserService
 `UserDbContext.cs`
 
 ```csharp
-//insql.xml中的`type`需要与`UserDbContext`类型对应
+//`type` in insql.xml needs to correspond to `UserDbContext` type
 public class UserDbContext : DbContext
 {
     public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
@@ -172,7 +169,7 @@ public class UserDbContext : DbContext
 }
 ```
 
-`UserService.cs` 使用 UserDbContext
+`UserService.cs` Use UserDbContext
 
 ```csharp
 public class UserService : IUserService
@@ -191,18 +188,18 @@ public class UserService : IUserService
 }
 ```
 
-`Startup.cs` 注册 UserDbContext 和 UserService
+`Startup.cs` Register UserDbContext and UserService
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    //注册Insql
+    //Register Insql
     services.AddInsql();
 
-    //注册UserDbContext
+    //Register UserDbContext
     services.AddInsqlDbContext<UserDbContext>(options =>
     {
-      //选择UserDbContext数据库连接
+      //Select UserDbContext database connection
       //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
@@ -211,11 +208,11 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-这就是完整的使用流程，例子是使用领域驱动模型方式，自己使用时可以看情况而定。例如可以在 Controller 中注入 UserDbContext 使用，而不需要 UserService。
+This is the complete use process, the example is to use the domain-driven model, you can use the situation depending on the situation. For example, UserDbContext can be injected into the Controller without the UserService.
 
-## 5. 配置语法
+## 5. Configuration syntax
 
-**xxx.insql.xml** 中的配置语法类似于 Mybatis 的配置语法，目前支持以下配置节：
+**xxx.insql.xml** configuration syntax is similar to the configuration syntax Mybatis currently supports the following configuration section :
 
 - **map**
   - **key**
@@ -235,7 +232,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ### 5.1 map
 
-`map`配置节用于数据库表字段到对象属性的映射，这样只要通过`DbContext.Query<UserInfo>`查询的都将使用此映射
+`map` the configuration section is used for mapping of database table fields to object properties so that they `DbContext.Query<UserInfo>`vwill be used as long as they are queried
 
 ```xml
 <map type="Insql.Tests.Domain.Models.UserInfo,Insql.Tests">
@@ -245,18 +242,18 @@ public void ConfigureServices(IServiceCollection services)
 </map>
 ```
 
-| 子元素名 | 属性名 | 属性说明   | 说明       |
-| -------- | ------ | ---------- | ---------- |
-| `key`    |        |            | 表示主键列 |
-|          | `name` | 表列名     |            |
-|          | `to`   | 对象属性名 |            |
-| `column` |        |            | 表示普通列 |
-|          | `name` | 表列名     |            |
-|          | `to`   | 对象属性名 |            |
+| Child element name | Attribute name | Property description | Description                      |
+| ------------------ | -------------- | -------------------- | -------------------------------- |
+| `key`              |                |                      | Indicates the primary key column |
+|                    | `name`         | Column name          |                                  |
+|                    | `to`           | Object property name |                                  |
+| `column`           |                |                      | Represents a normal column       |
+|                    | `name`         | Column name          |                                  |
+|                    | `to`           | Object property name |                                  |
 
 ### 5.2 sql
 
-`sql`配置节用于配置数据库执行语句。`select`,`insert`,`update`,`delete`与`sql`具有相同功能，只是`sql`配置节的别名。
+`sql` the configuration section is used to configure database execution statements.`select`,`insert`,`update`,`delete` with `sql` an `sql`alias that has the same functionality, just a configuration section.
 
 ```xml
 <sql id="userColumns">
@@ -271,30 +268,30 @@ public void ConfigureServices(IServiceCollection services)
 </select>
 ```
 
-| 子元素名  | 属性名            | 属性说明                                               | 说明                                                                                                                                |
-| --------- | ----------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `include` |                   |                                                        | 导入其他`sql`配置节                                                                                                                 |
-|           | `refid`           | 要导入的配置节 `id`                                    |                                                                                                                                     |
-| `bind`    |                   |                                                        | 创建新查询参数到当前参数列表，例如 like 模糊查询场景                                                                                |
-|           | `name`            | 创建的新参数名称                                       |                                                                                                                                     |
-|           | `value`           | 动态脚本表达式，例如: '%'+userName+'%'                 |                                                                                                                                     |
-|           | `valueType`       | 指定`value`返回的类型，格式为 System.TypeCode 枚举     |                                                                                                                                     |
-| `if`      |                   |                                                        | 判断动态表达式，满足则输出内部内容                                                                                                  |
-|           | `test`            | 动态表达式，需要返回 bool 类型，例如: userName != null |                                                                                                                                     |
-| `where`   |                   |                                                        | 在当前位置添加`where` sql 段，具体是否输出`where`决定于其内部子元素是否有有效的内容输出，并且会覆盖开头的 `and`,`or`                |
-| `set`     |                   |                                                        | 在当前位置添加`set` sql 段，主要用于`update`配置节中，具体是否输出`set`决定于其内部子元素是否有有效的内容输出，并且会覆盖结尾的 `,` |
-| `trim`    |                   |                                                        | 输出指定的前缀字符和后缀字符来包裹子元素                                                                                            |
-|           | `prefix`          | 包裹的前缀字符                                         |                                                                                                                                     |
-|           | `suffix`          | 包裹的后缀字符                                         |                                                                                                                                     |
-|           | `prefixOverrides` | 会覆盖内部输出开头指定字符                             |                                                                                                                                     |
-|           | `suffixOverrides` | 会覆盖内部输出结尾指定字符                             |                                                                                                                                     |
-| `each`    |                   |                                                        | 循环数组类型的查询参数每个值                                                                                                        |
-|           | `name`            | 循环的数组参数名称                                     |                                                                                                                                     |
-|           | `separator`       | 每个值之间的分隔符                                     |                                                                                                                                     |
-|           | `open`            | 包裹的左侧字符                                         |                                                                                                                                     |
-|           | `close`           | 包裹的右侧字符                                         |                                                                                                                                     |
-|           | `prefix`          | 每个值名称前缀                                         |                                                                                                                                     |
-|           | `suffix`          | 每个值名称后缀                                         |                                                                                                                                     |
+| Child element name | Attribute name    | Property description                                                              | Description                                                                                                                                                                                                                                 |
+| ------------------ | ----------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `include`          |                   |                                                                                   | Import other `sql` configuration sections                                                                                                                                                                                                   |
+|                    | `refid`           | Configuration section to import `id`                                              |                                                                                                                                                                                                                                             |
+| `bind`             |                   |                                                                                   | Create a new query parameter to the current parameter list, such as like fuzzy query scene                                                                                                                                                  |
+|                    | `name`            | New parameter name created                                                        |                                                                                                                                                                                                                                             |
+|                    | `value`           | Dynamic script expression, for example: '%'+userName+'%'                          |                                                                                                                                                                                                                                             |
+|                    | `valueType`       | Specifies `value` the type returned, in the format System.TypeCode enumeration    |                                                                                                                                                                                                                                             |
+| `if`               |                   |                                                                                   | Determine the dynamic expression, if it is satisfied, output the internal content                                                                                                                                                           |
+|                    | `test`            | Dynamic expression, you need to return a bool type, for example: userName != null |                                                                                                                                                                                                                                             |
+| `where`            |                   |                                                                                   | Add the `where` sql segment at the current position , whether the output `where` depends on whether its internal child elements have valid content output, and will overwrite the beginning `and`,`or`                                      |
+| `set`              |                   |                                                                                   | Add the `set` sql segment at the current position , mainly used in the `update` configuration section, whether the output `set` depends on whether its internal child elements have valid content output, and will overwrite the ending `,` |
+| `trim`             |                   |                                                                                   | Output the specified prefix character and suffix character to wrap the child element                                                                                                                                                        |
+|                    | `prefix`          | Package prefix character                                                          |                                                                                                                                                                                                                                             |
+|                    | `suffix`          | Package suffix character                                                          |                                                                                                                                                                                                                                             |
+|                    | `prefixOverrides` | Will overwrite the specified character at the beginning of the internal output    |                                                                                                                                                                                                                                             |
+|                    | `suffixOverrides` | Will override the specified character at the end of the internal output           |                                                                                                                                                                                                                                             |
+| `each`             |                   |                                                                                   | Loop array type of query parameter for each value                                                                                                                                                                                           |
+|                    | `name`            | Loop array parameter name                                                         |                                                                                                                                                                                                                                             |
+|                    | `separator`       | Separator between each value                                                      |                                                                                                                                                                                                                                             |
+|                    | `open`            | The left side of the package                                                      |                                                                                                                                                                                                                                             |
+|                    | `close`           | The right side of the package                                                     |                                                                                                                                                                                                                                             |
+|                    | `prefix`          | Each value name prefix                                                            |                                                                                                                                                                                                                                             |
+|                    | `suffix`          | Suffix for each value name                                                        |                                                                                                                                                                                                                                             |
 
 `include`,`where`,`if`,`bind`
 
@@ -371,19 +368,19 @@ public void ConfigureServices(IServiceCollection services)
 </select>
 ```
 
-SqlResolver 解析之后:
+After SqlResolver parsing :
 
 ```sql
 select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 
-**_注意：解析之后会删除原先的`userIdList`参数，并增加`userIdList1`,`userIdList2`参数_**
+**_Note: After parsing will delete the original `userIdList`parameters, and increase `userIdList1`,`userIdList2` the parameters_**
 
-_小提示：在 select in list 上也可以使用 Dapper 自带的参数列表转换功能_
+_Tip: Dapper's own parameter list conversion function can also be used on select in list._
 
-## 6. 动态脚本
+## 6. Dynamic script
 
-动态脚本语法为 JAVASCRIPT。支持 ECMAScript 6 的常用对象属性。
+The dynamic script syntax is JAVASCRIPT. Support for common object properties of ECMAScript 6.
 
 ```xml
 <if test="userGender !=null and userGender == 'W' ">
@@ -391,30 +388,30 @@ _小提示：在 select in list 上也可以使用 Dapper 自带的参数列表�
 </if>
 ```
 
-`userGender !=null and userGender == 'W'`部分为动态脚本。
+`userGender !=null and userGender == 'W'` Part of it is a dynamic script.
 
-### 6.1 操作符转换
+### 6.1 operator conversion
 
-因为`&`,`<`这些在 XML 中有特殊意义，所以支持将在动态脚本中这些符号转换。目前支持下列符号转换：
+Because `&`, `<` these have special meaning in XML, so support for these symbols in the dynamic conversion script. The following symbol conversions are currently supported:
 
-| 转换前 | 转换后 |
-| ------ | ------ |
-| `and`  | `&&`   |
-| `or`   | `\|\|` |
-| `gt`   | `>`    |
-| `gte`  | `>=`   |
-| `lt`   | `<`    |
-| `lte`  | `<=`   |
-| `eq`   | `==`   |
-| `neq`  | `!=`   |
+| Before conversion | After conversion |
+| ----------------- | ---------------- |
+| `and`             | `&&`             |
+| `or`              | `\|\|`           |
+| `gt`              | `>`              |
+| `gte`             | `>=`             |
+| `lt`              | `<`              |
+| `lte`             | `<=`             |
+| `eq`              | `==`             |
+| `neq`             | `!=`             |
 
-_操作符转换功能可以被禁用，也可以排除其中部分操作符的转换_
+_The operator conversion function can be disabled or the conversion of some of the operators can be excluded._
 
-### 6.2 枚举转换为字符串
+### 6.2 Enumeration converted to a string
 
-`userGender == 'W'` `userGender`属性为枚举类型，在动态脚本中会默认转换为字符换格式。可以禁用此转换功能，禁用后枚举会被转换为`number`类型。
+`userGender == 'W'` `userGender` the attribute is an enumerated type, which is converted to a character-for-format by default in dynamic scripts. This conversion can be disabled, and the enum will be converted to a `number` type after disabling .
 
-### 6.3 设置动态脚本
+### 6.3 Setting up dynamic scripts
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -423,21 +420,21 @@ public void ConfigureServices(IServiceCollection services)
     {
         builder.AddDefaultScriptResolver(options =>
         {
-            options.IsConvertOperator = false;  //禁用操作符转换
-            options.IsConvertEnum = false; //禁用枚举转换为字符串
+            options.IsConvertOperator = false;  //Disable operator conversion
+            options.IsConvertEnum = false; //Disable enum conversion to string
             options.ExcludeOperators = new string[]
             {
-                "eq","neq"  //排除eq,neq操作符转换
+                "eq","neq"  //Exclude eq, neq operator conversion
             };
         });
     });
 }
 ```
 
-## 7. 多数据库匹配
+## 7. Multiple database matching
 
 ```xml
-<!--默认，例子用MySql数据库-->
+<!--By default, the example uses the MySql database-->
 <insert id="InsertUser">
   insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
   select LAST_INSERT_ID();
@@ -454,7 +451,7 @@ public void ConfigureServices(IServiceCollection services)
 </insert>
 ```
 
-### 7.1 设置多数据库匹配
+### 7.1 Set up multiple database matching
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -463,14 +460,14 @@ public void ConfigureServices(IServiceCollection services)
   {
       builder.AddDefaultResolveMatcher(options=>
       {
-          options.CorssDbEnabled = false; //是否启用多数据库匹配功能，默认启用
-          options.CorssDbSeparator = "@"; //多数据库匹配分隔符，默认为 `.`
+          options.CorssDbEnabled = false; //Whether to enable multi-database matching, enabled by default
+          options.CorssDbSeparator = "@"; //Multi-database match separator, default is `.`
       });
   });
 }
 ```
 
-_匹配分隔符将变为如下：_
+_The match separator will change to the following:_
 
 ```xml
 <insert id="InsertUser">
@@ -484,14 +481,14 @@ _匹配分隔符将变为如下：_
 </insert>
 ```
 
-### 7.2 匹配规则
+### 7.2 Matching rule
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddInsqlDbContext<UserDbContext>(options =>
     {
-      //匹配哪个SqlId，决定于使用何种数据库
+      //Which SqlId to match, which database to use
       options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       //options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
@@ -500,15 +497,11 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-**_如果当前使用的是 SqlServer，则会优先匹配后缀带`.SqlServer`的语句。如果未找到则匹配默认不带后缀的语句。_**
+**_If you are currently using SqlServer, the suffix with `.SqlServer` will be matched first. Matches the default statement without a suffix if it is not found._**
 
-## 8. 多配置来源
+## 8. Multiple configuration sources
 
-### 8.1 嵌入程序集文件方式来源
-
-![file](embedded_file.zh_cn.png)
-
-**设置来源参数：**
+### 8.1 Embedding assembly file mode source
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -517,15 +510,15 @@ public void ConfigureServices(IServiceCollection services)
     {
         builder.AddEmbeddedXml(options =>
         {
-            options.Enabled = false;    //可以禁用此来源功能，默认为启用状态
-            options.Matches = "**/*.insql.xml"; //glob文件过滤表达式，此为默认值
+            options.Enabled = false;    //This source feature can be disabled and is enabled by default.
+            options.Matches = "**/*.insql.xml"; //Glob file filter expression, this is the default value
             //...
         });
     });
 }
 ```
 
-### 8.2 外部文件目录方式来源
+### 8.2 External file directory mode source
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -534,23 +527,23 @@ public void ConfigureServices(IServiceCollection services)
     {
         builder.AddExternalXml(options=>
         {
-            options.Enabled = true; //可以启动此来源，默认为禁用状态
-            options.Directory = "D:\\Insqls";   //配置加载目录，支持递归搜索，子文件夹也会扫描，默认为当前程序执行目录
-            options.Matches = "**/*.insql.xml"; //glob文件筛选表达式，此为默认值
+            options.Enabled = true; //This source can be started, the default is disabled
+            options.Directory = "D:\\Insqls";   //Configure the load directory, support recursive search, subfolders will also scan, the default is the current program execution directory
+            options.Matches = "**/*.insql.xml"; //Glob file filter expression, this is the default value
         });
     });
 }
 ```
 
-### 8.3 多配置来源合并功能
+### 8.3 Multi-configuration source merge function
 
-`EmbeddedXml`和`ExternalXml`方式可以同时启用，对于 insql type 相同的文件，后者会覆盖前者 sqlId 相同的语句配置，以及 map type 相同的映射配置。
+`EmbeddedXml` and the `ExternalXml` mode can be enabled at the same time. For the same file with insql type, the latter will overwrite the same statement configuration with the former sqlId and the same mapping configuration with map type.
 
-## 9. 扩展功能
+## 9. Extended function
 
-### 9.1 语句解析过滤器
+### 9.1 Statement Parsing Filter
 
-创建一个语句解析后的日志记录过滤器
+Create a statement-resolved logging filter
 
 ```csharp
 public class LogResolveFilter : ISqlResolveFilter
@@ -573,9 +566,9 @@ public class LogResolveFilter : ISqlResolveFilter
 }
 ```
 
-`OnResolving`为解析前执行，`OnResolved`为解析后执行
+`OnResolving` execute before `OnResolved` parsing, execute after parsing
 
-**启用过滤器：**
+**Enable filters:**
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -587,7 +580,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 9.2 语句配置描述提供器
+### 9.2 Statement Configuration Description Provider
 
 ```csharp
 public interface IInsqlDescriptorProvider
@@ -596,17 +589,17 @@ public interface IInsqlDescriptorProvider
 }
 ```
 
-实现上面的接口即可实现，具体实现细节可以参考`EmbeddedXml`或`ExternalXml`部分的源码。详细实现细节以后会写文档说明。
+The implementation of the above interface can be achieved, the specific implementation details can refer to `EmbeddedXml` or `ExternalXml`part of the source code. The detailed implementation details will be written in the future.
 
-## 10. 工具
+## 10. Tools
 
-### 10.1 代码生成器
+### 10.1 Code Generator
 
-在源码的`tools`目录下包含 CodeSmith 的生成器文件，安装 CodeSmith 后直接运行这些文件就可。
+The `tools` CodeSmith generator file is included in the source directory, and you can run these files directly after installing CodeSmith.
 
 ![code_generator](code_generator.zh_cn.png)
 
-**生成代码示例：只展示一张数据表**
+**Generate code example: show only one data table**
 
 `TestDbContext.cs`
 
@@ -769,27 +762,27 @@ public class TestDbContext : DbContext
 </insql>
 ```
 
-## 11. 体会
+## 11. Experience
 
-### 11.1 自己这些年在数据访问上的感受
+### 11.1 How do you feel about data access in these years?
 
-在数据访问工具上其实自己一直想要一个性能强，操作能直达数据库，没有中间缓存，使用简洁并且使用方式一致（例如某些类库即需要写 Linq 又需要写 Sql，混乱而且坑多，用起来会很心累），灵活并且能充分利用各种数据库的特性，对于一个 ORM 来说想要满足这些其实很不容易。我走过了从写 SQL 用 Linq 的这些路，而我现在又回到了开始，但是这一次回来体会却不同，因为工具变成了我想要的 Insql，也许 TA 还有很多不足，但我会尽力完美 TA。其实写 SQL 没有那么可怕，恰恰这是访问数据库最亲近的表达。
+In the data access tool, I always want a strong performance, the operation can directly reach the database, there is no intermediate cache, the use is concise and the usage is consistent (for example, some libraries need to write Linq and need to write Sql, chaos and pits, use It will be very tiring. It is flexible and can make full use of the characteristics of various databases. It is not easy for an ORM to satisfy these. I walked through these roads from writing SQL with Linq, and I am back to the beginning now, but this time I came back to experience differently, because the tool becomes the Insql I want, maybe TA has a lot of deficiencies, but I will Try to be the perfect TA. In fact, writing SQL is not so terrible, just this is the closest expression to access the database.
 
-## 12. 更新
+## 12. Update
 
 - 1.8.2
 
-  - 重新编写并美化说明文档
-  - 优化动态脚本执行引擎，减少资源分配，提高运行性能
-  - 优化代码生成器，解决某些生成代码的 BUG
+  - Rewrite and beautify the documentation
+  - Optimize dynamic script execution engine to reduce resource allocation and improve performance
+  - Optimize the code generator to solve some bugs in generated code
 
 - 1.5.0
-  - 支持 map 配置块，用于映射数据库表字段到类属性字段。使查询对象时映射更加简单，无需 as 别名。
-  - 支持 SQL 配置文件目录来源，可以从指定的文件目录加载 SQL 配置，并支持与嵌入式 SQL 配置合并
-  - 优化动态脚本解析对 DateTime.Min 的转换功能
+  - Supports map configuration blocks for mapping database table fields to class attribute fields. Make mapping when querying objects easier, without the need for an alias.
+  - Supports SQL configuration file directory source, can load SQL configuration from specified file directory, and supports merge with embedded SQL configuration
+  - Optimize dynamic script parsing for conversion of DateTime.Min
 
-## 13. 计划
+## 13. Planning
 
-- 支持 #{} 语法的参数占位符，并向后兼容现有的参数语法
-- 支持 mybatis foreach 代码块
-- 是否需要兼容 mybatis 的 resultMap 配置块?
+- Parameter placeholders that support the #{} syntax and are backward compatible with existing parameter syntax
+- Support mybatis foreach code block
+- Do you need a resultMap configuration block that is compatible with mybatis?
