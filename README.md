@@ -5,10 +5,6 @@
 
 **Insql is a lightweight .NET ORM class library. The object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
 
-The pursuit: simplicity, elegance, performance and quality
-
-The purpose: Let you feel free, intuitive and comfortable. 🚀
-
 [Detailed documentation](https://rainrcn.github.io/insql/#/en/)
 
 ## Packages

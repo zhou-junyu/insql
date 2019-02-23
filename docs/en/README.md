@@ -400,7 +400,7 @@ Because `&`, `<` these have special meaning in XML, so support for these symbols
 | Before conversion | After conversion |
 | ----------------- | ---------------- |
 | `and`             | `&&`             |
-| `or`              | `||`             |
+| `or`              | `\|\|`           |
 | `gt`              | `>`              |
 | `gte`             | `>=`             |
 | `lt`              | `<`              |
@@ -437,10 +437,6 @@ public void ConfigureServices(IServiceCollection services)
 ## 7. Multiple configuration sources
 
 ### 7.1 Embedding assembly file mode source
-
-![file](embedded_file.zh_cn.png)
-
-**Set source parameters:**
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
