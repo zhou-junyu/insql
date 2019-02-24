@@ -66,6 +66,7 @@ namespace <%=DbContextNamespace%>
             this.Execute(nameof(Insert<%=Helper.GetModelClassName(tableSchema)%>Selective),info);
         }
         
+        <% if(tableSchema.Columns.Any(columnSchema=> !columnSchema.IsPrimaryKeyMember)) {%>
         public void Update<%=Helper.GetModelClassName(tableSchema)%>ByKey(<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%> info)
         {
             this.Execute(nameof(Update<%=Helper.GetModelClassName(tableSchema)%>ByKey),info);
@@ -75,7 +76,7 @@ namespace <%=DbContextNamespace%>
         {
             this.Execute(nameof(Update<%=Helper.GetModelClassName(tableSchema)%>SelectiveByKey),info);
         }
-        
+        <%} %>
         public void Delete<%=Helper.GetModelClassName(tableSchema)%>ByKey(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=> $"{Helper.GetModelPropertyType(columnSchema)} {Helper.GetModelPropertyName(columnSchema)}")) %>)
         {

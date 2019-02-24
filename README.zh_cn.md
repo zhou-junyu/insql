@@ -3,11 +3,13 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 
-**Insql is a lightweight .NET ORM class library. The object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
+**Insql 是一个轻量级的.NET ORM 类库。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
 
-🚀 Pursuit of simplicity, elegance, performance and quality
+🚀 追求简洁、优雅、性能与质量
 
-[Detailed documentation](https://rainrcn.github.io/insql/#/en/)
+QQ 交流群：737771272 欢迎加入
+
+[详细说明文档](https://rainrcn.github.io/insql)
 
 ## Packages
 

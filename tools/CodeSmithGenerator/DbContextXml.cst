@@ -63,7 +63,7 @@
     insert into <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <trim prefix="(" suffix=")" suffixOverrides=",">
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
-    <% if(Helper.IsNullableType(columnSchema)) { %>
+    <% if(columnSchema.AllowDBNull) { %>
       <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
         <%=$"{QuoteOpen}{columnSchema.Name}{QuoteClose}" %>,
       </if>
@@ -85,6 +85,7 @@
     </trim>
   </insert>
   
+  <% if(tableSchema.Columns.Any(columnSchema=> !columnSchema.IsPrimaryKeyMember)) {%>
   <update id="Update<%=Helper.GetModelClassName(tableSchema)%>ByKey<%=SqlIdSuffix%>">
     update <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%>
     <set>
@@ -112,7 +113,7 @@
     where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>
   </update>
-  
+  <%} %>
   <delete id="Delete<%=Helper.GetModelClassName(tableSchema)%>ByKey<%=SqlIdSuffix%>">
     delete from <%= $"{QuoteOpen}{tableSchema.Name}{QuoteClose}"%> where <%= string.Join(" and ",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = @{Helper.GetModelPropertyName(columnSchema)}")) %>

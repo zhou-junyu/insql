@@ -25,14 +25,14 @@ namespace Insql.Resolvers.Scripts
 
             if (value is DateTime dateTimeValue)
             {
-                if (dateTimeValue == DateTime.MinValue)
+                if (dateTimeValue < Min)
                 {
                     result = JsValue.FromObject(this.engine, Min); return true;
                 }
             }
             if (value is DateTimeOffset dateTimeOffsetValue)
             {
-                if (dateTimeOffsetValue == DateTimeOffset.MinValue)
+                if (dateTimeOffsetValue < Min)
                 {
                     result = JsValue.FromObject(this.engine, Min); return true;
                 }

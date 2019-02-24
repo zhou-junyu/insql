@@ -37,7 +37,7 @@ namespace Insql.Resolvers.Elements
 
             if (value == null)
             {
-                return string.Empty;
+                throw new Exception($"ResolveContext Param : `{this.Name}` is null!");
             }
 
             var valueList = (value as IEnumerable)?.Cast<object>().ToList();
