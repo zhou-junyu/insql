@@ -764,12 +764,8 @@ namespace Tests.Domain.Context
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       @UserId,
-      <if test="UserName != null">
-        @UserName,
-      </if>
-      <if test="UserGender != null">
-        @UserGender,
-      </if>
+      @UserName,
+      @UserGender,
       <if test="UserIntro != null">
         @UserIntro,
       </if>

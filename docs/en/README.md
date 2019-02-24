@@ -44,6 +44,8 @@ public void ConfigureServices(IServiceCollection services)
 
 ### 4.2 Setting up Insql
 
+When we use it normally, we can use the default configuration, and you don't need to set the following options. Detailed parameters will be explained in other sections
+
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
@@ -70,11 +72,9 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-When we use it normally, we can use the default configuration, and we can ignore these settings. These are just a few example settings, each of which will be explained later or in other chapters.
-
 ### 4.3 Sample Code
 
-#### 4.3.1 Using only statement loading and parsing function examples
+#### 4.3.1 Use only the statement parsing function example
 
 `User.insql.xml`
 
@@ -758,12 +758,8 @@ namespace Tests.Domain.Context
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       @UserId,
-      <if test="UserName != null">
-        @UserName,
-      </if>
-      <if test="UserGender != null">
-        @UserGender,
-      </if>
+      @UserName,
+      @UserGender,
       <if test="UserIntro != null">
         @UserIntro,
       </if>
