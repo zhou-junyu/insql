@@ -75,7 +75,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
     <% foreach (ColumnSchema columnSchema in tableSchema.Columns) { %>
-    <% if(Helper.IsNullableType(columnSchema)){ %>
+    <% if(columnSchema.AllowDBNull){ %>
       <if test="<%=Helper.GetModelPropertyName(columnSchema)%> != null">
         <%=SqlParamPrefix %><%=Helper.GetModelPropertyName(columnSchema)%>,
       </if>
