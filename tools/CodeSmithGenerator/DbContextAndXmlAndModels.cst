@@ -15,6 +15,7 @@
 <%@ Property Name="Tables" Type="SchemaExplorer.TableSchemaCollection" Category="Context" Description="Tables" %>
 <%@ Property Name="QuoteOpen" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
 <%@ Property Name="QuoteClose" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
+<%@ Property Name="SqlParamPrefix" Type="String" Default="@" Category="DbContextXml" Optional="True" Description="Sql Param Name Prefix" %>
 <%@ Property Name="SqlIdSuffix" Type="String" Category="DbContextXml" Optional="True" Description="DbContext Xml Sql Section Id Suffix" %>
 <%@ Property Name="SqlRefGenerate" Type="Boolean" Default="False" Category="DbContextXml" Optional="True" Description="Whether to generate sql configuration sections for other configuration sections include" %>
 
@@ -67,7 +68,7 @@ dbcx.QuoteOpen = this.QuoteOpen;
 dbcx.QuoteClose = this.QuoteClose;
 dbcx.SqlIdSuffix = this.SqlIdSuffix;
 dbcx.SqlRefGenerate = this.SqlRefGenerate;
-
+dbcx.SqlParamPrefix  = this.SqlParamPrefix;
 dbcx.DbContextAssembly = this.DbContextAssembly;
 dbcx.DbContextNamespace = this.DbContextNamespace;
 dbcx.DbContextName = this.DbContextName;
