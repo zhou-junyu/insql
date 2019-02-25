@@ -184,7 +184,7 @@ public class UserDbContext : DbContext
         return this.Query<UserInfo>(nameof(GetUser), new { userId }).SingleOrDefault();
     }
 
-    public IEnumerable<RoleInfo> GetRoleList(int userId)
+    public IEnumerable<RoleInfo> GetRoleList()
     {
         return this.Query<RoleInfo>("GetRoleList");
     }
