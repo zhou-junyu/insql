@@ -148,8 +148,18 @@ public class UserService : IUserService
     <column name="user_gender" to="UserGender" />
   </map>
 
+  <map type="Insql.Tests.Domain.Models.RoleInfo,Insql.Tests">
+    <key name="role_code" to="RoleCode" />
+    <column name="role_name" to="RoleName" />
+    <column name="role_order" to="RoleOrder" />
+  </map>
+
   <select id="GetUser">
     select * from user_info where user_id = @userId
+  </select>
+
+  <select id="GetRoleList">
+    select * from role_info order by role_order
   </select>
 
 </insql>
@@ -173,6 +183,11 @@ public class UserDbContext : DbContext
         //sqlParam参数支持PlainObject和IDictionary<string,object>类型
         return this.Query<UserInfo>(nameof(GetUser), new { userId }).SingleOrDefault();
     }
+
+    public IEnumerable<RoleInfo> GetRoleList(int userId)
+    {
+        return this.Query<RoleInfo>("GetRoleList");
+    }
 }
 ```
 
@@ -191,6 +206,11 @@ public class UserService : IUserService
     public UserInfo GetUser(int userId)
     {
         return this.dbContext.GetUser(userId);
+    }
+
+    public IEnumerable<RoleInfo> GetRoleList()
+    {
+        return this.dbContext.GetRoleList();
     }
 }
 ```
