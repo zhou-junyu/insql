@@ -215,6 +215,61 @@ public void ConfigureServices(IServiceCollection services)
 
 This is the complete use process, the example is to use the domain-driven model, you can use the situation depending on the situation. For example, UserDbContext can be injected into the Controller without the UserService.
 
+#### 4.3.3 Use transaction
+
+```csharp
+public void InsertUserList(IEnumerable<UserInfo> infoList)
+{
+    try
+    {
+        this.dbContext.BeginTransaction();
+
+        foreach (var item in infoList)
+        {
+            this.dbContext.InsertUserSelective(item);
+        }
+
+        this.dbContext.CommitTransaction();
+    }
+    catch
+    {
+        this.dbContext.RollbackTransaction();
+
+        throw;
+    }
+}
+```
+
+Use the `DoWithTransaction` extension method to automatically start and commit the transaction, and automatically roll back when an exception is encountered. This extension will not automatically start a transaction if it is currently in a transaction.
+
+```csharp
+public void InsertUserList(IEnumerable<UserInfo> infoList)
+{
+    this.dbContext.DoWithTransaction(() =>
+    {
+        foreach (var item in infoList)
+        {
+            this.dbContext.InsertUserSelective(item);
+        }
+    });
+}
+```
+
+Use the `DoWithOpen` extension method to automatically open the connection and close the connection. If the current connection has already been opened, it will not be opened repeatedly.
+
+```csharp
+public void InsertUserList(IEnumerable<UserInfo> infoList)
+{
+    this.dbContext.DoWithOpen(() =>
+    {
+        foreach (var item in infoList)
+        {
+            this.dbContext.InsertUserSelective(item);
+        }
+    });
+}
+```
+
 ## 5. Configuration syntax
 
 **xxx.insql.xml** configuration syntax is similar to the configuration syntax Mybatis currently supports the following configuration section :

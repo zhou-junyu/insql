@@ -217,6 +217,61 @@ public void ConfigureServices(IServiceCollection services)
 
 这就是完整的使用流程，例子是使用领域驱动模型方式，自己使用时可以看情况而定。例如可以在 Controller 中注入 UserDbContext 使用，而不需要 UserService。
 
+#### 4.3.3 事务使用
+
+```csharp
+public void InsertUserList(IEnumerable<UserInfo> infoList)
+{
+    try
+    {
+        this.dbContext.BeginTransaction();
+
+        foreach (var item in infoList)
+        {
+            this.dbContext.InsertUserSelective(item);
+        }
+
+        this.dbContext.CommitTransaction();
+    }
+    catch
+    {
+        this.dbContext.RollbackTransaction();
+
+        throw;
+    }
+}
+```
+
+使用`DoWithTransaction`扩展方法可以自动启动，并提交事务，遇到异常自动回滚。如果当前已经在事务中，则此扩展将不会自动启动事务。
+
+```csharp
+public void InsertUserList(IEnumerable<UserInfo> infoList)
+{
+    this.dbContext.DoWithTransaction(() =>
+    {
+        foreach (var item in infoList)
+        {
+            this.dbContext.InsertUserSelective(item);
+        }
+    });
+}
+```
+
+使用`DoWithOpen`扩展方法可以自动打开连接，关闭连接。如果当前连接已经被打开，则不会重复打开。
+
+```csharp
+public void InsertUserList(IEnumerable<UserInfo> infoList)
+{
+    this.dbContext.DoWithOpen(() =>
+    {
+        foreach (var item in infoList)
+        {
+            this.dbContext.InsertUserSelective(item);
+        }
+    });
+}
+```
+
 ## 5. 配置语法
 
 **xxx.insql.xml** 中的配置语法类似于 Mybatis 的配置语法，目前支持以下配置节：
