@@ -67,7 +67,7 @@ namespace Insql.Resolvers.Scripts
                         ||
                         dataParameter.Direction == ParameterDirection.InputOutput)
                     {
-                        engine.SetValue(item.Key, item.Value);
+                        engine.SetValue(item.Key, dataParameter.Value);
                     }
                 }
                 else
