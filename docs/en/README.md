@@ -255,7 +255,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-Use the `DoWithOpen` extension method to automatically open the connection and close the connection. If the current connection has already been opened, it will not be opened repeatedly.
+Use the `DoWithOpen` extension method to automatically open the connection and close the connection. If the current connection has already been opened, the open and close operation will not be performed.
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)

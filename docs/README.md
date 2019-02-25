@@ -242,7 +242,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-使用`DoWithTransaction`扩展方法可以自动启动，并提交事务，遇到异常自动回滚。如果当前已经在事务中，则此扩展将不会自动启动事务。
+使用`DoWithTransaction`扩展方法可以自动启动，并提交事务，遇到异常自动回滚。如果当前已经在事务中，则此扩展将不会自动启动提交事务。
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -257,7 +257,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-使用`DoWithOpen`扩展方法可以自动打开连接，关闭连接。如果当前连接已经被打开，则不会重复打开。
+使用`DoWithOpen`扩展方法可以自动打开连接，关闭连接。如果当前连接已经被打开，则不会进行打开关闭。
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
