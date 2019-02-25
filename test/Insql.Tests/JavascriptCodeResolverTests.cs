@@ -17,11 +17,11 @@ namespace Insql.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-           serviceCollection.AddInsql(builder =>
-            {
-            });
+            serviceCollection.AddInsql(builder =>
+             {
+             });
 
-            using (var serviceProvider =serviceCollection.BuildServiceProvider())
+            using (var serviceProvider = serviceCollection.BuildServiceProvider())
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
@@ -56,11 +56,11 @@ namespace Insql.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-           serviceCollection.AddInsql(builder =>
-            {
-            });
+            serviceCollection.AddInsql(builder =>
+             {
+             });
 
-            using (var serviceProvider =serviceCollection.BuildServiceProvider())
+            using (var serviceProvider = serviceCollection.BuildServiceProvider())
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
@@ -110,15 +110,15 @@ namespace Insql.Tests
         {
             var serviceCollection = new ServiceCollection();
 
-           serviceCollection.AddInsql(builder =>
-            {
-                builder.AddDefaultScriptResolver(options=> 
-                {
-                    options.IsConvertOperator = false;
-                });
-            });
+            serviceCollection.AddInsql(builder =>
+             {
+                 builder.AddDefaultScriptResolver(options =>
+                 {
+                     options.IsConvertOperator = false;
+                 });
+             });
 
-            using (var serviceProvider =serviceCollection.BuildServiceProvider())
+            using (var serviceProvider = serviceCollection.BuildServiceProvider())
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
@@ -129,6 +129,38 @@ namespace Insql.Tests
                     var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
                     {
                         { "userId","aa" }
+                    });
+
+                    Assert.True(result);
+                }
+            }
+        }
+
+        [Fact]
+        public void DataParameter()
+        {
+            var serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddInsql(builder =>
+            {
+                builder.AddDefaultScriptResolver(options =>
+                {
+                    options.IsConvertOperator = false;
+                });
+            });
+
+            using (var serviceProvider = serviceCollection.BuildServiceProvider())
+            {
+                using (var scopeProvider = serviceProvider.CreateScope())
+                {
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+
+                    var code = @"userId !=null && userName != null";
+
+                    var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId",new System.Data.SqlClient.SqlParameter("userId","asdf") },
+                         { "userName","11"},
                     });
 
                     Assert.True(result);

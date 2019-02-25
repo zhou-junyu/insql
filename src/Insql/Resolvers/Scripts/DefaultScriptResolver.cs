@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -60,7 +61,19 @@ namespace Insql.Resolvers.Scripts
 
             foreach (var item in param)
             {
-                engine.SetValue(item.Key, item.Value);
+                if (item.Value is IDataParameter dataParameter)
+                {
+                    if (dataParameter.Direction == ParameterDirection.Input
+                        ||
+                        dataParameter.Direction == ParameterDirection.InputOutput)
+                    {
+                        engine.SetValue(item.Key, item.Value);
+                    }
+                }
+                else
+                {
+                    engine.SetValue(item.Key, item.Value);
+                }
             };
 
             engine.Execute(code);
