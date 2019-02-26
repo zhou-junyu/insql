@@ -183,11 +183,6 @@ public class UserDbContext : DbContext
         //sqlParam参数支持PlainObject和IDictionary<string,object>类型
         return this.Query<UserInfo>(nameof(GetUser), new { userId }).SingleOrDefault();
     }
-
-    public IEnumerable<RoleInfo> GetRoleList()
-    {
-        return this.Query<RoleInfo>("GetRoleList");
-    }
 }
 ```
 
@@ -210,7 +205,8 @@ public class UserService : IUserService
 
     public IEnumerable<RoleInfo> GetRoleList()
     {
-        return this.dbContext.GetRoleList();
+        //也可以直接这样调用
+        return this.dbContext.Query<RoleInfo>("GetRoleList");
     }
 }
 ```
@@ -262,7 +258,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-使用`DoWithTransaction`扩展方法可以自动启动，并提交事务，遇到异常自动回滚。如果当前已经在事务中，则此扩展将不会自动启动提交事务。
+使用`DoWithTransaction`扩展方法可以自动启动，并提交事务，遇到异常自动回滚。如果当前已经在事务中，则此扩展将不会再次启动和提交事务。
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -277,7 +273,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-使用`DoWithOpen`扩展方法可以自动打开连接，关闭连接。如果当前连接已经被打开，则不会进行打开关闭。
+使用`DoWithOpen`扩展方法可以自动打开连接，关闭连接。如果当前连接已经被打开，则不会再次打开和关闭连接。
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -290,6 +286,47 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
         }
     });
 }
+```
+
+#### 4.3.4 SELECT IN
+
+对于 SELECT IN 数组的用法，有两种
+
+```csharp
+  var sqlParam = new { userIdList = new string[]{ "tom","jerry" } };
+```
+
+**1. 使用 each**
+
+```xml
+<select id="EachIn">
+  select * from user_info
+  where user_id in
+  <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
+</select>
+```
+
+SqlResolver 解析之后，SQL 语句变为如下:
+
+```sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
+```
+
+_如果只使用 ISqlResolver.Resolve 解析 SQL 语句，则推荐用这种方式，如果平常用，用下面那种更方便些。_
+
+**2. 使用 Dapper 支持的列表参数转换功能**
+
+```xml
+<select id="DapperIn">
+  select * from user_info
+  where user_id in @userIdList
+</select>
+```
+
+Dapper 执行时，会将 SQL 语句变为如下，再执行:
+
+```sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 
 ## 5. 配置语法
@@ -588,6 +625,10 @@ public void ConfigureServices(IServiceCollection services)
 **_如果当前使用的是 SqlServer，则会优先匹配后缀带`.SqlServer`的语句。如果未找到则匹配默认不带后缀的语句。_**
 
 **_目前支持匹配的数据库后缀：`SqlServer` `Sqlite` `MySql` `Oracle` `PostgreSql`_**
+
+### 7.3 扩展数据库支持
+
+对于其他数据库的支持是没有限制的，只要需支持的数据库有支持.NET 的客户端库，支持起来非常容易。只需实现`IDbSessionFactory`接口即可。
 
 ## 8. 多配置来源
 
@@ -888,11 +929,9 @@ namespace Tests.Domain.Context
 </insql>
 ```
 
-## 11. 体会
+## 11. 性能
 
-### 11.1 自己这些年在数据访问上的感受
-
-在数据访问工具上其实自己一直想要一个性能强，操作能直达数据库，没有中间缓存，使用简洁并且使用方式一致（例如某些类库即需要写 Linq 又需要写 Sql，混乱而且坑多，用起来会很心累），灵活并且能充分利用各种数据库的特性，对于一个 ORM 来说想要满足这些其实很不容易。我走过了从写 SQL 用 Linq 的这些路，而我现在又回到了开始，但是这一次回来体会却不同，因为工具变成了我想要的 Insql，也许 TA 还有很多不足，但我会尽力完美 TA。其实写 SQL 没有那么可怕，恰恰这是访问数据库最亲近的表达。
+要问性能如何，其实没必要多说，牛逼就完事了。哈哈 开个玩笑。 因为对象映射用的 Dapper，所以性能上不用担心，基本和 Dapper 一致，波动不大。后面可能会写个性能测试。
 
 ## 12. 更新
 

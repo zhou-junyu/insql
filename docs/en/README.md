@@ -240,7 +240,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-Use the `DoWithTransaction` extension method to automatically start and commit the transaction, and automatically roll back when an exception is encountered. This extension will not automatically start a transaction if it is currently in a transaction.
+Use the `DoWithTransaction` extension method to automatically start and commit the transaction, and automatically roll back when an exception is encountered. If it is currently in a transaction, this extension will not start and commit the transaction again.
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -255,7 +255,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-Use the `DoWithOpen` extension method to automatically open the connection and close the connection. If the current connection has already been opened, the open and close operation will not be performed.
+Use the `DoWithOpen` extension method to automatically open the connection and close the connection. If the current connection has already been opened, the connection will not be opened and closed again.
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -268,6 +268,47 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
         }
     });
 }
+```
+
+#### 4.3.4 SELECT IN
+
+For the use of SELECT IN arrays, there are two
+
+```csharp
+  var sqlParam = new { userIdList = new string[]{ "tom","jerry" } };
+```
+
+**1. Use each**
+
+```xml
+<select id="EachIn">
+  select * from user_info
+  where user_id in
+  <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
+</select>
+```
+
+After the SqlResolver is parsed, the SQL statement becomes as follows:
+
+```sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
+```
+
+_If you only use ISqlResolver.Resolve to parse SQL statements, it is recommended to use this method. If you use it normally, it is more convenient to use the following._
+
+**2. Use the list parameter conversion function supported by Dapper**
+
+```xml
+<select id="DapperIn">
+  select * from user_info
+  where user_id in @userIdList
+</select>
+```
+
+When Dapper executes, it will change the SQL statement as follows, and then execute:
+
+```sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 
 ## 5. Configuration syntax
@@ -567,6 +608,10 @@ public void ConfigureServices(IServiceCollection services)
 
 **_Currently supports matching database suffixes: `SqlServer` `Sqlite` `MySql` `Oracle` `PostgreSql`_**
 
+### 7.3 Extended database support
+
+There is no limit to the support of other databases. As long as the database to be supported has a client library that supports .NET, it is very easy to support. Just implement the `IDbSessionFactory` interface.
+
 ## 8. Multiple configuration sources
 
 ### 8.1 Embedding assembly file mode source
@@ -862,11 +907,9 @@ namespace Tests.Domain.Context
 </insql>
 ```
 
-## 11. Experience
+## 11. performance
 
-### 11.1 How do you feel about data access in these years?
-
-In the data access tool, I always want a strong performance, the operation can directly reach the database, there is no intermediate cache, the use is concise and the usage is consistent (for example, some libraries need to write Linq and need to write Sql, chaos and pits, use It will be very tiring. It is flexible and can make full use of the characteristics of various databases. It is not easy for an ORM to satisfy these. I walked through these roads from writing SQL with Linq, and I am back to the beginning now, but this time I came back to experience differently, because the tool becomes the Insql I want, maybe TA has a lot of deficiencies, but I will Try to be the perfect TA. In fact, writing SQL is not so terrible, just this is the closest expression to access the database.
+To ask about the performance, there is no need to say more, OK will be done. :) just kidding. Because of the Dapper used for object mapping, there is no need to worry about performance. Basically, it is consistent with Dapper and has little fluctuation. A performance test may be written later.
 
 ## 12. Update
 
