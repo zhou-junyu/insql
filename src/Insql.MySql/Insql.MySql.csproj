@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/rainrcn/insql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rainrcn/insql</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>a lightweight orm for .net , mysql database adapter.</Description>
+    <Description>A lightweight .NET ORM framework, mysql database adapter.</Description>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,7 +10,7 @@
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/rainrcn/insql</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Description>a lightweight orm for .net , sqlite database adapter.</Description>
+    <Description>A lightweight .NET ORM framework, sqlite database adapter.</Description>
   </PropertyGroup>
 
   <ItemGroup>

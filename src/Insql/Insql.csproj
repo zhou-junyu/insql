@@ -12,7 +12,7 @@
     <RepositoryUrl>https://github.com/rainrcn/insql</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes></PackageReleaseNotes>
-    <Description>a lightweight orm for .net</Description>
+    <Description>A lightweight .NET ORM framework</Description>
   </PropertyGroup>
   
   <ItemGroup>
