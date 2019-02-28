@@ -5,11 +5,18 @@
 [![GitHub stars](https://img.shields.io/github/stars/rainrcn/insql.svg?style=social)](https://github.com/rainrcn/insql)
 [![star](https://gitee.com/rainrcn/insql/badge/star.svg?theme=white)](https://gitee.com/rainrcn/insql)
 
+> A lightweight .NET ORM framework
+
 ## 1. Introduction
 
-**Insql is a lightweight .NET ORM class library. The object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
+**Insql is a lightweight .NET ORM framework. Object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
 
-🚀 Pursuit of simplicity, elegance, performance and quality
+**🚀 Pursuit of simplicity, elegance, performance and quality**
+
+Insql advocates accessing the database by writing native SQL. The overall function is divided into three major blocks:
+- Unified management of SQL statements, using XML as the carrier of SQL statements, externally and uniformly managed SQL statements that are hard-coded in the program. Provides the ability to load SQL statements from a variety of sources and across multiple database SQL.
+- Provides a rich mapping mechanism, using the Attribute method, the Fluent method, and the XML configuration method to implement mapping of database tables to object attributes.
+- Flexible dependency injection and the use of domain-driven patterns to better manage database connections and the lifecycle of database contexts.
 
 ## 2. Installation
 
