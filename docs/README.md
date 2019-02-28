@@ -281,8 +281,7 @@ public class ValuesController : ControllerBase
   </select>
 
   <insert id="InsertUser">
-    insert into user_info (user_name,create_time) value (@UserName,@CreateTime)
-    select SCOPE_IDENTITY();
+    insert into user_info (user_id,user_name,create_time) values (@UserId,@UserName,@CreateTime)
   </insert>
 
   <select id="GetRoleList">
