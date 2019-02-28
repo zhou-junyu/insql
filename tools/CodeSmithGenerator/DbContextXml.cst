@@ -31,7 +31,7 @@
   <!-- 
     <%=tableSchema.Name%>
   -->
-  <map type="<%=ModelNamespace%>.<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>,<%= DbContextAssembly%>">
+  <map type="<%=ModelNamespace%>.<%=ModelPrefix%><%=Helper.GetModelClassName(tableSchema)%><%=ModelSuffix%>,<%= DbContextAssembly%>" table="<%=tableSchema.Name%>">
    <% foreach (ColumnSchema columnSchema in tableSchema.Columns.Where(c=> c.IsPrimaryKeyMember)) { %>
    <key name="<%=columnSchema.Name%>" to="<%=Helper.GetModelPropertyName(columnSchema)%>" />
    <%} %>
