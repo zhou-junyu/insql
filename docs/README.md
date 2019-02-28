@@ -1065,6 +1065,5 @@ namespace Tests.Domain.Context
 
 ## 13. 计划
 
-- 支持 #{} 语法的参数占位符，并向后兼容现有的参数语法
-- 支持 mybatis foreach 代码块
-- 是否需要兼容 mybatis 的 resultMap 配置块?
+- 支持特性 Attribute 与 Fluent 方式数据库表与对象映射方式
+- 增加对象的 CURD 简单扩展

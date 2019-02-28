@@ -1049,6 +1049,5 @@ To ask about the performance, there is no need to say more, OK will be done. :) 
 
 ## 13. Planning
 
-- Parameter placeholders that support the #{} syntax and are backward compatible with existing parameter syntax
-- Support mybatis foreach code block
-- Do you need a resultMap configuration block that is compatible with mybatis?
+- Support feature Attribute and Fluent mode database table and object mapping mode
+- Increase the CURD simple extension of the object
