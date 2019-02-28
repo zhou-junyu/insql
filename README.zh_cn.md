@@ -3,10 +3,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 
-> 一个轻量级的.NET ORM 框架
-
-## 1. 介绍
-
 **Insql 是一个轻量级的.NET ORM 框架。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
 
 **🚀追求简洁、优雅、性能与质量**

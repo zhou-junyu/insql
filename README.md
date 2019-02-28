@@ -3,10 +3,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 
-> A lightweight .NET ORM framework
-
-## 1. Introduction
-
 **Insql is a lightweight .NET ORM framework. Object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
 
 **🚀 Pursuit of simplicity, elegance, performance and quality**
