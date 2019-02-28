@@ -128,10 +128,12 @@ public class UserDbContext : DbContext
 }
 ```
 
-`UserService.cs` 使用 UserDbContext
+`ValuesController.cs` 中或者`Domain Service`中使用 UserDbContext，为演示方便在 Controller 中使用。
 
 ```csharp
-public class UserService : IUserService
+[Route("api/[controller]")]
+[ApiController]
+public class ValuesController : ControllerBase
 {
     private readonly UserDbContext dbContext;
 
@@ -140,20 +142,21 @@ public class UserService : IUserService
         this.dbContext = dbContext;
     }
 
-    public UserInfo GetUser(int userId)
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
     {
-        return this.dbContext.GetUser(userId);
-    }
+        //查询用户
+        var userInfo = this.dbContext.GetUser("tome");
 
-    public IEnumerable<RoleInfo> GetRoleList()
-    {
-        //也可以直接这样调用
-        return this.dbContext.Query<RoleInfo>("GetRoleList");
+        //还可以这样用，通过dbContext直接调用sql，和在DbContext里面写方法一样的
+        var roleList = this.dbContext.Query<RoleInfo>("GetRoleList");
+
+        return new string[] { "value1", "value2" };
     }
 }
 ```
 
-`Startup.cs` 注册 UserDbContext 和 UserService
+`Startup.cs` 注册 UserDbContext
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -168,14 +171,129 @@ public void ConfigureServices(IServiceCollection services)
       //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
-
-    services.AddScoped<IUserService,UserService>();
 }
 ```
 
 这就是完整的使用流程，例子是使用领域驱动模型方式，自己使用时可以看情况而定。例如可以在 Controller 中注入 UserDbContext 使用，而不需要 UserService。
 
-#### 4.3.2 只使用语句解析功能示例
+#### 4.3.2 公用数据库上下文用法示例
+
+`CommonDbContext<>` 只建立一个并将它用在所有地方。
+
+```csharp
+//TScope 是一个范围类型，可以随意指定，但是需要与 insql type 类型对应
+public class CommonDbContext<TScope> : DbContext where TScope : class
+{
+    public CommonDbContext(CommonDbContextOptions<TScope> options) : base(options)
+    {
+    }
+
+    protected override void OnConfiguring(DbContextOptions options)
+    {
+        //SQL解析器限定为`TScope`范围
+        options.UseSqlResolver<TScope>();
+
+        //指定所用数据库
+        options.UseSqlServer("数据库连接字符串");
+    }
+}
+
+public class CommonDbContextOptions<TScope> : DbContextOptions<CommonDbContext<TScope>> where TScope : class
+{
+    public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
+    }
+}
+```
+
+`Startup.cs` 中注册 CommonDbContext
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    //注册Insql
+    services.AddInsql();
+
+    //注册公用的数据库上下文
+    services.AddScoped(typeof(CommonDbContext<>));
+    services.AddSingleton(typeof(CommonDbContextOptions<>));
+}
+```
+
+`ValuesController.cs` 或者在其他 Controller 中使用 CommonDbContext，也可以用在 Domain Service 中具体在哪里使用取决于自己。
+
+```csharp
+[Route("api/[controller]")]
+[ApiController]
+public class ValuesController : ControllerBase
+{
+    private readonly DbContext dbContext;
+
+    //CommonDbContext<TScope> TScope限定为当前Controller，这样在insql type中需要对应这个类型。
+    public ValuesController(CommonDbContext<ValuesController> dbContext)
+    {
+        this.dbContext = dbContext;
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
+    {
+        //查询用户
+        var user = this.dbContext.Query<UserPo>("GetUser", new { userId = "tom" });
+
+        //添加用户
+        this.dbContext.Execute("InsertUser", new UserPo
+        {
+            UserId = "tom",
+            UserName = "tom",
+            CreateTime = DateTime.Now
+        });
+
+        //查询角色列表
+        var roleList = this.dbContext.Query<RolePo>("GetRoleList");
+
+        return new string[] { "value1", "value2" };
+    }
+}
+```
+
+`ValuesController.insql.xml`
+
+```xml
+<!--insql type与CommonDbContext的 TScope对应-->
+<insql type="InsqlExample.Controllers.ValuesController,InsqlExample" >
+
+  <!--定义UserPo类型数据库字段到对象属性映射-->
+  <map type="InsqlExample.Models.UserPo,InsqlExample">
+    <key name="user_id" to="UserId" />
+    <column name="user_name" to="UserName" />
+    <column name="create_time" to="CreateTime" />
+  </map>
+
+  <map type="InsqlExample.Models.RolePo,InsqlExample">
+    <key name="role_code" to="RoleCode" />
+    <column name="role_name" to="RoleName" />
+    <column name="role_order" to="RoleOrder" />
+  </map>
+
+  <select id="GetUser">
+    select * from user_info where user_id = @userId
+  </select>
+
+  <insert id="InsertUser">
+    insert into user_info (user_name,create_time) value (@UserName,@CreateTime)
+    select SCOPE_IDENTITY();
+  </insert>
+
+  <select id="GetRoleList">
+    select * from role_info order by role_order
+  </select>
+</insql>
+```
+
+这样可以在其他位置注入 CommonDbContext<TScope>来随意使用。
+
+#### 4.3.3 只使用语句解析功能示例
 
 `User.insql.xml`
 
@@ -233,7 +351,7 @@ public class UserService : IUserService
 
 这样就可以实现语句解析与执行了。就这么简单。
 
-#### 4.3.3 事务使用
+#### 4.3.4 事务使用
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -288,7 +406,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-#### 4.3.4 SELECT IN
+#### 4.3.5 SELECT IN
 
 对于 SELECT IN 数组的用法，有两种
 

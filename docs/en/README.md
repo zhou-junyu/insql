@@ -116,10 +116,12 @@ public class UserDbContext : DbContext
 }
 ```
 
-`UserService.cs` Use UserDbContext
+Use UserDbContext in `ValuesController.cs` or `Domain Service` for presentation convenience in the Controller.
 
 ```csharp
-public class UserService : IUserService
+[Route("api/[controller]")]
+[ApiController]
+public class ValuesController : ControllerBase
 {
     private readonly UserDbContext dbContext;
 
@@ -128,14 +130,21 @@ public class UserService : IUserService
         this.dbContext = dbContext;
     }
 
-    public UserInfo GetUser(int userId)
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
     {
-        return this.dbContext.GetUser(userId);
+        //select User
+        var userInfo = this.dbContext.GetUser("tome");
+
+        //Can also be used like this, directly call sql through dbContext, and write the same method in DbContext
+        var roleList = this.dbContext.Query<RoleInfo>("GetRoleList");
+
+        return new string[] { "value1", "value2" };
     }
 }
 ```
 
-`Startup.cs` Register UserDbContext and UserService
+`Startup.cs` Register UserDbContext
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -150,14 +159,129 @@ public void ConfigureServices(IServiceCollection services)
       //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
-
-    services.AddScoped<IUserService,UserService>();
 }
 ```
 
 This is the complete use process, the example is to use the domain-driven model, you can use the situation depending on the situation. For example, UserDbContext can be injected into the Controller without the UserService.
 
-#### 4.3.2 Use only the statement parsing function example
+#### 4.3.2 Common database context usage example
+
+`CommonDbContext<>` only creates one and uses it everywhere.
+
+```csharp
+//TScope is a range type that can be specified at will, but needs to correspond to the insql type type
+public class CommonDbContext<TScope> : DbContext where TScope : class
+{
+    public CommonDbContext(CommonDbContextOptions<TScope> options) : base(options)
+    {
+    }
+
+    protected override void OnConfiguring(DbContextOptions options)
+    {
+        //The SQL parser is limited to the `TScope` range
+        options.UseSqlResolver<TScope>();
+
+        //Specify the database used
+        options.UseSqlServer("Connection String");
+    }
+}
+
+public class CommonDbContextOptions<TScope> : DbContextOptions<CommonDbContext<TScope>> where TScope : class
+{
+    public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
+    }
+}
+```
+
+Register CommonDbContext in `Startup.cs`
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    //Register Insql
+    services.AddInsql();
+
+    //Register a public database context
+    services.AddScoped(typeof(CommonDbContext<>));
+    services.AddSingleton(typeof(CommonDbContextOptions<>));
+}
+```
+
+`ValuesController.cs` or using CommonDbContext in other Controllers can also be used in the Domain Service depending on where you use it.
+
+```csharp
+[Route("api/[controller]")]
+[ApiController]
+public class ValuesController : ControllerBase
+{
+    private readonly DbContext dbContext;
+
+    //CommonDbContext<TScope> TScope is limited to the current Controller, so this type needs to be specified in the insql type.
+    public ValuesController(CommonDbContext<ValuesController> dbContext)
+    {
+        this.dbContext = dbContext;
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<string>> Get()
+    {
+        //Select User
+        var user = this.dbContext.Query<UserPo>("GetUser", new { userId = "tom" });
+
+        //Insert User
+        this.dbContext.Execute("InsertUser", new UserPo
+        {
+            UserId = "tom",
+            UserName = "tom",
+            CreateTime = DateTime.Now
+        });
+
+        //Select Role List
+        var roleList = this.dbContext.Query<RolePo>("GetRoleList");
+
+        return new string[] { "value1", "value2" };
+    }
+}
+```
+
+`ValuesController.insql.xml`
+
+```xml
+<!--Insql type corresponds to TScope of CommonDbContext-->
+<insql type="InsqlExample.Controllers.ValuesController,InsqlExample" >
+
+  <!--Define UserPo type database fields to object attribute mappings-->
+  <map type="InsqlExample.Models.UserPo,InsqlExample">
+    <key name="user_id" to="UserId" />
+    <column name="user_name" to="UserName" />
+    <column name="create_time" to="CreateTime" />
+  </map>
+
+  <map type="InsqlExample.Models.RolePo,InsqlExample">
+    <key name="role_code" to="RoleCode" />
+    <column name="role_name" to="RoleName" />
+    <column name="role_order" to="RoleOrder" />
+  </map>
+
+  <select id="GetUser">
+    select * from user_info where user_id = @userId
+  </select>
+
+  <insert id="InsertUser">
+    insert into user_info (user_name,create_time) value (@UserName,@CreateTime)
+    select SCOPE_IDENTITY();
+  </insert>
+
+  <select id="GetRoleList">
+    select * from role_info order by role_order
+  </select>
+</insql>
+```
+
+This allows you to inject CommonDbContext<TScope> elsewhere to use it at will.
+
+#### 4.3.3 Use only the statement parsing function example
 
 `User.insql.xml`
 
@@ -215,7 +339,7 @@ public class UserService : IUserService
 
 This allows the statement to be loaded and executed. It's that simple.
 
-#### 4.3.3 Use transaction
+#### 4.3.4 Use transaction
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -270,7 +394,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-#### 4.3.4 SELECT IN
+#### 4.3.5 SELECT IN
 
 For the use of SELECT IN arrays, there are two
 
