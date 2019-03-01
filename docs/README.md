@@ -11,11 +11,12 @@
 
 **Insql 是一个轻量级的.NET ORM 框架。对象映射基于 Dapper, Sql 配置灵感来自于 Mybatis。**
 
-**🚀追求简洁、优雅、性能与质量**
+**🚀 追求简洁、优雅、性能与质量**
 
-Insql提倡以写原生SQL的方式来访问数据库，整体功能分为三大块：
-- 统一管理SQL语句，使用XML作为SQL语句的载体，将原本需要在程序中硬编码的SQL语句外置并统一管理。提供可以从多种来源加载SQL语句以及跨多种数据库SQL的功能。
-- 提供丰富的映射机制，使用特性(Attribute)方式，Fluent方式，以及XML配置方式来实现数据库表到对象属性的映射。
+Insql 提倡以写原生 SQL 的方式来访问数据库，整体功能分为三大块：
+
+- 统一管理 SQL 语句，使用 XML 作为 SQL 语句的载体，将原本需要在程序中硬编码的 SQL 语句外置并统一管理。提供可以从多种来源加载 SQL 语句以及跨多种数据库 SQL 的功能。
+- 提供丰富的映射机制，使用特性(Attribute)方式，Fluent 方式，以及 XML 配置方式来实现数据库表到对象属性的映射。
 - 灵活的依赖注入与领域驱动模式的使用方式，可以更好的管理数据库连接以及数据库上下文的生命周期。
 
 QQ 交流群：737771272 欢迎加入
@@ -183,123 +184,7 @@ public void ConfigureServices(IServiceCollection services)
 
 这就是完整的使用流程，例子是使用领域驱动模型方式，自己使用时可以看情况而定。例如可以在 Controller 中注入 UserDbContext 使用，而不需要 UserService。
 
-#### 4.3.2 公用数据库上下文用法示例
-
-`CommonDbContext<>` 只建立一个并将它用在所有地方。
-
-```csharp
-//TScope 是一个范围类型，可以随意指定，但是需要与 insql type 类型对应
-public class CommonDbContext<TScope> : DbContext where TScope : class
-{
-    public CommonDbContext(CommonDbContextOptions<TScope> options) : base(options)
-    {
-    }
-
-    protected override void OnConfiguring(DbContextOptions options)
-    {
-        //SQL解析器限定为`TScope`范围
-        options.UseSqlResolver<TScope>();
-
-        //指定所用数据库
-        options.UseSqlServer("数据库连接字符串");
-    }
-}
-
-public class CommonDbContextOptions<TScope> : DbContextOptions<CommonDbContext<TScope>> where TScope : class
-{
-    public CommonDbContextOptions(IServiceProvider serviceProvider) : base(serviceProvider)
-    {
-    }
-}
-```
-
-`Startup.cs` 中注册 CommonDbContext
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    //注册Insql
-    services.AddInsql();
-
-    //注册公用的数据库上下文
-    services.AddScoped(typeof(CommonDbContext<>));
-    services.AddSingleton(typeof(CommonDbContextOptions<>));
-}
-```
-
-`ValuesController.cs` 或者在其他 Controller 中使用 CommonDbContext，也可以用在 Domain Service 中具体在哪里使用取决于自己。
-
-```csharp
-[Route("api/[controller]")]
-[ApiController]
-public class ValuesController : ControllerBase
-{
-    private readonly DbContext dbContext;
-
-    //CommonDbContext<TScope> TScope限定为当前Controller，这样在insql type中需要对应这个类型。
-    public ValuesController(CommonDbContext<ValuesController> dbContext)
-    {
-        this.dbContext = dbContext;
-    }
-
-    [HttpGet]
-    public ActionResult<IEnumerable<string>> Get()
-    {
-        //查询用户
-        var user = this.dbContext.Query<UserPo>("GetUser", new { userId = "tom" });
-
-        //添加用户
-        this.dbContext.Execute("InsertUser", new UserPo
-        {
-            UserId = "tom",
-            UserName = "tom",
-            CreateTime = DateTime.Now
-        });
-
-        //查询角色列表
-        var roleList = this.dbContext.Query<RolePo>("GetRoleList");
-
-        return new string[] { "value1", "value2" };
-    }
-}
-```
-
-`ValuesController.insql.xml`
-
-```xml
-<!--insql type与CommonDbContext的 TScope对应-->
-<insql type="InsqlExample.Controllers.ValuesController,InsqlExample" >
-
-  <!--定义UserPo类型数据库字段到对象属性映射-->
-  <map type="InsqlExample.Models.UserPo,InsqlExample">
-    <key name="user_id" to="UserId" />
-    <column name="user_name" to="UserName" />
-    <column name="create_time" to="CreateTime" />
-  </map>
-
-  <map type="InsqlExample.Models.RolePo,InsqlExample">
-    <key name="role_code" to="RoleCode" />
-    <column name="role_name" to="RoleName" />
-    <column name="role_order" to="RoleOrder" />
-  </map>
-
-  <select id="GetUser">
-    select * from user_info where user_id = @userId
-  </select>
-
-  <insert id="InsertUser">
-    insert into user_info (user_id,user_name,create_time) values (@UserId,@UserName,@CreateTime)
-  </insert>
-
-  <select id="GetRoleList">
-    select * from role_info order by role_order
-  </select>
-</insql>
-```
-
-这样可以在其他位置注入 CommonDbContext<TScope>来随意使用。
-
-#### 4.3.3 只使用语句解析功能示例
+#### 4.3.2 只使用语句解析功能示例
 
 `User.insql.xml`
 
@@ -357,7 +242,7 @@ public class UserService : IUserService
 
 这样就可以实现语句解析与执行了。就这么简单。
 
-#### 4.3.4 事务使用
+#### 4.3.3 事务使用
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -412,7 +297,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-#### 4.3.5 SELECT IN
+#### 4.3.4 SELECT IN
 
 对于 SELECT IN 数组的用法，有两种
 
