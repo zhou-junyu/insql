@@ -1,7 +1,9 @@
-﻿namespace Insql
+﻿using System;
+
+namespace Insql
 {
     public interface IDbSessionFactory
     {
-        IDbSession CreateSession();
+        IDbSession CreateSession(Type scopeType);
     }
 }
