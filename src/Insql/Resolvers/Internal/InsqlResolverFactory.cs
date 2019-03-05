@@ -1,6 +1,7 @@
 ﻿using Insql.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Insql.Resolvers
@@ -12,6 +13,7 @@ namespace Insql.Resolvers
         private readonly IInsqlResolveMatcher resolveMatcher;
         private readonly IEnumerable<IInsqlResolveFilter> resolveFilters;
         private readonly IDictionary<Type, InsqlDescriptor> insqlDescriptors;
+        private readonly ConcurrentDictionary<Type, InsqlDescriptor> defaultDescriptors;
 
         public InsqlResolverFactory(IServiceProvider serviceProvider)
         {
@@ -22,18 +24,22 @@ namespace Insql.Resolvers
             this.resolveFilters = serviceProvider.GetServices<IInsqlResolveFilter>();
 
             this.insqlDescriptors = this.descriptorLoader.Load();
+            this.defaultDescriptors = new ConcurrentDictionary<Type, InsqlDescriptor>();
         }
 
-        public IInsqlResolver GetResolver(Type type)
+        public IInsqlResolver CreateResolver(Type scopeType)
         {
-            if (insqlDescriptors.TryGetValue(type, out InsqlDescriptor insqlDescriptor))
+            if (scopeType == null)
             {
-                return new InsqlResolver(insqlDescriptor, this.serviceProvider, this.resolveMatcher, this.resolveFilters);
+                throw new ArgumentNullException(nameof(scopeType));
             }
 
-            //todo need return default empty resolver
+            if (!this.insqlDescriptors.TryGetValue(scopeType, out InsqlDescriptor insqlDescriptor))
+            {
+                insqlDescriptor = this.defaultDescriptors.GetOrAdd(scopeType, (stype) => new InsqlDescriptor(stype));
+            }
 
-            throw new Exception($"InsqlDescriptor : `{type.FullName}` not found !");
+            return new InsqlResolver(insqlDescriptor, this.serviceProvider, this.resolveMatcher, this.resolveFilters);
         }
     }
 }

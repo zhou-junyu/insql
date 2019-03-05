@@ -1,5 +1,4 @@
-﻿using Insql.Mappers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Insql.Resolvers
@@ -15,7 +14,7 @@ namespace Insql.Resolvers
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            this.resolver = factory.GetResolver(typeof(T));
+            this.resolver = factory.CreateResolver(typeof(T));
         }
         
         public ResolveResult Resolve(string dbType, string sqlId, IDictionary<string, object> sqlParam)

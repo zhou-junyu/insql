@@ -4,6 +4,6 @@ namespace Insql.Resolvers
 {
     public interface IInsqlResolverFactory
     {
-        IInsqlResolver GetResolver(Type type);
+        IInsqlResolver CreateResolver(Type scopeType);
     }
 }
