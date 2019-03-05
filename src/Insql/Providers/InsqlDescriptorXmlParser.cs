@@ -77,7 +77,7 @@ namespace Insql.Providers
                     throw new Exception("insql select insert sql section element `id` is empty !");
                 }
 
-                var section = new SqlInsqlSection(id.Value);
+                var section = new SelectSqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
@@ -93,7 +93,7 @@ namespace Insql.Providers
                     throw new Exception("insql insert sql section element `id` is empty !");
                 }
 
-                var section = new SqlInsqlSection(id.Value);
+                var section = new InsertSqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
@@ -109,7 +109,7 @@ namespace Insql.Providers
                     throw new Exception("insql update sql section element `id` is empty !");
                 }
 
-                var section = new SqlInsqlSection(id.Value);
+                var section = new UpdateSqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
@@ -125,7 +125,7 @@ namespace Insql.Providers
                     throw new Exception("insql delete sql section element `id` is empty !");
                 }
 
-                var section = new SqlInsqlSection(id.Value);
+                var section = new DeleteSqlSection(id.Value);
 
                 section.Elements.AddRange(this.ParseSqlSectionElements(element));
 
@@ -251,7 +251,10 @@ namespace Insql.Providers
                     throw new Exception("insql map section `type` is empty !");
                 }
 
-                var section = new MapInsqlSection(type.Value);
+                var section = new MapInsqlSection(type.Value)
+                {
+                    Table = element.Attribute(XName.Get("table", ""))?.Value,
+                };
 
                 foreach (var ele in this.ParseMapSectionElements(element))
                 {
@@ -277,14 +280,20 @@ namespace Insql.Providers
                                 return new KeyMapSectionElement(
                                     xelement.Attribute(XName.Get("name", ""))?.Value,
                                     xelement.Attribute(XName.Get("to", ""))?.Value
-                                );
+                                )
+                                {
+                                    Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false")
+                                };
                             }
                         case "column":
                             {
                                 return new ColumnMapSectionElement(
                                     xelement.Attribute(XName.Get("name", ""))?.Value,
                                     xelement.Attribute(XName.Get("to", ""))?.Value
-                                );
+                                )
+                                {
+                                    Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false")
+                                };
                             }
                     }
                 }

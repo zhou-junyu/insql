@@ -1,12 +1,4 @@
 ﻿using Insql;
-using Insql.Mappers;
-using Insql.Providers;
-using Insql.Providers.EmbeddedXml;
-using Insql.Resolvers;
-using Insql.Resolvers.Matchers;
-using Insql.Resolvers.Scripts;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -22,32 +14,25 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddOptions();
 
-            //sql resolver
-            services.TryAdd(ServiceDescriptor.Singleton<ISqlResolveMatcher, DefaultResolveMatcher>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultResolveMatcherOptions>, DefaultResolveMatcherOptionsSetup>());
-
-            services.TryAdd(ServiceDescriptor.Singleton<ISqlResolverFactory, SqlResolverFactory>());
-            services.TryAdd(ServiceDescriptor.Singleton(typeof(ISqlResolver<>), typeof(SqlResolver<>)));
-
-            //script resolver
-            services.TryAdd(ServiceDescriptor.Singleton<IInsqlScriptResolver, DefaultScriptResolver>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultScriptResolverOptions>, DefaultScriptResolverOptionsSetup>());
-
-            //descriptor provider
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, EmbeddedDescriptorProvider>());
-            services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<EmbeddedDescriptorOptions>, EmbeddedDescriptorOptionsSetup>());
-
-            //descriptor mapper
-            services.TryAdd(ServiceDescriptor.Singleton<IInsqlDescriptorMapper, DapperDescriptorMapper>());
+            new InsqlBuilder(services).AddProvider().AddResolver().AddMapper();
 
             return services;
         }
 
         public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure)
         {
-            services.AddInsql();
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+            if (configure == null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
 
-            configure(new InsqlBuilder(services));
+            services.AddOptions();
+
+            configure(new InsqlBuilder(services).AddProvider().AddResolver().AddMapper());
 
             return services;
         }

@@ -112,9 +112,12 @@ namespace Insql.Tests
 
             serviceCollection.AddInsql(builder =>
              {
-                 builder.AddDefaultScriptResolver(options =>
+                 builder.AddResolver(configure =>
                  {
-                     options.IsConvertOperator = false;
+                     configure.AddDefaultScripter(options => 
+                     {
+                         options.IsConvertOperator = false;
+                     });
                  });
              });
 
@@ -143,9 +146,12 @@ namespace Insql.Tests
 
             serviceCollection.AddInsql(builder =>
             {
-                builder.AddDefaultScriptResolver(options =>
+                builder.AddResolver(configure =>
                 {
-                    options.IsConvertOperator = false;
+                    configure.AddDefaultScripter(options =>
+                    {
+                        options.IsConvertOperator = false;
+                    });
                 });
             });
 

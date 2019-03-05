@@ -18,20 +18,16 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            this.CurrentConnection = connection;
+            this.Connection = connection;
 
             this.wasDisposed = wasDisposed;
 
-            this.originalClosed = this.CurrentConnection.State == ConnectionState.Closed;
+            this.originalClosed = this.Connection.State == ConnectionState.Closed;
         }
 
-        public IDbConnection CurrentConnection { get; }
+        public IDbConnection Connection { get; }
 
-        public IDbTransaction CurrentTransaction { get; private set; }
-
-        public string DbType { get; set; }
-
-        public bool SupportStatements { get; set; }
+        public IDbTransaction Transaction { get; private set; }
 
         public int? CommandTimeout { get; set; }
 
@@ -41,14 +37,14 @@ namespace Insql
             {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
-            if (this.CurrentTransaction != null)
+            if (this.Transaction != null)
             {
                 throw new Exception("The current transaction already exists.");
             }
 
             this.OpenTransaction();
 
-            this.CurrentTransaction = this.CurrentConnection.BeginTransaction();
+            this.Transaction = this.Connection.BeginTransaction();
         }
 
         public void BeginTransaction(IsolationLevel isolationLevel)
@@ -57,14 +53,14 @@ namespace Insql
             {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
-            if (this.CurrentTransaction != null)
+            if (this.Transaction != null)
             {
                 throw new Exception("The current transaction already exists.");
             }
 
             this.OpenTransaction();
 
-            this.CurrentTransaction = this.CurrentConnection.BeginTransaction(isolationLevel);
+            this.Transaction = this.Connection.BeginTransaction(isolationLevel);
         }
 
         public void CommitTransaction()
@@ -73,14 +69,14 @@ namespace Insql
             {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
-            if (this.CurrentTransaction == null)
+            if (this.Transaction == null)
             {
                 throw new Exception("Current transaction does not exist.");
             }
 
             try
             {
-                this.CurrentTransaction.Commit();
+                this.Transaction.Commit();
             }
             finally
             {
@@ -94,14 +90,14 @@ namespace Insql
             {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
-            if (this.CurrentTransaction == null)
+            if (this.Transaction == null)
             {
                 throw new Exception("Current transaction does not exist.");
             }
 
             try
             {
-                this.CurrentTransaction.Rollback();
+                this.Transaction.Rollback();
             }
             finally
             {
@@ -118,11 +114,11 @@ namespace Insql
 
             this.isDisposed = true;
 
-            if (this.CurrentTransaction != null)
+            if (this.Transaction != null)
             {
                 try
                 {
-                    this.CurrentTransaction.Rollback();
+                    this.Transaction.Rollback();
                 }
                 catch
                 {
@@ -131,24 +127,24 @@ namespace Insql
                 this.CloseTransaction();
             }
 
-            if (this.originalClosed && this.CurrentConnection.State != ConnectionState.Closed)
+            if (this.originalClosed && this.Connection.State != ConnectionState.Closed)
             {
-                this.CurrentConnection.Close();
+                this.Connection.Close();
             }
 
             if (this.wasDisposed)
             {
-                this.CurrentConnection.Dispose();
+                this.Connection.Dispose();
             }
         }
 
         private void OpenTransaction()
         {
-            if (this.CurrentConnection.State == ConnectionState.Closed)
+            if (this.Connection.State == ConnectionState.Closed)
             {
                 this.wasClosed = true;
 
-                this.CurrentConnection.Open();
+                this.Connection.Open();
             }
         }
 
@@ -156,19 +152,19 @@ namespace Insql
         {
             try
             {
-                this.CurrentTransaction.Dispose();
+                this.Transaction.Dispose();
             }
             catch
             {
             }
 
-            this.CurrentTransaction = null;
+            this.Transaction = null;
 
             if (this.wasClosed)
             {
                 this.wasClosed = false;
 
-                this.CurrentConnection.Close();
+                this.Connection.Close();
             }
         }
     }

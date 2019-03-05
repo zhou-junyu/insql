@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Insql.Tests.Filters
 {
-    public class LogResolveFilter : ISqlResolveFilter
+    public class LogResolveFilter : IInsqlResolveFilter
     {
         private readonly ILogger<LogResolveFilter> logger;
 

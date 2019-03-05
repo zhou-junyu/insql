@@ -26,7 +26,7 @@ namespace Insql.Resolvers.Elements
 
         public string Resolve(ResolveContext context)
         {
-            var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+            var codeExecuter = context.ServiceProvider.GetRequiredService<IInsqlResolveScripter>();
 
             var isTest = (bool)codeExecuter.Resolve(TypeCode.Boolean, this.Test, context.Param);
 

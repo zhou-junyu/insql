@@ -32,7 +32,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<EachSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<EachSectionElementTests>>();
 
                 var resolveResult = sqlResolver.Resolve(nameof(EachIn), new { userIdList = new string[] { "Tom", "Jerry" } });
 
@@ -49,7 +49,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<EachSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<EachSectionElementTests>>();
 
                 var resolveResult = sqlResolver.Resolve(nameof(EachInNull), new { userIdList = new string[] { } });
 
@@ -64,7 +64,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<ISqlResolver<EachSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<EachSectionElementTests>>();
 
                 var resolveResult = sqlResolver.Resolve(nameof(CDATATest));
 
