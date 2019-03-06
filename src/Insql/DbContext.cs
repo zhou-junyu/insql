@@ -58,7 +58,7 @@ namespace Insql
             return this.DbSession.CurrentConnection.Query<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
         }
 
-        public IEnumerable<object> Query<T>(Type type, string sqlId, object sqlParam = null)
+        public IEnumerable<object> Query(Type type, string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
@@ -107,7 +107,7 @@ namespace Insql
             return await this.DbSession.CurrentConnection.QueryAsync<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
         }
 
-        public async Task<IEnumerable<object>> QueryAsync<T>(Type type, string sqlId, object sqlParam = null)
+        public async Task<IEnumerable<object>> QueryAsync(Type type, string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
