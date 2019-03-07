@@ -27,16 +27,16 @@ namespace Insql.Resolvers
             this.defaultDescriptors = new ConcurrentDictionary<Type, InsqlDescriptor>();
         }
 
-        public IInsqlResolver CreateResolver(Type scopeType)
+        public IInsqlResolver CreateResolver(Type contextType)
         {
-            if (scopeType == null)
+            if (contextType == null)
             {
-                throw new ArgumentNullException(nameof(scopeType));
+                throw new ArgumentNullException(nameof(contextType));
             }
 
-            if (!this.insqlDescriptors.TryGetValue(scopeType, out InsqlDescriptor insqlDescriptor))
+            if (!this.insqlDescriptors.TryGetValue(contextType, out InsqlDescriptor insqlDescriptor))
             {
-                insqlDescriptor = this.defaultDescriptors.GetOrAdd(scopeType, (stype) => new InsqlDescriptor(stype));
+                insqlDescriptor = this.defaultDescriptors.GetOrAdd(contextType, (stype) => new InsqlDescriptor(stype));
             }
 
             return new InsqlResolver(insqlDescriptor, this.serviceProvider, this.resolveMatcher, this.resolveFilters);

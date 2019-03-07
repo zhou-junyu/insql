@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    internal class InsqlImpl : IInsql
+    internal class DbContext : IDbContext
     {
         private readonly object syncLock = new object();
 
@@ -18,9 +18,9 @@ namespace Insql
 
         private IDbSession dbSession;
 
-        public InsqlImpl(Type scopeType, IInsqlModel insqlModel, IInsqlResolver insqlResolver, IDbSessionFactory sessionFactory)
+        public DbContext(Type contextType, IInsqlModel insqlModel, IInsqlResolver insqlResolver, IDbSessionFactory sessionFactory)
         {
-            this.Type = scopeType;
+            this.Type = contextType;
             this.insqlModel = insqlModel;
             this.insqlResolver = insqlResolver;
             this.sessionFactory = sessionFactory;
@@ -162,8 +162,7 @@ namespace Insql
 
         public ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            //todo dbtype
-            return this.insqlResolver.Resolve("", sqlId, sqlParam);
+            return this.insqlResolver.Resolve(sqlId, sqlParam);
         }
     }
 }

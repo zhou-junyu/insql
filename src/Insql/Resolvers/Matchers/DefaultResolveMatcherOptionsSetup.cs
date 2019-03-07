@@ -6,8 +6,8 @@ namespace Insql.Resolvers.Matchers
     {
         public void Configure(DefaultResolveMatcherOptions options)
         {
-            options.CorssDbEnabled = true;
-            options.CorssDbSeparator = ".";
+            options.Enabled = true;
+            options.Separator = ".";
         }
     }
 }

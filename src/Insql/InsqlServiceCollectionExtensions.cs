@@ -1,4 +1,5 @@
 ﻿using Insql;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -12,14 +13,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services.AddOptions();
-
-            new InsqlBuilder(services).AddProvider().AddResolver().AddMapper();
-
-            return services;
+            return services.AddInsql(builder => { });
         }
 
-        public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure)
+        public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         {
             if (services == null)
             {
@@ -31,6 +28,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             services.AddOptions();
+
+            services.TryAdd(ServiceDescriptor.Singleton<IDbContextFactory, DbContextFactory>());
+            services.TryAdd(ServiceDescriptor.Describe(typeof(IDbContext<>), typeof(DbContext<>), lifetime));
 
             configure(new InsqlBuilder(services).AddProvider().AddResolver().AddMapper());
 

@@ -8,24 +8,14 @@ namespace Insql.Resolvers
     {
         public static ResolveResult Resolve(this IInsqlResolver sqlResolver, string sqlId)
         {
-            return sqlResolver.Resolve((string)null, sqlId, (IDictionary<string, object>)null);
-        }
-
-        public static ResolveResult Resolve(this IInsqlResolver sqlResolver, string sqlId, IDictionary<string, object> sqlParam)
-        {
-            return sqlResolver.Resolve((string)null, sqlId, sqlParam);
+            return sqlResolver.Resolve(sqlId, (IDictionary<string, object>)null);
         }
 
         public static ResolveResult Resolve(this IInsqlResolver sqlResolver, string sqlId, object sqlParam)
         {
-            return sqlResolver.Resolve((string)null, sqlId, sqlParam);
-        }
-
-        public static ResolveResult Resolve(this IInsqlResolver sqlResolver, string dbType, string sqlId, object sqlParam)
-        {
             if (sqlParam == null)
             {
-                return sqlResolver.Resolve(dbType, sqlId, (IDictionary<string, object>)null);
+                return sqlResolver.Resolve(sqlId, (IDictionary<string, object>)null);
             }
 
             var sqlParamDictionary = sqlParam as IEnumerable<KeyValuePair<string, object>>;
@@ -37,7 +27,7 @@ namespace Insql.Resolvers
                .Select(propInfo => new KeyValuePair<string, object>(propInfo.Name, propInfo.GetValue(sqlParam, null)));
             }
 
-            return sqlResolver.Resolve(dbType, sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value));
+            return sqlResolver.Resolve(sqlId, sqlParamDictionary.ToDictionary(item => item.Key, item => item.Value));
         }
     }
 }

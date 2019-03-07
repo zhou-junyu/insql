@@ -4,6 +4,6 @@ namespace Insql
 {
     public interface IDbSessionFactory
     {
-        IDbSession CreateSession(Type scopeType);
+        IDbSession CreateSession(Type contextType);
     }
 }

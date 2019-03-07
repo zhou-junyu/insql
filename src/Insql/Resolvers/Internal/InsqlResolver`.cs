@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Insql.Resolvers
 {
-    internal class InsqlResolver<T> : IInsqlResolver<T> where T : class
+    internal class InsqlResolver<TContext> : IInsqlResolver<TContext> where TContext : class
     {
         private readonly IInsqlResolver resolver;
 
@@ -14,12 +14,12 @@ namespace Insql.Resolvers
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            this.resolver = factory.CreateResolver(typeof(T));
+            this.resolver = factory.CreateResolver(typeof(TContext));
         }
-        
-        public ResolveResult Resolve(string dbType, string sqlId, IDictionary<string, object> sqlParam)
+
+        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam)
         {
-            return this.resolver.Resolve(dbType, sqlId, sqlParam);
+            return this.resolver.Resolve(sqlId, sqlParam);
         }
     }
 }

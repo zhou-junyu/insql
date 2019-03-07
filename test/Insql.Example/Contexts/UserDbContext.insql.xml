@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<insql type="Insql.Example.Contexts.UserDbContext,Insql.Example" >
+
+  <map type="Insql.Example.Model.UserPo,Insql.Example.Model">
+    <key name="user_id" to="UserId" />
+    <column name="user_name" to="UserName" />
+    <column name="user_gender" to="UserGender" />
+    <column name="create_time" to="CreateTime" />
+    <column name="login_time" to="LoginTime" />
+  </map>
+  
+  <select id="GetUser">
+    select * from user where user_id = @userId
+  </select>
+
+  <select id="GetUsers">
+    select * from user order by create_time
+  </select>
+  
+</insql>

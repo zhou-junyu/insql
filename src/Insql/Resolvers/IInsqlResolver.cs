@@ -4,6 +4,6 @@ namespace Insql.Resolvers
 {
     public interface IInsqlResolver
     {
-        ResolveResult Resolve(string dbType, string sqlId, IDictionary<string, object> sqlParam);
+        ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam);
     }
 }

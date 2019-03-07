@@ -2,8 +2,8 @@
 {
     public class DefaultResolveMatcherOptions
     {
-        public bool CorssDbEnabled { get; set; }
+        public bool Enabled { get; set; }
 
-        public string CorssDbSeparator { get; set; }
+        public string Separator { get; set; }
     }
 }

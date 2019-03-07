@@ -18,7 +18,7 @@ namespace Insql.Resolvers
             this.resolveFilters = resolveFilters;
         }
 
-        public ResolveResult Resolve(string dbType, string sqlId, IDictionary<string, object> sqlParam)
+        public ResolveResult Resolve(string sqlId, IDictionary<string, object> sqlParam)
         {
             if (string.IsNullOrWhiteSpace(sqlId))
             {
@@ -32,14 +32,14 @@ namespace Insql.Resolvers
 
             foreach (var filter in this.resolveFilters)
             {
-                filter.OnResolving(this.insqlDescriptor, dbType, sqlId, sqlParam);
+                filter.OnResolving(this.insqlDescriptor, sqlId, sqlParam);
             }
 
-            var insqlSection = this.resolveMatcher.Match(this.insqlDescriptor, dbType, sqlId, sqlParam);
+            var insqlSection = this.resolveMatcher.Match(this.insqlDescriptor, sqlId, sqlParam);
 
             if (insqlSection == null)
             {
-                throw new Exception($"insql sqlId : {sqlId} [InsqlSection] not found !");
+                throw new Exception($"insql `{sqlId}` section not found!");
             }
 
             var resolveContext = new ResolveContext

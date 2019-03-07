@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    public interface IInsql : IDisposable
+    public interface IDbContext : IDisposable
     {
         Type Type { get; }
 

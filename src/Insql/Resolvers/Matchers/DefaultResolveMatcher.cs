@@ -12,21 +12,23 @@ namespace Insql.Resolvers.Matchers
             this.options = options;
         }
 
-        public IInsqlSection Match(InsqlDescriptor insqlDescriptor, string dbType, string sqlId, IDictionary<string, object> sqlParam)
+        public IInsqlSection Match(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam)
         {
             var optionsValue = this.options.Value;
 
             IInsqlSection insqlSection;
 
-            if (optionsValue.CorssDbEnabled)
+            if (optionsValue.Enabled)
             {
-                if (!string.IsNullOrWhiteSpace(dbType))
-                {
-                    if (insqlDescriptor.Sections.TryGetValue($"{sqlId}{optionsValue.CorssDbSeparator}{dbType}", out insqlSection))
-                    {
-                        return insqlSection;
-                    }
-                }
+                //todo 
+
+                //if (!string.IsNullOrWhiteSpace(dbType))
+                //{
+                //    if (insqlDescriptor.Sections.TryGetValue($"{sqlId}{optionsValue.CorssDbSeparator}{dbType}", out insqlSection))
+                //    {
+                //        return insqlSection;
+                //    }
+                //}
             }
 
             if (insqlDescriptor.Sections.TryGetValue(sqlId, out insqlSection))

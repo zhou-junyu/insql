@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    internal class InsqlImpl<TScope> : IInsql<TScope>
-        where TScope : class
+    internal class DbContext<TContext> : IDbContext<TContext>
+        where TContext : class
     {
-        private readonly IInsql insql;
+        private readonly IDbContext insql;
 
-        public InsqlImpl(IInsqlFactory factory)
+        public DbContext(IDbContextFactory factory)
         {
-            this.insql = factory.Create(typeof(TScope));
+            this.insql = factory.CreateContext(typeof(TContext));
         }
 
         public Type Type => this.insql.Type;
