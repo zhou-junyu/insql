@@ -5,8 +5,8 @@ namespace Insql.Mappers
 {
     public interface IInsqlModel
     {
-        IInsqlEntityMap GetMap(Type entityType);
+        IEnumerable<IInsqlEntityMap> Maps { get; }
 
-        IEnumerable<IInsqlEntityMap> GetMaps();
+        IInsqlEntityMap FindMap(Type entityType);
     }
 }

@@ -11,6 +11,8 @@ namespace Insql.Mappers
     {
         private readonly Dictionary<Type, IInsqlEntityMap> entityMaps = new Dictionary<Type, IInsqlEntityMap>();
 
+        public IEnumerable<IInsqlEntityMap> Maps => this.entityMaps.Values;
+
         public InsqlModel(IOptions<InsqlModelOptions> options, IInsqlDescriptorLoader descriptorLoader, IInsqlEntityMapper entityMapper)
         {
             var optionsValue = options.Value;
@@ -25,7 +27,22 @@ namespace Insql.Mappers
             entityMapper.Mapping(this.entityMaps);
         }
 
-        public void LoadXmlEntityMaps(IInsqlDescriptorLoader descriptorLoader)
+        public IInsqlEntityMap FindMap(Type entityType)
+        {
+            if (entityType == null)
+            {
+                throw new ArgumentNullException(nameof(entityType));
+            }
+
+            if (this.entityMaps.TryGetValue(entityType, out IInsqlEntityMap entityMap))
+            {
+                return entityMap;
+            }
+
+            return null;
+        }
+
+        private void LoadXmlEntityMaps(IInsqlDescriptorLoader descriptorLoader)
         {
             var mapSections = new Dictionary<Type, IInsqlMapSection>();
 
@@ -73,31 +90,10 @@ namespace Insql.Mappers
                 return entityMap;
             }).ToDictionary(item => item.EntityType, item => (IInsqlEntityMap)item);
 
-            //-----
             foreach (var itemMap in resultMaps)
             {
                 this.entityMaps[itemMap.Key] = itemMap.Value;
             }
-        }
-
-        public IInsqlEntityMap GetMap(Type entityType)
-        {
-            if (entityType == null)
-            {
-                throw new ArgumentNullException(nameof(entityType));
-            }
-
-            if (this.entityMaps.TryGetValue(entityType, out IInsqlEntityMap entityMap))
-            {
-                return entityMap;
-            }
-
-            return null;
-        }
-
-        public IEnumerable<IInsqlEntityMap> GetMaps()
-        {
-            return this.entityMaps.Values;
         }
     }
 }

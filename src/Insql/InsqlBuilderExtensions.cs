@@ -7,6 +7,11 @@ namespace Insql
 {
     public static partial class InsqlBuilderExtensions
     {
+        public static IInsqlBuilder ConfigureOptions(this IInsqlBuilder builder)
+        {
+            
+        }
+
         public static IInsqlBuilder UserDbConnection(this IInsqlBuilder builder, IDbSessionFactory sessionFactory)
         {
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IDbSessionFactory>(sessionFactory));

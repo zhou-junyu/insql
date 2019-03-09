@@ -5,13 +5,13 @@ using System;
 
 namespace Insql
 {
-    internal class DbContextFactory : IDbContextFactory
+    internal class InsqlFactory : IInsqlFactory
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IDbSessionFactory sessionFactory;
         private readonly IInsqlModel insqlModel;
 
-        public DbContextFactory(IServiceProvider serviceProvider)
+        public InsqlFactory(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
 
@@ -19,11 +19,11 @@ namespace Insql
             this.sessionFactory = serviceProvider.GetRequiredService<IDbSessionFactory>();
         }
 
-        public IDbContext CreateContext(Type contextType)
+        public IInsql Create(Type contextType)
         {
             var insqlResolver = (IInsqlResolver)this.serviceProvider.GetRequiredService(typeof(IInsqlResolver<>).MakeGenericType(contextType));
 
-            return new DbContext(contextType, this.insqlModel, insqlResolver, this.sessionFactory);
+            return new InsqlImpl(contextType, this.insqlModel, insqlResolver, this.sessionFactory);
         }
     }
 }

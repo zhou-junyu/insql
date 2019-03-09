@@ -6,9 +6,9 @@ namespace Insql.Example.Contexts
 {
     public class UserDbContext
     {
-        private readonly IDbContext<UserDbContext> insql;
+        private readonly IInsql<UserDbContext> insql;
 
-        public UserDbContext(IDbContext<UserDbContext> insql)
+        public UserDbContext(IInsql<UserDbContext> insql)
         {
             this.insql = insql;
         }

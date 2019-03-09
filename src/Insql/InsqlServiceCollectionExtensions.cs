@@ -29,8 +29,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddOptions();
 
-            services.TryAdd(ServiceDescriptor.Singleton<IDbContextFactory, DbContextFactory>());
-            services.TryAdd(ServiceDescriptor.Describe(typeof(IDbContext<>), typeof(DbContext<>), lifetime));
+            services.TryAdd(ServiceDescriptor.Singleton<IInsql, InsqlFactory>());
+            services.TryAdd(ServiceDescriptor.Describe(typeof(IInsql<>), typeof(InsqlImpl<>), lifetime));
 
             configure(new InsqlBuilder(services).AddProvider().AddResolver().AddMapper());
 

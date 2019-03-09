@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    internal class DbContext<TContext> : IDbContext<TContext>
+    internal class InsqlImpl<TContext> : IInsql<TContext>
         where TContext : class
     {
-        private readonly IDbContext insql;
+        private readonly IInsql insql;
 
-        public DbContext(IDbContextFactory factory)
+        public InsqlImpl(IInsql factory)
         {
             this.insql = factory.CreateContext(typeof(TContext));
         }
