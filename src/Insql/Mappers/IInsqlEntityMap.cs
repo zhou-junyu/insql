@@ -7,8 +7,10 @@ namespace Insql.Mappers
     {
         Type EntityType { get; }
 
-        string TableName { get; }
+        string Table { get; }
 
-        IList<IInsqlPropertyMap> PropertyMaps { get; }
+        string Schema { get; }
+
+        IList<IInsqlPropertyMap> Properties { get; }
     }
 }

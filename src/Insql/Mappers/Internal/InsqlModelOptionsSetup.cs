@@ -6,8 +6,8 @@ namespace Insql.Mappers
     {
         public void Configure(InsqlModelOptions options)
         {
-            options.AnnotationMapEnabled = false;
-            options.FluentMapEnabled = false;
+            options.AnnotationMapScanEnabled = false;
+            options.FluentMapScanEnabled = false;
             options.XmlMapEnabled = true;
         }
     }

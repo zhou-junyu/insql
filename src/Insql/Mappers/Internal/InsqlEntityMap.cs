@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Insql.Mappers
 {
-    public class InsqlEntityMap : IInsqlEntityMap
+    internal class InsqlEntityMap : IInsqlEntityMap
     {
         public InsqlEntityMap(Type entityType)
         {
@@ -13,27 +13,30 @@ namespace Insql.Mappers
             }
 
             this.EntityType = entityType;
-            this.TableName = entityType.Name;
+            this.Table = entityType.Name;
         }
-        public InsqlEntityMap(Type entityType, string tableName)
+        public InsqlEntityMap(Type entityType, string table, string schema)
         {
             if (entityType == null)
             {
                 throw new ArgumentNullException(nameof(entityType));
             }
-            if (string.IsNullOrWhiteSpace(tableName))
+            if (string.IsNullOrWhiteSpace(table))
             {
-                throw new ArgumentNullException(nameof(tableName));
+                table = entityType.Name;
             }
 
             this.EntityType = entityType;
-            this.TableName = tableName;
+            this.Table = table;
+            this.Schema = schema;
         }
 
         public Type EntityType { get; }
 
-        public string TableName { get; }
+        public string Table { get; set; }
 
-        public IList<IInsqlPropertyMap> PropertyMaps { get; } = new List<IInsqlPropertyMap>();
+        public string Schema { get; set; }
+
+        public IList<IInsqlPropertyMap> Properties { get; } = new List<IInsqlPropertyMap>();
     }
 }

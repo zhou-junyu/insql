@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Insql.Mappers
 {
-    public class InsqlPropertyMap : IInsqlPropertyMap
+    internal class InsqlPropertyMap : IInsqlPropertyMap
     {
         public InsqlPropertyMap(PropertyInfo propertyInfo)
         {
@@ -23,14 +23,14 @@ namespace Insql.Mappers
             }
             if (string.IsNullOrWhiteSpace(columnName))
             {
-                throw new ArgumentNullException(nameof(columnName));
+                columnName = propertyInfo.Name;
             }
 
             this.PropertyInfo = propertyInfo;
             this.ColumnName = columnName;
         }
 
-        public string ColumnName { get; }
+        public string ColumnName { get; set; }
 
         public PropertyInfo PropertyInfo { get; }
 

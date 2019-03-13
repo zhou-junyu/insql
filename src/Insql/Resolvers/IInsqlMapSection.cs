@@ -9,6 +9,8 @@ namespace Insql.Resolvers
 
         string Table { get; }
 
+        string Schema { get; }
+
         Dictionary<string, IInsqlMapSectionElement> Elements { get; }
     }
 }

@@ -39,7 +39,7 @@ namespace Insql.Mappers
 
         private PropertyInfo GetProperty(Type type, string columnName)
         {
-            var propertyMap = this.entityMap.PropertyMaps.SingleOrDefault(o => o.ColumnName == columnName);
+            var propertyMap = this.entityMap.Properties.SingleOrDefault(o => o.ColumnName == columnName);
 
             if (propertyMap == null || propertyMap.IsIgnored)
             {

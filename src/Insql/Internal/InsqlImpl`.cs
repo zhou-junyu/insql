@@ -12,9 +12,9 @@ namespace Insql
     {
         private readonly IInsql insql;
 
-        public InsqlImpl(IInsql factory)
+        public InsqlImpl(IInsqlFactory factory)
         {
-            this.insql = factory.CreateContext(typeof(TContext));
+            this.insql = factory.Create(typeof(TContext));
         }
 
         public Type Type => this.insql.Type;

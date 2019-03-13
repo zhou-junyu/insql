@@ -3,7 +3,10 @@ using Insql.Resolvers;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 
 namespace Insql.Mappers
 {
@@ -17,9 +20,17 @@ namespace Insql.Mappers
         {
             var optionsValue = options.Value;
 
-            //todo add other
+            if (optionsValue.AnnotationMapScanEnabled)
+            {
+                this.LoadAnnotationEntityMaps(optionsValue.AnnotationMapScanAssemblies);
+            }
 
-            if (options.Value.XmlMapEnabled)
+            if (optionsValue.FluentMapScanEnabled)
+            {
+                this.LoadFluentEntityMaps(optionsValue.FluentMapScanAssemblies);
+            }
+
+            if (optionsValue.XmlMapEnabled)
             {
                 this.LoadXmlEntityMaps(descriptorLoader);
             }
@@ -42,6 +53,104 @@ namespace Insql.Mappers
             return null;
         }
 
+        private void LoadAnnotationEntityMaps(IEnumerable<Assembly> assemblies)
+        {
+            if (assemblies == null)
+            {
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
+            assemblies = assemblies.Where(assembly => !assembly.IsDynamic && !assembly.ReflectionOnly);
+
+            var resultMaps = assemblies.SelectMany(assembly =>
+            {
+                return assembly.GetTypes()
+                .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && type.GetCustomAttribute(typeof(TableAttribute), true) != null)
+                .Select(type => this.CreateAnnotationEntityMap(type));
+            }).ToDictionary(item => item.EntityType, item => item);
+
+            foreach (var itemMap in resultMaps)
+            {
+                this.entityMaps[itemMap.Key] = itemMap.Value;
+            }
+        }
+
+        private IInsqlEntityMap CreateAnnotationEntityMap(Type entityType)
+        {
+            TableAttribute tableAttribute = (TableAttribute)entityType.GetCustomAttribute(typeof(TableAttribute), true);
+
+            IInsqlEntityMap resultMap = new InsqlEntityMap(entityType, tableAttribute.Name, tableAttribute.Schema);
+
+            var columnMaps = entityType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public).Select(propInfo =>
+             {
+                 ColumnAttribute columnAttribute = (ColumnAttribute)propInfo.GetCustomAttribute(typeof(ColumnAttribute), true);
+                 KeyAttribute keyAttribute = (KeyAttribute)propInfo.GetCustomAttribute(typeof(KeyAttribute), true);
+                 NotMappedAttribute notMappedAttribute = (NotMappedAttribute)propInfo.GetCustomAttribute(typeof(NotMappedAttribute), true);
+                 DatabaseGeneratedAttribute databaseGeneratedAttribute = (DatabaseGeneratedAttribute)propInfo.GetCustomAttribute(typeof(DatabaseGeneratedAttribute), true);
+
+                 InsqlPropertyMap propertyMap = new InsqlPropertyMap(propInfo, columnAttribute?.Name);
+
+                 if (keyAttribute != null)
+                 {
+                     propertyMap.IsKey = true;
+                 }
+                 if (notMappedAttribute != null)
+                 {
+                     propertyMap.IsIgnored = true;
+                 }
+                 if (databaseGeneratedAttribute != null)
+                 {
+                     if (databaseGeneratedAttribute.DatabaseGeneratedOption == DatabaseGeneratedOption.Identity)
+                     {
+                         propertyMap.IsIdentity = true;
+                     }
+                 }
+
+                 return propertyMap;
+             });
+
+            foreach (var columnMap in columnMaps)
+            {
+                if (resultMap.Properties.Any(o => o.ColumnName == columnMap.ColumnName))
+                {
+                    throw new Exception($"insql entity type : {resultMap.EntityType} `{columnMap.ColumnName}` column name already exist!");
+                }
+                if (resultMap.Properties.Any(o => o.IsIdentity && columnMap.IsIdentity))
+                {
+                    throw new Exception($"insql entity type : {resultMap.EntityType} `{columnMap.ColumnName}` identity column cannot have multiple!");
+                }
+
+                resultMap.Properties.Add(columnMap);
+            }
+
+            return resultMap;
+        }
+
+        private void LoadFluentEntityMaps(IEnumerable<Assembly> assemblies)
+        {
+            var baseType = typeof(IInsqlEntityBuilder);
+
+            if (assemblies == null)
+            {
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
+            assemblies = assemblies.Where(assembly => !assembly.IsDynamic && !assembly.ReflectionOnly);
+
+            var resultMaps = assemblies.SelectMany(assembly =>
+            {
+                return assembly.GetTypes()
+                .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && baseType.IsAssignableFrom(type))
+                .Select(type => (IInsqlEntityBuilder)Activator.CreateInstance(type))
+                .Select(builder => builder.Build());
+            }).ToDictionary(item => item.EntityType, item => item);
+
+            foreach (var itemMap in resultMaps)
+            {
+                this.entityMaps[itemMap.Key] = itemMap.Value;
+            }
+        }
+
         private void LoadXmlEntityMaps(IInsqlDescriptorLoader descriptorLoader)
         {
             var mapSections = new Dictionary<Type, IInsqlMapSection>();
@@ -60,15 +169,15 @@ namespace Insql.Mappers
             {
                 var entityMap = string.IsNullOrWhiteSpace(mapSection.Table) ?
                     new InsqlEntityMap(mapSection.Type) :
-                    new InsqlEntityMap(mapSection.Type, mapSection.Table);
+                    new InsqlEntityMap(mapSection.Type, mapSection.Table, mapSection.Schema);
 
                 foreach (var mapElement in mapSection.Elements.Values)
                 {
-                    if (entityMap.PropertyMaps.Any(o => o.ColumnName == mapElement.Name))
+                    if (entityMap.Properties.Any(o => o.ColumnName == mapElement.Name))
                     {
                         throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.Name}` column name already exist!");
                     }
-                    if (entityMap.PropertyMaps.Any(o => o.IsIdentity && mapElement.Identity))
+                    if (entityMap.Properties.Any(o => o.IsIdentity && mapElement.Identity))
                     {
                         throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.Name}` identity column cannot have multiple!");
                     }
@@ -80,7 +189,7 @@ namespace Insql.Mappers
                         throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.To}` property is not exist!");
                     }
 
-                    entityMap.PropertyMaps.Add(new InsqlPropertyMap(propertyInfo, mapElement.Name)
+                    entityMap.Properties.Add(new InsqlPropertyMap(propertyInfo, mapElement.Name)
                     {
                         IsIdentity = mapElement.Identity,
                         IsKey = mapElement.ElementType == InsqlMapElementType.Key

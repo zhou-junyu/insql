@@ -34,7 +34,7 @@ namespace Insql.Providers.EmbeddedXml
 
             IEnumerable<Assembly> assemblies = optionsValue.Assemblies;
 
-            if (assemblies == null || assemblies.Count() < 1)
+            if (assemblies == null)
             {
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
