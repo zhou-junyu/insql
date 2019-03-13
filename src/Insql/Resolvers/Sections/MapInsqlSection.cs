@@ -11,6 +11,8 @@ namespace Insql.Resolvers.Sections
 
         public string Table { get; set; }
 
+        public string Schema { get; set; }
+
         public MapInsqlSection(string typeName)
         {
             if (string.IsNullOrWhiteSpace(typeName))

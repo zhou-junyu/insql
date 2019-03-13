@@ -15,7 +15,7 @@ namespace Insql
 
         IDbSession Session { get; }
 
-        IDbDialect Dialect { get; }
+        //IDbDialect Dialect { get; }
 
         ResolveResult Resolve(string sqlId, object sqlParam = null);
 

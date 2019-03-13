@@ -51,7 +51,7 @@ namespace Insql.Mappers
                 throw new ArgumentNullException(nameof(propertyInfo));
             }
 
-            return new InsqlEntityPropertyBuilder(this.entityMap, new InsqlPropertyMap(propertyInfo));
+            return new InsqlEntityPropertyBuilder(this.entityMap, propertyInfo);
         }
 
         public IInsqlEntityMap Build()

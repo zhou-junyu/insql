@@ -254,6 +254,7 @@ namespace Insql.Providers
                 var section = new MapInsqlSection(type.Value)
                 {
                     Table = element.Attribute(XName.Get("table", ""))?.Value,
+                    Schema = element.Attribute(XName.Get("schema", ""))?.Value,
                 };
 
                 foreach (var ele in this.ParseMapSectionElements(element))

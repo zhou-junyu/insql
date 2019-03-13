@@ -9,7 +9,7 @@ namespace Insql.Mappers
         private readonly IInsqlEntityMap entityMap;
         private readonly InsqlPropertyMap propertyMap;
 
-        internal InsqlEntityPropertyBuilder(IInsqlEntityMap entityMap, PropertyInfo propertyInfo)
+        public InsqlEntityPropertyBuilder(IInsqlEntityMap entityMap, PropertyInfo propertyInfo)
         {
             if (entityMap.Properties.Any(o => o.PropertyInfo.Name == propertyInfo.Name))
             {
