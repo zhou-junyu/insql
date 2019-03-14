@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Insql.Mappers
 {
     public class InsqlEntityBuilder<TEntity> : InsqlEntityBuilder
-        where TEntity : class
+        where TEntity : class, new()
     {
         public InsqlEntityBuilder() : base(typeof(TEntity))
         {

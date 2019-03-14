@@ -128,7 +128,7 @@ namespace Insql.Mappers
 
         private void LoadFluentEntityMaps(IEnumerable<Assembly> assemblies)
         {
-            var baseType = typeof(IInsqlEntityBuilder);
+            var baseType = typeof(InsqlEntityBuilder<>);
 
             if (assemblies == null)
             {
