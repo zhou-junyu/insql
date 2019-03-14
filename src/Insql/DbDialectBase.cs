@@ -16,6 +16,6 @@ namespace Insql
 
         public abstract bool SupportsSelectIdentity { get; }
 
-        public abstract string GetSelectIdentity(string table);
+        public abstract string GetIdentitySelectString(string table);
     }
 }

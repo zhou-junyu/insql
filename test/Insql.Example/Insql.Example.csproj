@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Insql\Insql.csproj" />
+    <ProjectReference Include="..\Insql.Example.Model2\Insql.Example.Model2.csproj" />
     <ProjectReference Include="..\Insql.Example.Model\Insql.Example.Model.csproj" />
   </ItemGroup>
 

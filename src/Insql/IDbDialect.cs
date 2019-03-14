@@ -14,6 +14,6 @@
 
         bool SupportsSelectIdentity { get; }
 
-        string GetSelectIdentity(string table);
+        string GetIdentitySelectString(string table);
     }
 }

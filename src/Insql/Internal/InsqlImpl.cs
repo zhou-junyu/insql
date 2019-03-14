@@ -38,6 +38,8 @@ namespace Insql
             }
         }
 
+        public IDbDialect Dialect => throw new NotImplementedException();
+
         public void Dispose()
         {
             if (this.dbSession != null)

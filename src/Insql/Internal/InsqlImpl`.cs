@@ -23,6 +23,8 @@ namespace Insql
 
         public IDbSession Session => this.insql.Session;
 
+        public IDbDialect Dialect => this.insql.Dialect;
+
         public void Dispose()
         {
             this.insql.Dispose();
