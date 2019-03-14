@@ -1,6 +1,6 @@
 # Insql
 
-[![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
+[![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q/branch/master?svg=true)](https://ci.appveyor.com/project/rainrcn/insql/branch/master)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 [![GitHub stars](https://img.shields.io/github/stars/rainrcn/insql.svg?style=social)](https://github.com/rainrcn/insql)
 [![star](https://gitee.com/rainrcn/insql/badge/star.svg?theme=white)](https://gitee.com/rainrcn/insql)
@@ -184,65 +184,7 @@ public void ConfigureServices(IServiceCollection services)
 
 这就是完整的使用流程，例子是使用领域驱动模型方式，自己使用时可以看情况而定。例如可以在 Controller 中注入 UserDbContext 使用，而不需要 UserService。
 
-#### 4.3.2 只使用语句解析功能示例
-
-`User.insql.xml`
-
-```xml
-<insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
-
-<insert id="InsertUser">
-  insert into user (user_name,user_gender)
-  values (@UserName,@UserGender)
-</insert>
-
-<update id="UpdateUserSelective">
-    update user_info
-    <set>
-      <if test="UserName != null">
-        user_name=@UserName,
-      </if>
-      user_gender=@UserGender
-    </set>
-    where user_id = @UserId
-  </update>
-</insql>
-```
-
-**_注意：在默认设置情况下 User.insql.xml 文件需要右键属性选择`嵌入式程序集文件方式`才会生效_**
-
-`UserService.cs`
-
-```csharp
-public class UserService : IUserService
-{
-  private readonly ISqlResolver<UserService> sqlResolver;
-
-  //注入ISqlResolver<T>，insql.xml中的`type`需要与`T`对应
-  public UserService(ISqlResolver<UserService> sqlResolver)
-  {
-      this.sqlResolver = sqlResolver;
-  }
-
-  public void UpdateUserSelective()
-  {
-      //解析SQL语句
-      var resolveResult = this.sqlResolver.Resolve("UpdateUserSelective", new UserInfo
-      {
-        UserId="10000",
-        UserName="tom",
-        UserGender = UserGender.W
-      });
-
-      //执行语句
-      //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
-  }
-}
-```
-
-这样就可以实现语句解析与执行了。就这么简单。
-
-#### 4.3.3 事务使用
+#### 4.3.2 事务使用
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -297,7 +239,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-#### 4.3.4 SELECT IN
+#### 4.3.3 SELECT IN
 
 对于 SELECT IN 数组的用法，有两种
 
