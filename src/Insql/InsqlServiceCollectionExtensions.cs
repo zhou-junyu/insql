@@ -1,8 +1,5 @@
 ﻿using Insql;
-using Insql.Providers;
-using Insql.Providers.EmbeddedXml;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -34,8 +31,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.TryAdd(ServiceDescriptor.Singleton<IInsqlFactory, InsqlFactory>());
             services.TryAdd(ServiceDescriptor.Describe(typeof(IInsql<>), typeof(InsqlImpl<>), lifetime));
-            
-            configure(new InsqlBuilder(services).AddEmbeddedXml().AddResolver().AddMapper());
+
+            configure(new InsqlBuilder(services).AddProvider().AddResolver().AddMapper());
 
             return services;
         }

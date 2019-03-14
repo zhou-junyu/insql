@@ -12,7 +12,7 @@ namespace Insql
         {
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlModel, InsqlModel>());
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<InsqlModelOptions>, InsqlModelOptionsSetup>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlEntityMapper, DapperEntityMapper>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlModelMapper, DapperModelMapper>());
 
             return builder;
         }

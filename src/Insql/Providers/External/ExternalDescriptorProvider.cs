@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Insql.Providers.ExternalXml
+namespace Insql.Providers.External
 {
     internal class ExternalDescriptorProvider : IInsqlDescriptorProvider
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Insql.Mappers
 {
-    internal class DapperEntityMapper : IInsqlEntityMapper
+    internal class DapperModelMapper : IInsqlModelMapper
     {
         public void Mapping(IDictionary<Type, IInsqlEntityMap> maps)
         {

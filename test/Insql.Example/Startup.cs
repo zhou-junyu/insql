@@ -24,8 +24,6 @@ namespace Insql.Example
 
             services.AddInsql(builder =>
             {
-                //builder.AddMapper(options=>options.)
-                //builder.AddResolver(configure=>configure.)
             });
 
             services.AddScoped<UserDbContext>();

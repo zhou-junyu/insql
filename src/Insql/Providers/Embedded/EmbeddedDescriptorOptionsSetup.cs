@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace Insql.Providers.EmbeddedXml
+namespace Insql.Providers.Embedded
 {
     internal class EmbeddedDescriptorOptionsSetup : IConfigureOptions<EmbeddedDescriptorOptions>
     {

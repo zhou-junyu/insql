@@ -1,4 +1,4 @@
-﻿namespace Insql.Providers.ExternalXml
+﻿namespace Insql.Providers.External
 {
     public class ExternalDescriptorOptions
     {

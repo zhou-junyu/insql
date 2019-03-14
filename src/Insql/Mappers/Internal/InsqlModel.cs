@@ -16,7 +16,7 @@ namespace Insql.Mappers
 
         public IEnumerable<IInsqlEntityMap> Maps => this.entityMaps.Values;
 
-        public InsqlModel(IOptions<InsqlModelOptions> options, IInsqlDescriptorLoader descriptorLoader, IInsqlEntityMapper entityMapper)
+        public InsqlModel(IOptions<InsqlModelOptions> options, IInsqlDescriptorLoader descriptorLoader, IInsqlModelMapper entityMapper)
         {
             var optionsValue = options.Value;
 

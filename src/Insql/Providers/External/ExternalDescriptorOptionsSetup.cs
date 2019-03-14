@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace Insql.Providers.ExternalXml
+namespace Insql.Providers.External
 {
     internal class ExternalDescriptorOptionsSetup : IConfigureOptions<ExternalDescriptorOptions>
     {

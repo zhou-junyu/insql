@@ -1,5 +1,5 @@
 ﻿using Insql.Providers;
-using Insql.Providers.ExternalXml;
+using Insql.Providers.External;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -7,22 +7,18 @@ using System;
 
 namespace Insql
 {
-    public static partial class InsqlBuilderExtensions
+    public static partial class InsqlProviderBuilderExtensions
     {
-        public static IInsqlBuilder AddExternalXml(this IInsqlBuilder builder)
+        public static IInsqlProviderBuilder AddExternalXml(this IInsqlProviderBuilder builder)
         {
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlDescriptorLoader, InsqlDescriptorLoader>());
-
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, ExternalDescriptorProvider>());
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ExternalDescriptorOptions>, ExternalDescriptorOptionsSetup>());
 
             return builder;
         }
 
-        public static IInsqlBuilder AddExternalXml(this IInsqlBuilder builder, Action<ExternalDescriptorOptions> configure)
+        public static IInsqlProviderBuilder AddExternalXml(this IInsqlProviderBuilder builder, Action<ExternalDescriptorOptions> configure)
         {
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlDescriptorLoader, InsqlDescriptorLoader>());
-
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, ExternalDescriptorProvider>());
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ExternalDescriptorOptions>, ExternalDescriptorOptionsSetup>());
 
