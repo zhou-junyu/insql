@@ -3,23 +3,23 @@ using System.Reflection;
 
 namespace Insql.Mappers
 {
-    public class InsqlEntityBuilder : IInsqlEntityBuilder
+    public class InsqlModelBuilder
     {
         private readonly InsqlEntityMap entityMap;
 
-        public InsqlEntityBuilder(Type entityType)
+        public InsqlModelBuilder(Type entityType)
         {
             this.entityMap = new InsqlEntityMap(entityType);
         }
 
-        public InsqlEntityBuilder Table(string table)
+        public InsqlModelBuilder Table(string table)
         {
             this.entityMap.Table = table;
 
             return this;
         }
 
-        public InsqlEntityBuilder Table(string table, string schema)
+        public InsqlModelBuilder Table(string table, string schema)
         {
             this.entityMap.Table = table;
             this.entityMap.Schema = schema;
@@ -27,7 +27,7 @@ namespace Insql.Mappers
             return this;
         }
 
-        public InsqlEntityPropertyBuilder Property(string propertyName)
+        public InsqlModelPropertyBuilder Property(string propertyName)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
@@ -44,14 +44,14 @@ namespace Insql.Mappers
             return this.Property(propertyInfo);
         }
 
-        public InsqlEntityPropertyBuilder Property(PropertyInfo propertyInfo)
+        public InsqlModelPropertyBuilder Property(PropertyInfo propertyInfo)
         {
             if (propertyInfo == null)
             {
                 throw new ArgumentNullException(nameof(propertyInfo));
             }
 
-            return new InsqlEntityPropertyBuilder(this.entityMap, propertyInfo);
+            return new InsqlModelPropertyBuilder(this.entityMap, propertyInfo);
         }
 
         public IInsqlEntityMap Build()

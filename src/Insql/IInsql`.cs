@@ -1,7 +1,7 @@
 ﻿namespace Insql
 {
-    public interface IInsql<TContext> : IInsql
-        where TContext : class
+    public interface IInsql<T> : IInsql
+        where T : class
     {
     }
 }

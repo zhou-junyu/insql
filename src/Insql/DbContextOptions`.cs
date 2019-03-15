@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Insql
 {
-    public interface IInsqlOptions<T> : IInsqlOptions
+    public class DbContextOptions<T> : DbContextOptions
+        where T : class
     {
     }
 }

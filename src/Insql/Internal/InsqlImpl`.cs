@@ -1,5 +1,6 @@
 ﻿using Insql.Mappers;
 using Insql.Resolvers;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,14 +8,18 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    internal class InsqlImpl<TContext> : IInsql<TContext>
-        where TContext : class
+    internal class InsqlImpl<T> : IInsql<T>
+        where T : class
     {
         private readonly IInsql insql;
 
-        public InsqlImpl(IInsqlOptions<TContext> options)
+        public InsqlImpl(IOptions<InsqlOptionsBuilderConfigure> configureOptions)
         {
-            this.insql = new InsqlImpl(options);
+            var optionsBuilder = new DbContextOptionsBuilder(typeof(T));
+
+            configureOptions.Value.Configure?.Invoke(optionsBuilder);
+
+            this.insql = new DbContext(optionsBuilder.Options);
         }
 
         public Type Type => this.insql.Type;

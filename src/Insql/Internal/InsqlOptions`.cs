@@ -3,21 +3,24 @@ using System;
 
 namespace Insql
 {
-    internal class InsqlOptions<TContext> : IInsqlOptions<TContext> where TContext : IInsql
+    internal class InsqlOptions<T> : IInsqlOptions<T> where T : IInsql
     {
+        private readonly IInsqlOptions options;
+
         public InsqlOptions(IOptions<InsqlOptionsBuilderConfigure> configureOptions)
         {
+            var optionsBuilder = new InsqlOptionsBuilder(typeof(T));
 
-            //配置
+            configureOptions.Value.Configure?.Invoke(optionsBuilder);
 
-            //new OptionsBuilder() configure 
+            this.options = optionsBuilder.Options;
         }
 
-        public Type Type => throw new NotImplementedException();
+        public Type ContextType => this.options.Type;
 
         public TExtension FindExtension<TExtension>() where TExtension : class
         {
-            throw new NotImplementedException();
+            return this.options.FindExtension<TExtension>();
         }
     }
 }

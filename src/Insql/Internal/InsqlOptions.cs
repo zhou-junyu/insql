@@ -1,10 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Insql.Internal
+namespace Insql
 {
-    internal abstract class InsqlOptions : IInsqlOptions
+    internal class InsqlOptions : IInsqlOptions
     {
-        public abstract Type Type { get; }
+        public InsqlOptions(Type type)
+        {
+            this.Type = type;
+        }
+
+        public Type Type { get; }
+
+        public TExtension FindExtension<TExtension>() where TExtension : class
+        {
+            throw new NotImplementedException();
+        }
     }
 }

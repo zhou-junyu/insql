@@ -8,63 +8,55 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    internal class InsqlImpl : IInsql
+    public class DbContext : IInsql
     {
-        private readonly object syncLock = new object();
+        private IDbSession session;
 
         private readonly IInsqlModel insqlModel;
         private readonly IInsqlResolver insqlResolver;
         private readonly IDbSessionFactory sessionFactory;
 
-        private IDbSession dbSession;
+        public Type Type => throw new NotImplementedException();
 
-        public InsqlImpl(IInsqlOptions options)
-        {
-            this.Type = options.Type;
+        public IInsqlModel Model => throw new NotImplementedException();
 
-            this.insqlModel = options.FindExtension<IInsqlModel>();
-
-            this.insqlResolver = options.FindExtension<IInsqlResolver>();
-
-            this.sessionFactory = options.FindExtension<IDbSessionFactory>();
-        }
-
-        public Type Type { get; }
-
-        public IInsqlModel Model => this.insqlModel;
-
-        public IDbSession Session
-        {
-            get
-            {
-                return this.GetSession();
-            }
-        }
+        public IDbSession Session => throw new NotImplementedException();
 
         public IDbDialect Dialect => throw new NotImplementedException();
 
+        internal DbContext(IInsqlOptions options)
+        {
+
+        }
+
+        public DbContext(DbContextOptions options)
+        {
+
+        }
+
         public void Dispose()
         {
-            if (this.dbSession != null)
+            if (this.session != null)
             {
-                this.dbSession.Dispose();
+                this.session.Dispose();
             }
         }
 
         private IDbSession GetSession()
         {
-            if (this.dbSession == null)
-            {
-                lock (this.syncLock)
-                {
-                    if (this.dbSession == null)
-                    {
-                        this.dbSession = this.sessionFactory.CreateSession(this.Type);
-                    }
-                }
-            }
+            //todo 
+            //if (this.session == null)
+            //{
+            //    lock (this.syncLock)
+            //    {
+            //        if (this.session == null)
+            //        {
+            //            this.session = this.sessionFactory.CreateSession(this.Type);
+            //        }
+            //    }
+            //}
 
-            return this.dbSession;
+            return this.session;
         }
 
         public int Execute(string sqlId, object sqlParam = null)
@@ -168,6 +160,14 @@ namespace Insql
         public ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
             return this.insqlResolver.Resolve(sqlId, sqlParam);
+        }
+
+        protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+        }
+
+        protected virtual void OnModelCreating(InsqlModelBuilder modelBuilder)
+        {
         }
     }
 }

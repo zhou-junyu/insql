@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Insql
 {
@@ -6,6 +7,8 @@ namespace Insql
     {
         Type Type { get; }
 
-        TExtension FindExtension<TExtension>() where TExtension : class;
+        IEnumerable<IInsqlOptionsExtension> Extensions { get; }
+
+        TExtension FindExtension<TExtension>() where TExtension : class, IInsqlOptionsExtension;
     }
 }

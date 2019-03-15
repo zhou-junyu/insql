@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace Insql.Mappers
 {
-    public class InsqlEntityPropertyBuilder
+    public class InsqlModelPropertyBuilder
     {
         private readonly IInsqlEntityMap entityMap;
         private readonly InsqlPropertyMap propertyMap;
 
-        public InsqlEntityPropertyBuilder(IInsqlEntityMap entityMap, PropertyInfo propertyInfo)
+        public InsqlModelPropertyBuilder(IInsqlEntityMap entityMap, PropertyInfo propertyInfo)
         {
             if (entityMap.Properties.Any(o => o.PropertyInfo.Name == propertyInfo.Name))
             {
@@ -23,7 +23,7 @@ namespace Insql.Mappers
             this.entityMap.Properties.Add(this.propertyMap);
         }
 
-        public InsqlEntityPropertyBuilder Column(string columnName)
+        public InsqlModelPropertyBuilder Column(string columnName)
         {
             if (string.IsNullOrWhiteSpace(columnName))
             {
@@ -35,14 +35,14 @@ namespace Insql.Mappers
             return this;
         }
 
-        public InsqlEntityPropertyBuilder Key()
+        public InsqlModelPropertyBuilder Key()
         {
             this.propertyMap.IsKey = true;
 
             return this;
         }
 
-        public InsqlEntityPropertyBuilder Identity()
+        public InsqlModelPropertyBuilder Identity()
         {
             if (this.entityMap.Properties.Any(o => o.PropertyInfo.Name != this.propertyMap.PropertyInfo.Name && o.IsIdentity))
             {
@@ -54,7 +54,7 @@ namespace Insql.Mappers
             return this;
         }
 
-        public InsqlEntityPropertyBuilder Ignore()
+        public InsqlModelPropertyBuilder Ignore()
         {
             this.propertyMap.IsIgnored = true;
 
