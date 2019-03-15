@@ -1,14 +1,23 @@
-﻿//using System;
-//using System.Collections.Generic;
+﻿using Microsoft.Extensions.Options;
+using System;
 
-//namespace Insql.Internal
-//{
-//    internal class InsqlOptions<TContext> : InsqlOptions where TContext : IInsql
-//    {
-//        public InsqlOptions() : base(new Dictionary<Type, IInsqlOptionsExtension>())
-//        {
-//        }
+namespace Insql
+{
+    internal class InsqlOptions<TContext> : IInsqlOptions<TContext> where TContext : IInsql
+    {
+        public InsqlOptions(IOptions<InsqlOptionsBuilderConfigure> configureOptions)
+        {
 
-//        public override Type Type => typeof(TContext);
-//    }
-//}
+            //配置
+
+            //new OptionsBuilder() configure 
+        }
+
+        public Type Type => throw new NotImplementedException();
+
+        public TExtension FindExtension<TExtension>() where TExtension : class
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

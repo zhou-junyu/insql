@@ -18,12 +18,15 @@ namespace Insql
 
         private IDbSession dbSession;
 
-        public InsqlImpl(Type contextType, IInsqlModel insqlModel, IInsqlResolver insqlResolver, IDbSessionFactory sessionFactory)
+        public InsqlImpl(IInsqlOptions options)
         {
-            this.Type = contextType;
-            this.insqlModel = insqlModel;
-            this.insqlResolver = insqlResolver;
-            this.sessionFactory = sessionFactory;
+            this.Type = options.Type;
+
+            this.insqlModel = options.FindExtension<IInsqlModel>();
+
+            this.insqlResolver = options.FindExtension<IInsqlResolver>();
+
+            this.sessionFactory = options.FindExtension<IDbSessionFactory>();
         }
 
         public Type Type { get; }

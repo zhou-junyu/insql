@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Insql
+﻿namespace Insql
 {
     public interface IDbSessionFactory
     {
-        IDbSession CreateSession(Type contextType);
+        IDbSession CreateSession();
     }
 }
