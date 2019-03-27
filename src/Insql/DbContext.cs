@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Insql
 {
-    public class DbContext : IInsql
+    public class DbContext : IDisposable
     {
         private IDbSession session;
 
@@ -23,11 +23,6 @@ namespace Insql
         public IDbSession Session => throw new NotImplementedException();
 
         public IDbDialect Dialect => throw new NotImplementedException();
-
-        internal DbContext(IInsqlOptions options)
-        {
-
-        }
 
         public DbContext(DbContextOptions options)
         {
@@ -157,7 +152,7 @@ namespace Insql
             return this.Session.Connection.QueryAsync(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public ResolveResult Resolve(string sqlId, object sqlParam = null)
+        public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
             return this.insqlResolver.Resolve(sqlId, sqlParam);
         }
@@ -168,6 +163,7 @@ namespace Insql
 
         protected virtual void OnModelCreating(InsqlModelBuilder modelBuilder)
         {
+            
         }
     }
 }

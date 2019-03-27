@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Insql.Mappers;
+using Insql.Resolvers;
+using System;
 
 namespace Insql
 {
-    public abstract class DbContextOptions : IInsqlOptions
+    public abstract class DbContextOptions
     {
-        public abstract Type Type { get; }
+        public abstract Type ContextType { get; }
 
-        public IEnumerable<IInsqlOptionsExtension> Extensions => throw new NotImplementedException();
+        public IInsqlResolver Resolver { get; set; }
 
-        public TExtension FindExtension<TExtension>()
-            where TExtension : class, IInsqlOptionsExtension
-        {
-            throw new NotImplementedException();
-        }
+        public IInsqlModel Model { get; set; }
 
-        public abstract void WithExtension<TExtension>(TExtension extension)
-            where TExtension : class, IInsqlOptionsExtension;
+        public string DbType { get; set; }
+
+        public IDbDialect DbDialect { get; set; }
+
+        public IDbSessionFactory SessionFactory { get; set; }
+
+        public IServiceProvider ServiceProvider { get; set; }
     }
 }

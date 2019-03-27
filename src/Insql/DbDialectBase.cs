@@ -12,7 +12,7 @@ namespace Insql
 
         public virtual string BatchSeperator => $";{Environment.NewLine}";
 
-        public virtual bool SupportsMultipleStatements => true;
+        public virtual bool SupportsBatchStatements => true;
 
         public abstract bool SupportsSelectIdentity { get; }
 

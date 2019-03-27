@@ -1,9 +1,9 @@
 ﻿namespace Insql
 {
-    public class DbContextOptionsBuilder<T> : DbContextOptionsBuilder
-        where T : DbContext
+    public class DbContextOptionsBuilder<TContext> : DbContextOptionsBuilder
+        where TContext : DbContext
     {
-        public DbContextOptionsBuilder() : base(typeof(T))
+        public DbContextOptionsBuilder() : base(typeof(TContext))
         {
         }
     }

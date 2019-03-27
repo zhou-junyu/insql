@@ -10,7 +10,8 @@
 
         string BatchSeperator { get; }
 
-        bool SupportsMultipleStatements { get; }
+        bool SupportsBatchStatements { get; }
+
 
         bool SupportsSelectIdentity { get; }
 

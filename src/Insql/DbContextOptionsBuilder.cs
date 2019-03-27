@@ -2,26 +2,19 @@
 
 namespace Insql
 {
-    public class DbContextOptionsBuilder : IInsqlOptionsBuilder
+    public class DbContextOptionsBuilder
     {
         private readonly DbContextOptions options;
 
-        public DbContextOptionsBuilder(Type type)
+        public DbContextOptionsBuilder(Type contextType)
         {
-            var optionsType = typeof(DbContextOptions<>).MakeGenericType(type);
+            var optionsType = typeof(DbContextOptions<>).MakeGenericType(contextType);
 
             this.options = (DbContextOptions)Activator.CreateInstance(optionsType);
         }
 
-        public IInsqlOptions Options => this.options;
+        public Type ContextType => this.options.ContextType;
 
-        public Type Type => this.options.Type;
-
-        public IInsqlOptionsBuilder UseExtension<TExtension>(TExtension extension) where TExtension : class, IInsqlOptionsExtension
-        {
-            this.options.WithExtension<TExtension>(extension);
-
-            return this;
-        }
+        public DbContextOptions Options => this.options;
     }
 }
