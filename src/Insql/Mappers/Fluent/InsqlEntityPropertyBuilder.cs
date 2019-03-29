@@ -44,11 +44,6 @@ namespace Insql.Mappers
 
         public InsqlEntityPropertyBuilder Identity()
         {
-            if (this.entityMap.Properties.Any(o => o.PropertyInfo.Name != this.propertyMap.PropertyInfo.Name && o.IsIdentity))
-            {
-                throw new Exception($"insql entity builder type : {this.entityMap.EntityType} `{this.propertyMap.PropertyInfo.Name}` identity column cannot have multiple!");
-            }
-
             this.propertyMap.IsIdentity = true;
 
             return this;

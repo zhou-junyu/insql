@@ -111,17 +111,10 @@ namespace Insql.Mappers
 
             foreach (var columnMap in columnMaps)
             {
-                if (resultMap.Properties.Any(o => o.ColumnName == columnMap.ColumnName))
-                {
-                    throw new Exception($"insql entity type : {resultMap.EntityType} `{columnMap.ColumnName}` column name already exist!");
-                }
-                if (resultMap.Properties.Any(o => o.IsIdentity && columnMap.IsIdentity))
-                {
-                    throw new Exception($"insql entity type : {resultMap.EntityType} `{columnMap.ColumnName}` identity column cannot have multiple!");
-                }
-
                 resultMap.Properties.Add(columnMap);
             }
+
+            InsqlEntityValidator.Instance.Validate(resultMap);
 
             return resultMap;
         }
@@ -173,15 +166,6 @@ namespace Insql.Mappers
 
                 foreach (var mapElement in mapSection.Elements.Values)
                 {
-                    if (entityMap.Properties.Any(o => o.ColumnName == mapElement.Name))
-                    {
-                        throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.Name}` column name already exist!");
-                    }
-                    if (entityMap.Properties.Any(o => o.IsIdentity && mapElement.Identity))
-                    {
-                        throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.Name}` identity column cannot have multiple!");
-                    }
-
                     var propertyInfo = mapSection.Type.GetProperty(mapElement.To);
 
                     if (propertyInfo == null)
@@ -195,6 +179,8 @@ namespace Insql.Mappers
                         IsKey = mapElement.ElementType == InsqlMapElementType.Key
                     });
                 }
+
+                InsqlEntityValidator.Instance.Validate(entityMap);
 
                 return entityMap;
             }).ToDictionary(item => item.EntityType, item => (IInsqlEntityMap)item);

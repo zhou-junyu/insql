@@ -56,6 +56,8 @@ namespace Insql.Mappers
 
         public IInsqlEntityMap Build()
         {
+            InsqlEntityValidator.Instance.Validate(this.entityMap);
+
             return this.entityMap;
         }
     }
