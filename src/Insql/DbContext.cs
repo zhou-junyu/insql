@@ -21,9 +21,7 @@ namespace Insql
         public IInsqlModel Model => throw new NotImplementedException();
 
         public IDbSession Session => throw new NotImplementedException();
-
-        public IDbDialect Dialect => throw new NotImplementedException();
-
+        
         public DbContext(DbContextOptions options)
         {
 
