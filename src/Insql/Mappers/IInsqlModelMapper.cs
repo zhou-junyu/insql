@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Insql.Mappers
 {
     public interface IInsqlModelMapper
     {
-        void Mapping(IDictionary<Type, IInsqlEntityMap> maps);
+        void Mapping(IEnumerable<IInsqlEntityMap> maps);
     }
 }
