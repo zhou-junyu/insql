@@ -35,7 +35,7 @@ namespace Insql.Mappers
                 this.LoadXmlEntityMaps(descriptorLoader);
             }
 
-            entityMapper.Mapping(this.entityMaps);
+            entityMapper.Mapping(this.entityMaps.Values);
         }
 
         public IInsqlEntityMap FindMap(Type entityType)
@@ -128,7 +128,7 @@ namespace Insql.Mappers
 
         private void LoadFluentEntityMaps(IEnumerable<Assembly> assemblies)
         {
-            var baseType = typeof(InsqlModelBuilder<>);
+            var baseType = typeof(InsqlEntityBuilder<>);
 
             if (assemblies == null)
             {
@@ -141,7 +141,7 @@ namespace Insql.Mappers
             {
                 return assembly.GetTypes()
                 .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && baseType.IsAssignableFrom(type))
-                .Select(type => (InsqlModelBuilder)Activator.CreateInstance(type))
+                .Select(type => (InsqlEntityBuilder)Activator.CreateInstance(type))
                 .Select(builder => builder.Build());
             }).ToDictionary(item => item.EntityType, item => item);
 

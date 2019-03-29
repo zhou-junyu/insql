@@ -161,7 +161,7 @@ namespace Insql
         {
         }
 
-        protected virtual void OnModelCreating(InsqlModelBuilder modelBuilder)
+        protected virtual void OnModelCreating(InsqlEntityBuilder modelBuilder)
         {
             
         }

@@ -4,14 +4,14 @@ using System.Reflection;
 
 namespace Insql.Mappers
 {
-    public class InsqlModelBuilder<TEntity> : InsqlModelBuilder
+    public class InsqlEntityBuilder<TEntity> : InsqlEntityBuilder
         where TEntity : class, new()
     {
-        public InsqlModelBuilder() : base(typeof(TEntity))
+        public InsqlEntityBuilder() : base(typeof(TEntity))
         {
         }
 
-        public InsqlModelPropertyBuilder Property(Expression<Func<TEntity, object>> expression)
+        public InsqlEntityPropertyBuilder Property(Expression<Func<TEntity, object>> expression)
         {
             if (expression == null)
             {
