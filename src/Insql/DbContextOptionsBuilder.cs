@@ -13,6 +13,11 @@ namespace Insql
             this.options = (DbContextOptions)Activator.CreateInstance(optionsType);
         }
 
+        public DbContextOptionsBuilder(DbContextOptions options)
+        {
+            this.options = options;
+        }
+
         public Type ContextType => this.options.ContextType;
 
         public DbContextOptions Options => this.options;
