@@ -9,16 +9,16 @@ namespace Insql
 {
     public static partial class InsqlResolverBuilderExtensions
     {
-        public static IInsqlResolverBuilder AddDefaultScripter(this IInsqlResolverBuilder builder, Action<DefaultResolveScripterOptions> configure)
+        public static IInsqlResolverBuilder AddScripter(this IInsqlResolverBuilder builder, Action<ResolveScripterOptions> configure)
         {
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveScripter, DefaultResolveScripter>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultResolveScripterOptions>, DefaultResolveScripterOptionsSetup>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveScripter, ResolveScripter>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ResolveScripterOptions>, ResolveScripterOptionsSetup>());
 
             if (configure != null)
             {
                 builder.Services.Configure(configure);
             }
-
+            
             return builder;
         }
     }

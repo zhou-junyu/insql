@@ -114,7 +114,7 @@ namespace Insql.Tests
              {
                  builder.AddResolver(configure =>
                  {
-                     configure.AddDefaultScripter(options => 
+                     configure.AddScripter(options => 
                      {
                          options.IsConvertOperator = false;
                      });
@@ -148,7 +148,7 @@ namespace Insql.Tests
             {
                 builder.AddResolver(configure =>
                 {
-                    configure.AddDefaultScripter(options =>
+                    configure.AddScripter(options =>
                     {
                         options.IsConvertOperator = false;
                     });

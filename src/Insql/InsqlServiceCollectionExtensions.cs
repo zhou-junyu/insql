@@ -1,5 +1,4 @@
 ﻿using Insql;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -29,8 +28,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddOptions();
             
-            services.TryAdd(ServiceDescriptor.Describe(typeof(IInsql<>), typeof(InsqlImpl<>), lifetime));
-
             configure(new InsqlBuilder(services).AddProvider().AddResolver().AddMapper());
 
             return services;

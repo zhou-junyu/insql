@@ -5,7 +5,7 @@ namespace Insql
 {
     public static partial class InsqlMapperBuilderExtensions
     {
-        public static IInsqlMapperBuilder DisableXmlMap(this IInsqlMapperBuilder builder)
+        public static IInsqlMapperBuilder DisableXmlMapScan(this IInsqlMapperBuilder builder)
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {

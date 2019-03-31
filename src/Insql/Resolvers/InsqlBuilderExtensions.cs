@@ -15,11 +15,10 @@ namespace Insql
             builder.Services.TryAdd(ServiceDescriptor.Singleton(typeof(IInsqlResolver<>), typeof(InsqlResolver<>)));
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolverFactory, InsqlResolverFactory>());
 
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveMatcher, DefaultResolveMatcher>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultResolveMatcherOptions>, DefaultResolveMatcherOptionsSetup>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveMatcher, ResolveMatcher>());
 
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveScripter, DefaultResolveScripter>());
-            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<DefaultResolveScripterOptions>, DefaultResolveScripterOptionsSetup>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveScripter, ResolveScripter>());
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ResolveScripterOptions>, ResolveScripterOptionsSetup>());
             
             return builder;
         }

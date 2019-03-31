@@ -11,17 +11,15 @@ namespace Insql
     public class DbContext : IDisposable
     {
         private IDbSession session;
+        private readonly IInsqlResolver resolver;
+        private readonly DbContextOptions options;
 
-        private readonly IInsqlModel insqlModel;
-        private readonly IInsqlResolver insqlResolver;
-        private readonly IDbSessionFactory sessionFactory;
+        public IInsqlModel Model => this.options.Model;
 
-        public Type Type => throw new NotImplementedException();
+        public IDbDialect Dialect => this.options.Dialect;
 
-        public IInsqlModel Model => throw new NotImplementedException();
+        public IDbSession Session => this.GetSession();
 
-        public IDbSession Session => throw new NotImplementedException();
-        
         public DbContext(DbContextOptions options)
         {
 
@@ -152,16 +150,11 @@ namespace Insql
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.insqlResolver.Resolve(sqlId, sqlParam);
+            return this.resolver.Resolve($"{sqlId}.{this.Dialect.DbType}", sqlParam);
         }
 
         protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-        }
-
-        protected virtual void OnModelCreating(InsqlEntityBuilder modelBuilder)
-        {
-            
         }
     }
 }

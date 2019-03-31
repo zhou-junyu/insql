@@ -2,9 +2,9 @@
 
 namespace Insql.Resolvers.Scripts
 {
-    internal class DefaultResolveScripterOptionsSetup : IConfigureOptions<DefaultResolveScripterOptions>
+    internal class ResolveScripterOptionsSetup : IConfigureOptions<ResolveScripterOptions>
     {
-        public void Configure(DefaultResolveScripterOptions options)
+        public void Configure(ResolveScripterOptions options)
         {
             options.IsConvertEnum = true;
             options.IsConvertOperator = true;

@@ -10,17 +10,17 @@ using System.Threading;
 
 namespace Insql.Resolvers.Scripts
 {
-    internal class DefaultResolveScripter : IInsqlResolveScripter
+    internal class ResolveScripter : IInsqlResolveScripter
     {
         private readonly Regex excludeRegex;
         private readonly Regex operatorRegex;
         private readonly ConcurrentDictionary<string, string> codeCaches;
         private readonly Dictionary<string, string> operatorMappings;
 
-        private readonly IOptions<DefaultResolveScripterOptions> options;
+        private readonly IOptions<ResolveScripterOptions> options;
         private readonly ThreadLocal<Engine> localEngine;
 
-        public DefaultResolveScripter(IOptions<DefaultResolveScripterOptions> options)
+        public ResolveScripter(IOptions<ResolveScripterOptions> options)
         {
             this.options = options;
 

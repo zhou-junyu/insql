@@ -10,6 +10,8 @@ namespace Insql
 
         public IInsqlResolver Resolver { get; set; }
 
+        public IDbDialect Dialect { get; set; }
+
         public IInsqlModel Model { get; set; }
 
         public IDbSessionFactory SessionFactory { get; set; }
