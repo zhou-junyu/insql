@@ -14,6 +14,10 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <Description>A lightweight .NET ORM framework</Description>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>D:\Projects\insql\src\Insql\Insql.xml</DocumentationFile>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
@@ -22,5 +26,9 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="SqlServer\" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,10 @@
     <Description>A lightweight .NET ORM framework, sqlite database adapter.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>D:\Projects\insql\src\Insql.Sqlite\Insql.Sqlite.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="2.2.1" />
   </ItemGroup>

@@ -10,44 +10,45 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
-        private IDbSession session;
-        private readonly IInsqlResolver resolver;
-        private readonly DbContextOptions options;
+        private readonly object lockSync = new object();
 
-        public IInsqlModel Model => this.options.Model;
+        private readonly DbContextOptions contextOptions;
 
-        public IDbDialect Dialect => this.options.Dialect;
+        private IDbSession dbSession;
 
-        public IDbSession Session => this.GetSession();
+        public virtual IDbSession Session => this.GetSession();
+
+        public IInsqlModel Model => this.contextOptions.Model;
+
+        public IDbDialect Dialect => this.contextOptions.Dialect;
 
         public DbContext(DbContextOptions options)
         {
-
-        }
-
-        public void Dispose()
-        {
-            if (this.session != null)
+            if (options == null)
             {
-                this.session.Dispose();
+                throw new ArgumentNullException(nameof(options));
             }
-        }
 
-        private IDbSession GetSession()
-        {
-            //todo 
-            //if (this.session == null)
-            //{
-            //    lock (this.syncLock)
-            //    {
-            //        if (this.session == null)
-            //        {
-            //            this.session = this.sessionFactory.CreateSession(this.Type);
-            //        }
-            //    }
-            //}
+            this.ConfigureOptions(options);
 
-            return this.session;
+            if (options.Model == null)
+            {
+                throw new ArgumentNullException(nameof(options.Model));
+            }
+            if (options.Resolver == null)
+            {
+                throw new ArgumentNullException(nameof(options.Resolver));
+            }
+            if (options.Dialect == null)
+            {
+                throw new ArgumentNullException(nameof(options.Dialect));
+            }
+            if (options.SessionFactory == null)
+            {
+                throw new ArgumentNullException(nameof(options.SessionFactory));
+            }
+
+            this.contextOptions = options;
         }
 
         public int Execute(string sqlId, object sqlParam = null)
@@ -150,11 +151,58 @@ namespace Insql
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.resolver.Resolve($"{sqlId}.{this.Dialect.DbType}", sqlParam);
+            return this.contextOptions.Resolver.Resolve($"{sqlId}.{this.contextOptions.Dialect.DbType}", sqlParam);
         }
 
         protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+        }
+
+        private void ConfigureOptions(DbContextOptions options)
+        {
+            if (!options.IsConfigured)
+            {
+                var needConfigure = false;
+
+                lock (this.lockSync)
+                {
+                    if (!options.IsConfigured)
+                    {
+                        options.IsConfigured = true;
+
+                        needConfigure = true;
+                    }
+                }
+
+                if (needConfigure)
+                {
+                    this.OnConfiguring(new DbContextOptionsBuilder(options));
+                }
+            }
+        }
+
+        private IDbSession GetSession()
+        {
+            if (this.dbSession == null)
+            {
+                lock (this.lockSync)
+                {
+                    if (this.dbSession == null)
+                    {
+                        this.dbSession = this.contextOptions.SessionFactory.CreateSession();
+                    }
+                }
+            }
+
+            return this.dbSession;
+        }
+
+        public void Dispose()
+        {
+            if (this.dbSession != null)
+            {
+                this.dbSession.Dispose();
+            }
         }
     }
 }

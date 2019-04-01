@@ -13,6 +13,10 @@
     <Description>A lightweight .NET ORM framework, mysql database adapter.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>D:\Projects\insql\src\Insql.MySql\Insql.MySql.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.15" />
   </ItemGroup>

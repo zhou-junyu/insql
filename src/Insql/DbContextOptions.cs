@@ -8,14 +8,16 @@ namespace Insql
     {
         public abstract Type ContextType { get; }
 
+        public IInsqlModel Model { get; set; }
+
         public IInsqlResolver Resolver { get; set; }
 
         public IDbDialect Dialect { get; set; }
 
-        public IInsqlModel Model { get; set; }
-
         public IDbSessionFactory SessionFactory { get; set; }
 
         public IServiceProvider ServiceProvider { get; set; }
+
+        public bool IsConfigured { get; set; }
     }
 }
