@@ -17,9 +17,10 @@ namespace Insql
 
             services.Add(new ServiceDescriptor(typeof(DbContextOptions<TContext>), (serviceProvider) =>
             {
-                var contextOptions = Activator.CreateInstance<DbContextOptions<TContext>>();
-
-                contextOptions.ServiceProvider = serviceProvider;
+                var contextOptions = new DbContextOptions<TContext>
+                {
+                    ServiceProvider = serviceProvider
+                };
 
                 options?.Invoke(contextOptions);
 

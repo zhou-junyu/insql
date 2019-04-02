@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddInsql(builder => { });
         }
 
-        public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        public static IServiceCollection AddInsql(this IServiceCollection services, Action<IInsqlBuilder> configure)
         {
             if (services == null)
             {

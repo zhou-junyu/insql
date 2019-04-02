@@ -10,17 +10,17 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
-        private readonly object lockSync = new object();
+        private readonly object _lock = new object();
 
-        private readonly DbContextOptions contextOptions;
+        private readonly DbContextOptions _options;
 
-        private IDbSession dbSession;
+        private IDbSession _session;
 
         public virtual IDbSession Session => this.GetSession();
 
-        public IInsqlModel Model => this.contextOptions.Model;
+        public IInsqlModel Model => this._options.Model;
 
-        public IDbDialect Dialect => this.contextOptions.Dialect;
+        public IDbDialect Dialect => this._options.Dialect;
 
         public DbContext(DbContextOptions options)
         {
@@ -48,7 +48,7 @@ namespace Insql
                 throw new ArgumentNullException(nameof(options.SessionFactory));
             }
 
-            this.contextOptions = options;
+            this._options = options;
         }
 
         public int Execute(string sqlId, object sqlParam = null)
@@ -151,7 +151,7 @@ namespace Insql
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.contextOptions.Resolver.Resolve($"{sqlId}.{this.contextOptions.Dialect.DbType}", sqlParam);
+            return this._options.Resolver.Resolve($"{sqlId}.{this._options.Dialect.DbType}", sqlParam);
         }
 
         protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -164,7 +164,7 @@ namespace Insql
             {
                 var needConfigure = false;
 
-                lock (this.lockSync)
+                lock (this._lock)
                 {
                     if (!options.IsConfigured)
                     {
@@ -183,25 +183,25 @@ namespace Insql
 
         private IDbSession GetSession()
         {
-            if (this.dbSession == null)
+            if (this._session == null)
             {
-                lock (this.lockSync)
+                lock (this._lock)
                 {
-                    if (this.dbSession == null)
+                    if (this._session == null)
                     {
-                        this.dbSession = this.contextOptions.SessionFactory.CreateSession();
+                        this._session = this._options.SessionFactory.CreateSession();
                     }
                 }
             }
 
-            return this.dbSession;
+            return this._session;
         }
 
         public void Dispose()
         {
-            if (this.dbSession != null)
+            if (this._session != null)
             {
-                this.dbSession.Dispose();
+                this._session.Dispose();
             }
         }
     }
