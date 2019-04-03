@@ -1,5 +1,4 @@
-﻿using Insql.Mappers;
-using Insql.Resolvers;
+﻿using Insql.Resolvers;
 using System;
 
 namespace Insql
@@ -7,8 +6,6 @@ namespace Insql
     public abstract class DbContextOptions
     {
         public abstract Type ContextType { get; }
-
-        public IInsqlModel Model { get; set; }
 
         public IInsqlResolver Resolver { get; set; }
 

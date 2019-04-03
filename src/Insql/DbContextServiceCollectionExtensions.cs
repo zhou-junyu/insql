@@ -1,5 +1,4 @@
-﻿using Insql.Mappers;
-using Insql.Resolvers;
+﻿using Insql.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -23,11 +22,7 @@ namespace Insql
                 };
 
                 options?.Invoke(contextOptions);
-
-                if (contextOptions.Model == null)
-                {
-                    contextOptions.Model = serviceProvider.GetRequiredService<IInsqlModel>();
-                }
+ 
                 if (contextOptions.Resolver == null)
                 {
                     contextOptions.Resolver = (IInsqlResolver)serviceProvider.GetRequiredService(typeof(IInsqlResolver<TContext>));

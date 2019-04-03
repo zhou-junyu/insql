@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Insql.Mappers;
 using Insql.Resolvers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,13 +13,15 @@ namespace Insql
     {
         private readonly object _lock = new object();
 
+        private readonly IInsqlModel _model;
+
         private readonly DbContextOptions _options;
 
         private IDbSession _session;
 
         public virtual IDbSession Session => this.GetSession();
 
-        public IInsqlModel Model => this._options.Model;
+        public IInsqlModel Model => this._model;
 
         public IDbDialect Dialect => this._options.Dialect;
 
@@ -31,10 +34,6 @@ namespace Insql
 
             this.ConfigureOptions(options);
 
-            if (options.Model == null)
-            {
-                throw new ArgumentNullException(nameof(options.Model));
-            }
             if (options.Resolver == null)
             {
                 throw new ArgumentNullException(nameof(options.Resolver));
@@ -49,6 +48,7 @@ namespace Insql
             }
 
             this._options = options;
+            this._model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
         }
 
         public int Execute(string sqlId, object sqlParam = null)
