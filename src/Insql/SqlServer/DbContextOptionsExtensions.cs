@@ -14,33 +14,36 @@ namespace Insql
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            builder.Options.SessionFactory = new SqlServerSessionFactory(builder, connectionString);
+            builder.Options.Dialect = SqlServerDialect.Instance;
+            builder.Options.SessionFactory = new SqlServerSessionFactory(builder.Options, connectionString);
 
             return builder;
         }
 
-        public static DbContextOptions UseSqlServer(this DbContextOptions options, string connectionString, SqlCredential credential)
+        public static DbContextOptionsBuilder UseSqlServer(this DbContextOptionsBuilder builder, string connectionString, SqlCredential connectionCredential)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            options.SessionFactory = new SqlServerSessionFactory(options, connectionString, credential);
+            builder.Options.Dialect = SqlServerDialect.Instance;
+            builder.Options.SessionFactory = new SqlServerSessionFactory(builder.Options, connectionString, connectionCredential);
 
-            return options;
+            return builder;
         }
 
-        public static DbContextOptions UseSqlServer(this DbContextOptions options, IDbConnection connection)
+        public static DbContextOptionsBuilder UseSqlServer(this DbContextOptionsBuilder builder, IDbConnection connection)
         {
             if (connection == null)
             {
                 throw new ArgumentNullException(nameof(connection));
             }
 
-            options.SessionFactory = new SqlServerSessionFactory(options, connection);
+            builder.Options.Dialect = SqlServerDialect.Instance;
+            builder.Options.SessionFactory = new SqlServerSessionFactory(builder.Options, connection);
 
-            return options;
+            return builder;
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Insql
 
         public IServiceProvider ServiceProvider { get; set; }
 
+        public int? CommandTimeout { get; set; }
+
         public bool IsConfigured { get; set; }
     }
 }

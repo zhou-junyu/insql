@@ -9,7 +9,7 @@ namespace Insql.SqlServer
         private readonly DbContextOptions contextOptions;
         private readonly IDbConnection dbConnection;
         private readonly string connectionString;
-        private readonly SqlCredential credential;
+        private readonly SqlCredential connectionCredential;
 
         public SqlServerSessionFactory(DbContextOptions contextOptions, IDbConnection dbConnection)
         {
@@ -41,7 +41,7 @@ namespace Insql.SqlServer
             this.connectionString = connectionString;
         }
 
-        public SqlServerSessionFactory(DbContextOptions contextOptions, string connectionString, SqlCredential credential)
+        public SqlServerSessionFactory(DbContextOptions contextOptions, string connectionString, SqlCredential connectionCredential)
         {
             if (contextOptions == null)
             {
@@ -54,7 +54,7 @@ namespace Insql.SqlServer
 
             this.contextOptions = contextOptions;
             this.connectionString = connectionString;
-            this.credential = credential;
+            this.connectionCredential = connectionCredential;
         }
 
 
@@ -68,9 +68,9 @@ namespace Insql.SqlServer
                 };
             }
 
-            if (this.credential != null)
+            if (this.connectionCredential != null)
             {
-                return new DbSession(new SqlConnection(connectionString, credential), true)
+                return new DbSession(new SqlConnection(connectionString, connectionCredential), true)
                 {
                     CommandTimeout = this.contextOptions.CommandTimeout,
                 };
