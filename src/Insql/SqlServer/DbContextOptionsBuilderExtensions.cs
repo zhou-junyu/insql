@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 
 namespace Insql
 {
-    public static partial class DbContextOptionsExtensions
+    public static partial class DbContextOptionsBuilderExtensions
     {
         public static DbContextOptionsBuilder UseSqlServer(this DbContextOptionsBuilder builder, string connectionString)
         {
