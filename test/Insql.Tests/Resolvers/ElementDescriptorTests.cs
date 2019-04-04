@@ -5,12 +5,12 @@ using Xunit;
 
 namespace Insql.Tests
 {
-    public class EachSectionElementTests : IDisposable
+    public class ElementDescriptorTests : IDisposable
     {
         private readonly IServiceCollection serviceCollection;
         private readonly IServiceProvider serviceProvider;
 
-        public EachSectionElementTests()
+        public ElementDescriptorTests()
         {
             this.serviceCollection = new ServiceCollection();
 
@@ -32,7 +32,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<EachSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<ElementDescriptorTests>>();
 
                 var resolveResult = sqlResolver.Resolve(nameof(EachIn), new { userIdList = new string[] { "Tom", "Jerry" } });
 
@@ -49,7 +49,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<EachSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<ElementDescriptorTests>>();
 
                 var resolveResult = sqlResolver.Resolve(nameof(EachInNull), new { userIdList = new string[] { } });
 
@@ -64,7 +64,7 @@ namespace Insql.Tests
         {
             using (var scopeProvider = this.serviceProvider.CreateScope())
             {
-                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<EachSectionElementTests>>();
+                var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<ElementDescriptorTests>>();
 
                 var resolveResult = sqlResolver.Resolve(nameof(CDATATest));
 

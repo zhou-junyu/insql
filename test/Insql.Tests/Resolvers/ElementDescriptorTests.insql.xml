@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<insql type="Insql.Tests.EachSectionElementTests,Insql.Tests" >
+<insql type="Insql.Tests.ElementDescriptorTests,Insql.Tests" >
 
   <select id="EachIn">
     select * from user_info where user_id in <each name="userIdList" open="(" separator="," close=")" prefix="@"  />

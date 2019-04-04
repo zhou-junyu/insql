@@ -1,4 +1,4 @@
-using Insql.Resolvers.Scripts;
+using Insql.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Insql.Tests
 {
-    public class JavascriptCodeResolverTests : IDisposable
+    public class ResolveScripterTests : IDisposable
     {
         public void Dispose()
         {
@@ -25,7 +25,7 @@ namespace Insql.Tests
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
-                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolveScripter>();
 
                     var result = (bool)resolver.Resolve(TypeCode.Boolean, " userId != null ", new Dictionary<string, object>
                     {
@@ -64,7 +64,7 @@ namespace Insql.Tests
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
-                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolveScripter>();
 
                     var code = " userId != null and userId == 'aa' ";
 
@@ -125,7 +125,7 @@ namespace Insql.Tests
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
-                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolveScripter>();
 
                     var code = @"var and = 'aa'; userId == and ";
 
@@ -159,7 +159,7 @@ namespace Insql.Tests
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
-                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlScriptResolver>();
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolveScripter>();
 
                     var code = @"userId !=null && userName != null";
 
