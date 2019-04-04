@@ -121,7 +121,7 @@ namespace Insql.Mappers
 
         private void LoadFluentEntityMaps(IEnumerable<Assembly> assemblies)
         {
-            var baseType = typeof(InsqlEntityBuilder<>);
+            var baseType = typeof(InsqlEntityBuilder);
 
             if (assemblies == null)
             {
@@ -133,7 +133,7 @@ namespace Insql.Mappers
             var resultMaps = assemblies.SelectMany(assembly =>
             {
                 return assembly.GetTypes()
-                .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && baseType.IsAssignableFrom(type))
+                .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && !type.IsGenericType && baseType != type && baseType.IsAssignableFrom(type))
                 .Select(type => (InsqlEntityBuilder)Activator.CreateInstance(type))
                 .Select(builder => builder.Build());
             }).ToDictionary(item => item.EntityType, item => item);
