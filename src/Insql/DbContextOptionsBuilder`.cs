@@ -6,5 +6,9 @@
         public DbContextOptionsBuilder() : base(new DbContextOptions<TContext>())
         {
         }
+
+        public DbContextOptionsBuilder(DbContextOptions options) : base(options)
+        {
+        }
     }
 }

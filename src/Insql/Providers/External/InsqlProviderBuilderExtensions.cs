@@ -9,7 +9,7 @@ namespace Insql
 {
     public static partial class InsqlProviderBuilderExtensions
     {
-        public static IInsqlProviderBuilder AddExternalXml(this IInsqlProviderBuilder builder)
+        public static InsqlProviderBuilder AddExternalXml(this InsqlProviderBuilder builder)
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, ExternalDescriptorProvider>());
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ExternalDescriptorOptions>, ExternalDescriptorOptionsSetup>());
@@ -17,7 +17,7 @@ namespace Insql
             return builder;
         }
 
-        public static IInsqlProviderBuilder AddExternalXml(this IInsqlProviderBuilder builder, Action<ExternalDescriptorOptions> configure)
+        public static InsqlProviderBuilder AddExternalXml(this InsqlProviderBuilder builder, Action<ExternalDescriptorOptions> configure)
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlDescriptorProvider, ExternalDescriptorProvider>());
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ExternalDescriptorOptions>, ExternalDescriptorOptionsSetup>());

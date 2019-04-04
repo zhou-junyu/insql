@@ -19,7 +19,7 @@ namespace Insql
             return builder;
         }
 
-        public static IInsqlBuilder AddProvider(this IInsqlBuilder builder, Action<IInsqlProviderBuilder> configure)
+        public static IInsqlBuilder AddProvider(this IInsqlBuilder builder, Action<InsqlProviderBuilder> configure)
         {
             builder.AddProvider();
 

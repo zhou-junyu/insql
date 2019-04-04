@@ -47,8 +47,17 @@ namespace Insql
                 throw new ArgumentNullException(nameof(options.SessionFactory));
             }
 
-            this._options = options;
             this._model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
+
+            this._options = options;
+        }
+
+        public virtual void Dispose()
+        {
+            if (this._session != null)
+            {
+                this._session.Dispose();
+            }
         }
 
         public int Execute(string sqlId, object sqlParam = null)
@@ -195,14 +204,6 @@ namespace Insql
             }
 
             return this._session;
-        }
-
-        public void Dispose()
-        {
-            if (this._session != null)
-            {
-                this._session.Dispose();
-            }
         }
     }
 }

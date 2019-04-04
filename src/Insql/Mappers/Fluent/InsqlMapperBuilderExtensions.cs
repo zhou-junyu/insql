@@ -8,7 +8,7 @@ namespace Insql
 {
     public static partial class InsqlMapperBuilderExtensions
     {
-        public static IInsqlMapperBuilder EnabledFluentMapScan(this IInsqlMapperBuilder builder)
+        public static InsqlMapperBuilder EnabledFluentMapScan(this InsqlMapperBuilder builder)
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {
@@ -18,7 +18,7 @@ namespace Insql
             return builder;
         }
 
-        public static IInsqlMapperBuilder EnabledFluentMapScan(this IInsqlMapperBuilder builder, IEnumerable<Assembly> assemblies)
+        public static InsqlMapperBuilder EnabledFluentMapScan(this InsqlMapperBuilder builder, IEnumerable<Assembly> assemblies)
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {

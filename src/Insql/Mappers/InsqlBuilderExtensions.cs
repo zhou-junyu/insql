@@ -17,7 +17,7 @@ namespace Insql
             return builder;
         }
 
-        public static IInsqlBuilder AddMapper(this IInsqlBuilder builder, Action<IInsqlMapperBuilder> configre)
+        public static IInsqlBuilder AddMapper(this IInsqlBuilder builder, Action<InsqlMapperBuilder> configre)
         {
             builder.AddMapper();
 

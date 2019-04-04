@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Insql.Resolvers
+namespace Insql.Providers
 {
-    internal class InsqlResolverBuilder : IInsqlResolverBuilder
+    public class InsqlProviderBuilder
     {
-        public InsqlResolverBuilder(IServiceCollection services)
+        public InsqlProviderBuilder(IServiceCollection services)
         {
             this.Services = services;
         }

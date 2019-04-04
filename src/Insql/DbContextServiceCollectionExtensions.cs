@@ -1,5 +1,4 @@
-﻿using Insql.Resolvers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Insql
@@ -7,7 +6,7 @@ namespace Insql
     public static class DbContextServiceCollectionExtensions
     {
         public static IServiceCollection AddDbContext<TContext>(this IServiceCollection services,
-            Action<DbContextOptions<TContext>> options = null,
+            Action<DbContextOptionsBuilder<TContext>> optionsConfigure = null,
             ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
             ServiceLifetime optionsLifetime = ServiceLifetime.Singleton)
           where TContext : DbContext
@@ -16,24 +15,34 @@ namespace Insql
 
             services.Add(new ServiceDescriptor(typeof(DbContextOptions<TContext>), (serviceProvider) =>
             {
-                var contextOptions = new DbContextOptions<TContext>
+                var optionsBuilder = new DbContextOptionsBuilder<TContext>(new DbContextOptions<TContext>
                 {
                     ServiceProvider = serviceProvider
-                };
+                });
 
-                options?.Invoke(contextOptions);
- 
-                if (contextOptions.Resolver == null)
+                optionsConfigure?.Invoke(optionsBuilder);
+
+                if (optionsBuilder.Options.Resolver == null)
                 {
-                    contextOptions.Resolver = (IInsqlResolver)serviceProvider.GetRequiredService(typeof(IInsqlResolver<TContext>));
+                    optionsBuilder.UseResolver<TContext>();
                 }
 
-                return contextOptions;
+                return optionsBuilder.Options;
             }, optionsLifetime));
 
             services.Add(new ServiceDescriptor(contextType, contextType, contextLifetime));
 
             return services;
+        }
+
+        [Obsolete]
+        public static IServiceCollection AddInsqlDbContext<TContext>(this IServiceCollection services,
+            Action<DbContextOptionsBuilder<TContext>> optionsConfigure = null,
+            ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
+            ServiceLifetime optionsLifetime = ServiceLifetime.Singleton)
+          where TContext : DbContext
+        {
+            return services.AddDbContext<TContext>(optionsConfigure, contextLifetime, optionsLifetime);
         }
     }
 }

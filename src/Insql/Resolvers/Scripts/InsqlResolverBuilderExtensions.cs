@@ -9,7 +9,7 @@ namespace Insql
 {
     public static partial class InsqlResolverBuilderExtensions
     {
-        public static IInsqlResolverBuilder AddScripter(this IInsqlResolverBuilder builder, Action<ResolveScripterOptions> configure)
+        public static InsqlResolverBuilder AddScripter(this InsqlResolverBuilder builder, Action<ResolveScripterOptions> configure)
         {
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IInsqlResolveScripter, ResolveScripter>());
             builder.Services.TryAdd(ServiceDescriptor.Singleton<IConfigureOptions<ResolveScripterOptions>, ResolveScripterOptionsSetup>());

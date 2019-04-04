@@ -6,21 +6,21 @@ namespace Insql
 {
     public static partial class InsqlResolverBuilderExtensions
     {
-        public static IInsqlResolverBuilder AddFilter(this IInsqlResolverBuilder builder, IInsqlResolveFilter filter)
+        public static InsqlResolverBuilder AddFilter(this InsqlResolverBuilder builder, IInsqlResolveFilter filter)
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton(filter));
 
             return builder;
         }
 
-        public static IInsqlResolverBuilder AddFilter<T>(this IInsqlResolverBuilder builder) where T : class, IInsqlResolveFilter
+        public static InsqlResolverBuilder AddFilter<T>(this InsqlResolverBuilder builder) where T : class, IInsqlResolveFilter
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IInsqlResolveFilter, T>());
 
             return builder;
         }
 
-        public static IInsqlResolverBuilder ClearFilters(this IInsqlResolverBuilder builder)
+        public static InsqlResolverBuilder ClearFilters(this InsqlResolverBuilder builder)
         {
             builder.Services.RemoveAll<IInsqlResolveFilter>();
 

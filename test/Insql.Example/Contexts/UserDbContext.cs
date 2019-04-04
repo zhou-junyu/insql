@@ -4,23 +4,20 @@ using System.Linq;
 
 namespace Insql.Example.Contexts
 {
-    public class UserDbContext
+    public class UserDbContext : DbContext
     {
-        private readonly IInsql<UserDbContext> insql;
-
-        public UserDbContext(IInsql<UserDbContext> insql)
+        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
         {
-            this.insql = insql;
         }
 
         public UserPo GetUser(int userId)
         {
-            return this.insql.Query<UserPo>(nameof(GetUser), new { userId }).SingleOrDefault();
+            return this.Query<UserPo>(nameof(GetUser), new { userId }).SingleOrDefault();
         }
 
         public IEnumerable<UserPo> GetUsers()
         {
-            return this.insql.Query<UserPo>(nameof(GetUsers));
+            return this.Query<UserPo>(nameof(GetUsers));
         }
     }
 }

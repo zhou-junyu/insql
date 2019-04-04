@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySql.Data.MySqlClient;
 
 namespace Insql.Example
 {
@@ -24,10 +23,12 @@ namespace Insql.Example
 
             services.AddInsql(builder =>
             {
-               
             });
 
-            services.AddScoped<UserDbContext>();
+            services.AddDbContext<UserDbContext>(builder =>
+            {
+                builder.UseSqlServer("ssdfdsf");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

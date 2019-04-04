@@ -1,13 +1,21 @@
-﻿namespace Insql.SqlServer
+﻿using System;
+
+namespace Insql.SqlServer
 {
-    internal class SqlServerDialect : DbDialect
+    internal class SqlServerDialect : IDbDialect
     {
         public static SqlServerDialect Instance = new SqlServerDialect();
 
-        public override string DbType => "SqlServer";
+        public string DbType => "SqlServer";
 
-        public override char OpenQuote => '[';
+        public char OpenQuote => '[';
 
-        public override char CloseQuote => ']';
+        public char CloseQuote => ']';
+
+        public  char ParameterPrefix => '@';
+
+        public  string BatchSeperator => $";{Environment.NewLine}";
+
+        public  bool SupportsBatchStatements => true;
     }
 }

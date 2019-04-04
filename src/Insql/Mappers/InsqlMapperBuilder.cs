@@ -2,7 +2,7 @@
 
 namespace Insql.Mappers
 {
-    internal class InsqlMapperBuilder : IInsqlMapperBuilder
+    public class InsqlMapperBuilder
     {
         public InsqlMapperBuilder(IServiceCollection services)
         {

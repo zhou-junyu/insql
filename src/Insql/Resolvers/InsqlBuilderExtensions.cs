@@ -23,7 +23,7 @@ namespace Insql
             return builder;
         }
 
-        public static IInsqlBuilder AddResolver(this IInsqlBuilder builder, Action<IInsqlResolverBuilder> configure)
+        public static IInsqlBuilder AddResolver(this IInsqlBuilder builder, Action<InsqlResolverBuilder> configure)
         {
             builder.AddResolver();
 
