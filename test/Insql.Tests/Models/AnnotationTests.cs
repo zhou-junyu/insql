@@ -13,7 +13,10 @@ namespace Insql.Tests
         {
             var serviceProvider = this.CreateServiceProvider(builder =>
             {
-                builder.AddMapper(options => options.EnabledAnnotationMapScan());
+                builder.AddMapper(options => 
+                {
+                    options.DisableXmlMapScan().EnabledAnnotationMapScan();
+                });
             });
 
             using (serviceProvider)
@@ -72,6 +75,10 @@ namespace Insql.Tests
         {
             var serviceProvider = this.CreateServiceProvider(builder =>
             {
+                builder.AddMapper(options =>
+                {
+                    options.DisableXmlMapScan();
+                });
             });
 
             using (serviceProvider)
