@@ -4,9 +4,11 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Contexts\SqliteDbContext.insql.xml" />
     <None Remove="EachSectionElementTests.insql.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Contexts\SqliteDbContext.insql.xml" />
     <EmbeddedResource Include="Resolvers\ElementDescriptorTests.insql.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -24,8 +26,5 @@
     <ProjectReference Include="..\..\src\Insql\Insql.csproj" />
     <ProjectReference Include="..\Insql.Models.ModelOne\Insql.Models.ModelOne.csproj" />
     <ProjectReference Include="..\Insql.Models.ModelTwo\Insql.Models.ModelTwo.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Contexts\" />
   </ItemGroup>
 </Project>
