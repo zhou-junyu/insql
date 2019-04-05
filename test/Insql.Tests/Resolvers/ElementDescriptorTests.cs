@@ -1,36 +1,15 @@
 ﻿using Insql.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Xunit;
 
 namespace Insql.Tests
 {
-    public class ElementDescriptorTests : IDisposable
+    public class ElementDescriptorTests : TestsBase
     {
-        private readonly IServiceCollection serviceCollection;
-        private readonly IServiceProvider serviceProvider;
-
-        public ElementDescriptorTests()
-        {
-            this.serviceCollection = new ServiceCollection();
-
-            this.serviceCollection.AddInsql();
-
-            this.serviceProvider = this.serviceCollection.BuildServiceProvider();
-        }
-
-        public void Dispose()
-        {
-            if (this.serviceProvider is IDisposable dis)
-            {
-                dis.Dispose();
-            }
-        }
-
         [Fact]
         public void EachIn()
         {
-            using (var scopeProvider = this.serviceProvider.CreateScope())
+            using (var scopeProvider = this.GlobalServiceProvider.CreateScope())
             {
                 var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<ElementDescriptorTests>>();
 
@@ -47,7 +26,7 @@ namespace Insql.Tests
         [Fact]
         public void EachInNull()
         {
-            using (var scopeProvider = this.serviceProvider.CreateScope())
+            using (var scopeProvider = this.GlobalServiceProvider.CreateScope())
             {
                 var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<ElementDescriptorTests>>();
 
@@ -62,7 +41,7 @@ namespace Insql.Tests
         [Fact]
         public void CDATATest()
         {
-            using (var scopeProvider = this.serviceProvider.CreateScope())
+            using (var scopeProvider = this.GlobalServiceProvider.CreateScope())
             {
                 var sqlResolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolver<ElementDescriptorTests>>();
 
@@ -71,6 +50,5 @@ namespace Insql.Tests
                 Assert.Equal("select * from user_info where create_time >= now()", resolveResult.Sql);
             }
         }
-
     }
 }

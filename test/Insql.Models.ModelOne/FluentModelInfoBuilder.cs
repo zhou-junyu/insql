@@ -6,7 +6,7 @@ namespace Insql.Models.ModelOne
     {
         public FluentModelInfoBuilder()
         {
-            this.Table("annotation_model_info");
+            this.Table("fluent_model_info");
 
             this.Property(o => o.Id).Column("id").Key().Identity();
             this.Property(o => o.Name).Column("name");

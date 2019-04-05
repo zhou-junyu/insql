@@ -6,22 +6,12 @@ using Xunit;
 
 namespace Insql.Tests
 {
-    public class ResolveScripterTests : IDisposable
+    public class ResolveScripterTests : TestsBase
     {
-        public void Dispose()
-        {
-        }
-
         [Fact]
         public void Basic()
         {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddInsql(builder =>
-             {
-             });
-
-            using (var serviceProvider = serviceCollection.BuildServiceProvider())
+            using (var serviceProvider = this.CreateServiceProvider())
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
@@ -54,13 +44,7 @@ namespace Insql.Tests
         [Fact]
         public void ReplaceOperator()
         {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddInsql(builder =>
-             {
-             });
-
-            using (var serviceProvider = serviceCollection.BuildServiceProvider())
+            using (var serviceProvider = this.CreateServiceProvider())
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
@@ -108,20 +92,16 @@ namespace Insql.Tests
         [Fact]
         public void NotReplaceOperator()
         {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddInsql(builder =>
-             {
-                 builder.AddResolver(configure =>
-                 {
-                     configure.AddScripter(options => 
-                     {
-                         options.IsConvertOperator = false;
-                     });
-                 });
-             });
-
-            using (var serviceProvider = serviceCollection.BuildServiceProvider())
+            using (var serviceProvider = this.CreateServiceProvider(builder =>
+            {
+                builder.AddResolver(configure =>
+                {
+                    configure.AddScripter(options =>
+                    {
+                        options.IsConvertOperator = false;
+                    });
+                });
+            }))
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {
@@ -142,9 +122,7 @@ namespace Insql.Tests
         [Fact]
         public void DataParameter()
         {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection.AddInsql(builder =>
+            using (var serviceProvider = this.CreateServiceProvider(builder =>
             {
                 builder.AddResolver(configure =>
                 {
@@ -153,9 +131,7 @@ namespace Insql.Tests
                         options.IsConvertOperator = false;
                     });
                 });
-            });
-
-            using (var serviceProvider = serviceCollection.BuildServiceProvider())
+            }))
             {
                 using (var scopeProvider = serviceProvider.CreateScope())
                 {

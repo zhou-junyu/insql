@@ -30,7 +30,7 @@ namespace Insql.Tests
                     //table
                     Assert.NotNull(entityMap);
 
-                    Assert.Equal("annotation_model_info", entityMap.Table);
+                    Assert.Equal("fluent_model_info", entityMap.Table);
 
                     //id
                     var idMap = entityMap.Properties.SingleOrDefault(o => o.PropertyInfo.Name == "Id");
