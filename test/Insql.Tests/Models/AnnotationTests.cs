@@ -1,5 +1,5 @@
 ﻿using Insql.Mappers;
-using Insql.Models.ModelOne;
+using Insql.Tests.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using Xunit;

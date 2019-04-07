@@ -1,4 +1,4 @@
-﻿namespace Insql.Models.ModelOne
+﻿namespace Insql.Tests.Models
 {
     public class FluentModelInfo
     {

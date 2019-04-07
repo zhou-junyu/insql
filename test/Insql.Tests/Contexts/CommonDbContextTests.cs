@@ -2,15 +2,16 @@
 using Insql.Tests.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace Insql.Tests.Contexts
 {
-    public class SqliteDbContextTests : TestsBase
+    public class CommonDbContextTests : TestsBase
     {
-        public SqliteDbContextTests()
+        public CommonDbContextTests()
         {
-            using (var dbContext = this.GlobalServiceProvider.GetRequiredService<SqliteDbContext>())
+            using (var dbContext = this.GlobalServiceProvider.GetRequiredService<CommonDbContext<CommonDbContextTestsInfo>>())
             {
                 dbContext.Session.Connection.Execute(" CREATE TABLE IF NOT EXISTS tests_info (id  INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT ,type INTEGER,create_time DATETIME NOT NULL);  ");
             }
@@ -18,45 +19,43 @@ namespace Insql.Tests.Contexts
 
         protected override void GlobalServiceProviderConfigure(IInsqlBuilder builder)
         {
-            builder.Services.AddDbContext<SqliteDbContext>(options =>
-            {
-                options.UseSqlite("Data Source= ./insql.tests.db");
-            });
+            builder.Services.AddSingleton(typeof(CommonDbContextOptions<>));
+            builder.Services.AddScoped(typeof(CommonDbContext<>));
         }
 
         [Fact]
         public void Insert()
         {
-            using (var dbContext = this.GlobalServiceProvider.GetRequiredService<SqliteDbContext>())
+            using (var dbContext = this.GlobalServiceProvider.GetRequiredService<CommonDbContext<CommonDbContextTestsInfo>>())
             {
-                var testsInfo = new DbContextTestInfo
+                var testsInfo = new CommonDbContextTestsInfo
                 {
                     Name = Guid.NewGuid().ToString(),
                     Type = InfoType.Black,
                     CreateTime = DateTime.Now
                 };
 
-                dbContext.Insert(testsInfo);
+                var id = dbContext.ExecuteScalar<int>(nameof(Insert), testsInfo);
 
-                Assert.True(testsInfo.Id > 0);
+                Assert.True(id > 0);
             }
         }
 
         [Fact]
-        public void Select()
+        public void SelectById()
         {
-            using (var dbContext = this.GlobalServiceProvider.GetRequiredService<SqliteDbContext>())
+            using (var dbContext = this.GlobalServiceProvider.GetRequiredService<CommonDbContext<CommonDbContextTestsInfo>>())
             {
-                var testsInfo = new DbContextTestInfo
+                var testsInfo = new CommonDbContextTestsInfo
                 {
                     Name = Guid.NewGuid().ToString(),
                     Type = InfoType.Black,
                     CreateTime = DateTime.Now
                 };
 
-                dbContext.Insert(testsInfo);
+                var id = dbContext.ExecuteScalar<int>(nameof(Insert), testsInfo);
 
-                var selectInfo = dbContext.SelectById(testsInfo.Id);
+                var selectInfo = dbContext.Query<DbContextTestInfo>(nameof(SelectById), new { id }).SingleOrDefault();
 
                 Assert.NotNull(selectInfo);
                 Assert.Equal(selectInfo.Name, testsInfo.Name);

@@ -1,7 +1,0 @@
-﻿<insql type="Insql.Models.ModelOne.FluentModelInfo,Insql.Models.ModelOne">
-  <map type="Insql.Models.ModelOne.FluentModelInfo,Insql.Models.ModelOne" table="xml_model_info">
-    <key name="id" to="Id" identity="True" />
-    <column name="name" to="Name" />
-    <column name="Size" to="Size" />
-  </map>
-</insql>

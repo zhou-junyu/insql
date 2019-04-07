@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Insql.Models.ModelOne
+namespace Insql.Tests.Models
 {
     [Table("annotation_model_info")]
     public class AnnotationModelInfo

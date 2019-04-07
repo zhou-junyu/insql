@@ -24,7 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Insql.Sqlite\Insql.Sqlite.csproj" />
     <ProjectReference Include="..\..\src\Insql\Insql.csproj" />
-    <ProjectReference Include="..\Insql.Models.ModelOne\Insql.Models.ModelOne.csproj" />
-    <ProjectReference Include="..\Insql.Models.ModelTwo\Insql.Models.ModelTwo.csproj" />
+    <ProjectReference Include="..\Insql.Tests.Models\Insql.Tests.Models.csproj" />
   </ItemGroup>
 </Project>

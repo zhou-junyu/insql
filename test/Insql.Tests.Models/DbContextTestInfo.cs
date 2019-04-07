@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Insql.Models.ModelOne
+namespace Insql.Tests.Models
 {
     public class DbContextTestInfo
     {

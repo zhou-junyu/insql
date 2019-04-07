@@ -23,7 +23,7 @@ namespace Insql.Resolvers
             if (sqlParamDictionary == null)
             {
                 sqlParamDictionary = sqlParam.GetType()
-               .GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+               .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                .Select(propInfo => new KeyValuePair<string, object>(propInfo.Name, propInfo.GetValue(sqlParam, null)));
             }
 

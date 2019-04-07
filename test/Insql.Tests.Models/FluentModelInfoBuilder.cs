@@ -1,6 +1,6 @@
 ﻿using Insql.Mappers;
 
-namespace Insql.Models.ModelOne
+namespace Insql.Tests.Models
 {
     public class FluentModelInfoBuilder : InsqlEntityBuilder<FluentModelInfo>
     {

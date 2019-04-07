@@ -1,4 +1,4 @@
-﻿using Insql.Models.ModelOne;
+﻿using Insql.Tests.Models;
 using System.Linq;
 
 namespace Insql.Tests.Contexts

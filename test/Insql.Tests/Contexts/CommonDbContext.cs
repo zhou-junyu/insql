@@ -2,13 +2,15 @@
 {
     public class CommonDbContext<T> : DbContext where T : class
     {
-        public CommonDbContext(DbContextOptions<DbContext> options) : base(options)
+        public CommonDbContext(CommonDbContextOptions<T> options) : base(options)
         {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseResolver<T>();
+
+            optionsBuilder.UseSqlite("Data Source= ./insql.tests.db");
         }
     }
 }

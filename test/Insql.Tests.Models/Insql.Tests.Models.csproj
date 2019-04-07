@@ -5,10 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CommonDbContextTestsInfo.insql.xml" />
     <None Remove="XmlModel.insql.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="CommonDbContextTestsInfo.insql.xml" />
     <EmbeddedResource Include="XmlModel.insql.xml" />
   </ItemGroup>
 
