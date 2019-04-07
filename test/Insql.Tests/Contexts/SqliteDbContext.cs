@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Insql.Models.ModelOne;
+using System.Linq;
 
 namespace Insql.Tests.Contexts
 {
@@ -10,6 +9,16 @@ namespace Insql.Tests.Contexts
         {
         }
 
+        public void Insert(DbContextTestInfo info)
+        {
+            var id = this.ExecuteScalar<int>(nameof(Insert), info);
 
+            info.Id = id;
+        }
+
+        public DbContextTestInfo SelectById(int id)
+        {
+            return this.Query<DbContextTestInfo>(nameof(SelectById), new { id }).SingleOrDefault();
+        }
     }
 }

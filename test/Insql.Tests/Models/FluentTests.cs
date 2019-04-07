@@ -15,7 +15,7 @@ namespace Insql.Tests
             {
                 builder.AddMapper(options =>
                 {
-                    options.DisableXmlMapScan().EnabledFluentMapScan();
+                    options.ExcludeXmlMaps().IncludeFluentMaps();
                 });
             });
 
@@ -77,7 +77,7 @@ namespace Insql.Tests
             {
                 builder.AddMapper(options =>
                 {
-                    options.DisableXmlMapScan();
+                    options.ExcludeXmlMaps();
                 });
             });
 

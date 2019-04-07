@@ -15,7 +15,7 @@ namespace Insql.Tests
             {
                 builder.AddMapper(options => 
                 {
-                    options.DisableXmlMapScan().EnabledAnnotationMapScan();
+                    options.ExcludeXmlMaps().IncludeAnnotationMaps();
                 });
             });
 
@@ -77,7 +77,7 @@ namespace Insql.Tests
             {
                 builder.AddMapper(options =>
                 {
-                    options.DisableXmlMapScan();
+                    options.ExcludeXmlMaps();
                 });
             });
 

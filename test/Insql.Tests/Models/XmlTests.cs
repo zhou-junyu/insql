@@ -73,7 +73,7 @@ namespace Insql.Tests
             {
                 builder.AddMapper(options =>
                 {
-                    options.DisableXmlMapScan();
+                    options.ExcludeXmlMaps();
                 });
             });
 
