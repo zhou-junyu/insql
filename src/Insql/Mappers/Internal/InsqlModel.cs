@@ -30,7 +30,7 @@ namespace Insql.Mappers
                 this.LoadFluentEntityMaps(optionsValue.IncludeFluentMapsAssemblies);
             }
 
-            if (optionsValue.ExcludeXmlMaps)
+            if (optionsValue.IncludeXmlMaps)
             {
                 this.LoadXmlEntityMaps(descriptorLoader);
             }

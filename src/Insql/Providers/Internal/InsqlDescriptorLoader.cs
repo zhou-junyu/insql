@@ -8,18 +8,18 @@ namespace Insql.Providers
     {
         private readonly IEnumerable<IInsqlDescriptorProvider> descriptorProviders;
 
-        private readonly Lazy<Dictionary<Type, InsqlDescriptor>> insqlDescriptors;
+        private readonly Dictionary<Type, InsqlDescriptor> insqlDescriptors;
 
         public InsqlDescriptorLoader(IEnumerable<IInsqlDescriptorProvider> descriptorProviders)
         {
             this.descriptorProviders = descriptorProviders;
 
-            this.insqlDescriptors = new Lazy<Dictionary<Type, InsqlDescriptor>>(this.LoadInsqlDescriptors, true);
+            this.insqlDescriptors = this.LoadInsqlDescriptors();
         }
 
         public IDictionary<Type, InsqlDescriptor> Load()
         {
-            return this.insqlDescriptors.Value;
+            return this.insqlDescriptors;
         }
 
         private Dictionary<Type, InsqlDescriptor> LoadInsqlDescriptors()
