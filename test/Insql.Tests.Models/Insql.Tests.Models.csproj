@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CommonDbContextTestsInfo.insql.xml" />
+    <None Remove="XmlModel.insql.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CommonDbContextTestsInfo.insql.xml" />
+    <EmbeddedResource Include="XmlModel.insql.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Insql\Insql.csproj" />
+  </ItemGroup>
+
+</Project>

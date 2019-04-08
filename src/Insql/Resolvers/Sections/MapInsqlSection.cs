@@ -9,6 +9,10 @@ namespace Insql.Resolvers.Sections
 
         public Dictionary<string, IInsqlMapSectionElement> Elements { get; }
 
+        public string Table { get; set; }
+
+        public string Schema { get; set; }
+
         public MapInsqlSection(string typeName)
         {
             if (string.IsNullOrWhiteSpace(typeName))

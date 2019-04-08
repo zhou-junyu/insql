@@ -7,33 +7,33 @@ namespace Insql
     {
         public static void BeginTransaction(this DbContext dbContext)
         {
-            dbContext.DbSession.BeginTransaction();
+            dbContext.Session.BeginTransaction();
         }
 
         public static void BeginTransaction(this DbContext dbContext, IsolationLevel isolationLevel)
         {
-            dbContext.DbSession.BeginTransaction(isolationLevel);
+            dbContext.Session.BeginTransaction(isolationLevel);
         }
 
         public static void CommitTransaction(this DbContext dbContext)
         {
-            dbContext.DbSession.CommitTransaction();
+            dbContext.Session.CommitTransaction();
         }
 
         public static void RollbackTransaction(this DbContext dbContext)
         {
-            dbContext.DbSession.RollbackTransaction();
+            dbContext.Session.RollbackTransaction();
         }
 
         public static void DoWithTransaction(this DbContext dbContext, Action action)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
+            if (dbContext.Session.Transaction != null)
             {
                 action();
             }
             else
             {
-                dbContext.DbSession.BeginTransaction();
+                dbContext.Session.BeginTransaction();
 
                 ExecuteTransactionAction(dbContext, action);
             }
@@ -41,13 +41,13 @@ namespace Insql
 
         public static void DoWithTransaction(this DbContext dbContext, Action action, IsolationLevel isolationLevel)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
+            if (dbContext.Session.Transaction != null)
             {
                 action();
             }
             else
             {
-                dbContext.DbSession.BeginTransaction(isolationLevel);
+                dbContext.Session.BeginTransaction(isolationLevel);
 
                 ExecuteTransactionAction(dbContext, action);
             }
@@ -55,13 +55,13 @@ namespace Insql
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
+            if (dbContext.Session.Transaction != null)
             {
                 return action();
             }
             else
             {
-                dbContext.DbSession.BeginTransaction();
+                dbContext.Session.BeginTransaction();
 
                 return ExecuteTransactionAction(dbContext, action);
             }
@@ -69,13 +69,13 @@ namespace Insql
 
         public static T DoWithTransaction<T>(this DbContext dbContext, Func<T> action, IsolationLevel isolationLevel)
         {
-            if (dbContext.DbSession.CurrentTransaction != null)
+            if (dbContext.Session.Transaction != null)
             {
                 return action();
             }
             else
             {
-                dbContext.DbSession.BeginTransaction(isolationLevel);
+                dbContext.Session.BeginTransaction(isolationLevel);
 
                 return ExecuteTransactionAction(dbContext, action);
             }
@@ -87,11 +87,11 @@ namespace Insql
 
             try
             {
-                if (dbContext.DbSession.CurrentConnection.State == ConnectionState.Closed)
+                if (dbContext.Session.Connection.State == ConnectionState.Closed)
                 {
                     wasClosed = true;
 
-                    dbContext.DbSession.CurrentConnection.Open();
+                    dbContext.Session.Connection.Open();
                 }
 
                 action();
@@ -100,7 +100,7 @@ namespace Insql
             {
                 if (wasClosed)
                 {
-                    dbContext.DbSession.CurrentConnection.Close();
+                    dbContext.Session.Connection.Close();
                 }
             }
         }
@@ -111,11 +111,11 @@ namespace Insql
 
             try
             {
-                if (dbContext.DbSession.CurrentConnection.State == ConnectionState.Closed)
+                if (dbContext.Session.Connection.State == ConnectionState.Closed)
                 {
                     wasClosed = true;
 
-                    dbContext.DbSession.CurrentConnection.Open();
+                    dbContext.Session.Connection.Open();
                 }
 
                 return action();
@@ -124,7 +124,7 @@ namespace Insql
             {
                 if (wasClosed)
                 {
-                    dbContext.DbSession.CurrentConnection.Close();
+                    dbContext.Session.Connection.Close();
                 }
             }
         }
@@ -135,13 +135,13 @@ namespace Insql
             {
                 action();
 
-                dbContext.DbSession.CommitTransaction();
+                dbContext.Session.CommitTransaction();
             }
             catch
             {
-                if (dbContext.DbSession.CurrentTransaction != null)
+                if (dbContext.Session.Transaction != null)
                 {
-                    dbContext.DbSession.RollbackTransaction();
+                    dbContext.Session.RollbackTransaction();
                 }
 
                 throw;
@@ -154,15 +154,15 @@ namespace Insql
             {
                 var result = action();
 
-                dbContext.DbSession.CommitTransaction();
+                dbContext.Session.CommitTransaction();
 
                 return result;
             }
             catch
             {
-                if (dbContext.DbSession.CurrentTransaction != null)
+                if (dbContext.Session.Transaction != null)
                 {
-                    dbContext.DbSession.RollbackTransaction();
+                    dbContext.Session.RollbackTransaction();
                 }
 
                 throw;

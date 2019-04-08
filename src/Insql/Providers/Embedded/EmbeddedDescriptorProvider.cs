@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Insql.Providers.EmbeddedXml
+namespace Insql.Providers.Embedded
 {
     internal class EmbeddedDescriptorProvider : IInsqlDescriptorProvider
     {
@@ -34,7 +34,7 @@ namespace Insql.Providers.EmbeddedXml
 
             IEnumerable<Assembly> assemblies = optionsValue.Assemblies;
 
-            if (assemblies == null || assemblies.Count() < 1)
+            if (assemblies == null)
             {
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }

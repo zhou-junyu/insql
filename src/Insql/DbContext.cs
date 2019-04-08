@@ -1,4 +1,5 @@
-﻿using Dapper;
+using Dapper;
+using Insql.Mappers;
 using Insql.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,21 +11,19 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
-        private readonly object syncLock = new object();
+        private readonly object _lock = new object();
 
-        private readonly DbContextOptions contextOptions;
+        private readonly IInsqlModel _model;
 
-        private IDbSession dbSession;
+        private readonly DbContextOptions _options;
 
-        private bool isDisposed;
+        private IDbSession _session;
 
-        public virtual IDbSession DbSession
-        {
-            get
-            {
-                return this.GetSession();
-            }
-        }
+        public virtual IDbSession Session => this.GetSession();
+
+        public IInsqlModel Model => this._model;
+
+        public IDbDialect Dialect => this._options.Dialect;
 
         public DbContext(DbContextOptions options)
         {
@@ -35,123 +34,137 @@ namespace Insql
 
             this.ConfigureOptions(options);
 
-            if (options.SqlResolver == null)
+            if (options.Resolver == null)
             {
-                throw new ArgumentNullException(nameof(options.SqlResolver));
+                throw new ArgumentNullException(nameof(options.Resolver));
+            }
+            if (options.Dialect == null)
+            {
+                throw new ArgumentNullException(nameof(options.Dialect));
             }
             if (options.SessionFactory == null)
             {
                 throw new ArgumentNullException(nameof(options.SessionFactory));
             }
 
-            this.contextOptions = options;
+            this._model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
+
+            this._options = options;
         }
 
-        protected virtual void OnConfiguring(DbContextOptions options)
+        public virtual void Dispose()
         {
-        }
-
-        public IEnumerable<T> Query<T>(string sqlId, object sqlParam = null)
-        {
-            var resolveResult = this.Resolve(sqlId, sqlParam);
-
-            return this.DbSession.CurrentConnection.Query<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
-        }
-
-        public IEnumerable<object> Query(Type type, string sqlId, object sqlParam = null)
-        {
-            var resolveResult = this.Resolve(sqlId, sqlParam);
-
-            return this.DbSession.CurrentConnection.Query(type, resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
-        }
-
-        public IEnumerable<dynamic> Query(string sqlId, object sqlParam = null)
-        {
-            var resolveResult = this.Resolve(sqlId, sqlParam);
-
-            return this.DbSession.CurrentConnection.Query(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, true, this.DbSession.CommandTimeout);
+            if (this._session != null)
+            {
+                this._session.Dispose();
+            }
         }
 
         public int Execute(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return this.DbSession.CurrentConnection.Execute(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.Execute(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public object ExecuteScalar(string sqlId, object sqlParam = null)
+        public Task<int> ExecuteAsync(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return this.DbSession.CurrentConnection.ExecuteScalar(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
-        }
-
-        public T ExecuteScalar<T>(string sqlId, object sqlParam = null)
-        {
-            var resolveResult = this.Resolve(sqlId, sqlParam);
-
-            return this.DbSession.CurrentConnection.ExecuteScalar<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteAsync(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
         public IDataReader ExecuteReader(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return this.DbSession.CurrentConnection.ExecuteReader(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteReader(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public async Task<IEnumerable<T>> QueryAsync<T>(string sqlId, object sqlParam = null)
+        public Task<IDataReader> ExecuteReaderAsync(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.QueryAsync<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteReaderAsync(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public async Task<IEnumerable<object>> QueryAsync(Type type, string sqlId, object sqlParam = null)
+        public object ExecuteScalar(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.QueryAsync(type, resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteScalar(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public async Task<IEnumerable<dynamic>> QueryAsync(string sqlId, object sqlParam = null)
+        public T ExecuteScalar<T>(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.QueryAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteScalar<T>(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public async Task<int> ExecuteAsync(string sqlId, object sqlParam = null)
+        public Task<object> ExecuteScalarAsync(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.ExecuteAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteScalarAsync(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public async Task<object> ExecuteScalarAsync(string sqlId, object sqlParam = null)
+        public Task<T> ExecuteScalarAsync<T>(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.ExecuteScalarAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.ExecuteScalarAsync<T>(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
-        public async Task<T> ExecuteScalarAsync<T>(string sqlId, object sqlParam = null)
+        public IEnumerable<T> Query<T>(string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.ExecuteScalarAsync<T>(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.Query<T>(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, true, this.Session.CommandTimeout);
         }
 
-        public async Task<IDataReader> ExecuteReaderAsync(string sqlId, object sqlParam = null)
+        public IEnumerable<object> Query(Type type, string sqlId, object sqlParam = null)
         {
             var resolveResult = this.Resolve(sqlId, sqlParam);
 
-            return await this.DbSession.CurrentConnection.ExecuteReaderAsync(resolveResult.Sql, resolveResult.Param, this.DbSession.CurrentTransaction, this.DbSession.CommandTimeout);
+            return this.Session.Connection.Query(type, resolveResult.Sql, resolveResult.Param, this.Session.Transaction, true, this.Session.CommandTimeout);
+        }
+
+        public IEnumerable<dynamic> Query(string sqlId, object sqlParam = null)
+        {
+            var resolveResult = this.Resolve(sqlId, sqlParam);
+
+            return this.Session.Connection.Query(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, true, this.Session.CommandTimeout);
+        }
+
+        public Task<IEnumerable<T>> QueryAsync<T>(string sqlId, object sqlParam = null)
+        {
+            var resolveResult = this.Resolve(sqlId, sqlParam);
+
+            return this.Session.Connection.QueryAsync<T>(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
+        }
+
+        public Task<IEnumerable<object>> QueryAsync(Type type, string sqlId, object sqlParam = null)
+        {
+            var resolveResult = this.Resolve(sqlId, sqlParam);
+
+            return this.Session.Connection.QueryAsync(type, resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
+        }
+
+        public Task<IEnumerable<dynamic>> QueryAsync(string sqlId, object sqlParam = null)
+        {
+            var resolveResult = this.Resolve(sqlId, sqlParam);
+
+            return this.Session.Connection.QueryAsync(resolveResult.Sql, resolveResult.Param, this.Session.Transaction, this.Session.CommandTimeout);
         }
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this.contextOptions.SqlResolver.Resolve(this.DbSession.DbType, sqlId, sqlParam);
+            return this._options.Resolver.Resolve($"{sqlId}.{this._options.Dialect.DbType}", sqlParam);
+        }
+
+        protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
         }
 
         private void ConfigureOptions(DbContextOptions options)
@@ -160,7 +173,7 @@ namespace Insql
             {
                 var needConfigure = false;
 
-                lock (this.syncLock)
+                lock (this._lock)
                 {
                     if (!options.IsConfigured)
                     {
@@ -172,47 +185,25 @@ namespace Insql
 
                 if (needConfigure)
                 {
-                    this.OnConfiguring(options);
-
-                    if (options.SqlResolver == null)
-                    {
-                        var sqlResolverType = typeof(ISqlResolver<>).MakeGenericType(options.ContextType);
-
-                        options.SqlResolver = (ISqlResolver)options.ServiceProvider.GetRequiredService(sqlResolverType);
-                    }
+                    this.OnConfiguring(new DbContextOptionsBuilder(options));
                 }
             }
         }
 
         private IDbSession GetSession()
         {
-            if (this.dbSession == null)
+            if (this._session == null)
             {
-                lock (this.syncLock)
+                lock (this._lock)
                 {
-                    if (this.dbSession == null)
+                    if (this._session == null)
                     {
-                        this.dbSession = this.contextOptions.SessionFactory.CreateSession();
+                        this._session = this._options.SessionFactory.CreateSession();
                     }
                 }
             }
 
-            return this.dbSession;
-        }
-
-        public void Dispose()
-        {
-            if (this.isDisposed)
-            {
-                return;
-            }
-
-            this.isDisposed = true;
-
-            if (this.dbSession != null)
-            {
-                this.dbSession.Dispose();
-            }
+            return this._session;
         }
     }
 }

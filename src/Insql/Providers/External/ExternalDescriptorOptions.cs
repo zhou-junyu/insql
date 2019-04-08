@@ -1,4 +1,4 @@
-﻿namespace Insql.Providers.DirectoryXml
+﻿namespace Insql.Providers.External
 {
     public class ExternalDescriptorOptions
     {

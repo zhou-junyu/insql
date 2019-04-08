@@ -7,6 +7,10 @@ namespace Insql.Resolvers
     {
         Type Type { get; }
 
+        string Table { get; }
+
+        string Schema { get; }
+
         Dictionary<string, IInsqlMapSectionElement> Elements { get; }
     }
 }

@@ -8,6 +8,10 @@ namespace Insql.Resolvers.Elements
 
         public string To { get; }
 
+        public bool Identity { get; set; }
+
+        public InsqlMapElementType ElementType => InsqlMapElementType.Key;
+
         public KeyMapSectionElement(string name, string to)
         {
             if (string.IsNullOrWhiteSpace(name))

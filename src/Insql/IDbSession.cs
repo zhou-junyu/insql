@@ -5,13 +5,9 @@ namespace Insql
 {
     public interface IDbSession : IDisposable
     {
-        IDbConnection CurrentConnection { get; }
+        IDbConnection Connection { get; }
 
-        IDbTransaction CurrentTransaction { get; }
-
-        string DbType { get; }
-
-        bool SupportStatements { get; }
+        IDbTransaction Transaction { get; }
 
         int? CommandTimeout { get; set; }
 

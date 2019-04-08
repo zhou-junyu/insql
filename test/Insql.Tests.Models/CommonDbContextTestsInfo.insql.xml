@@ -1,0 +1,18 @@
+﻿<insql type="Insql.Tests.Models.CommonDbContextTestsInfo,Insql.Tests.Models">
+  <map type="Insql.Tests.Models.CommonDbContextTestsInfo,Insql.Tests.Models" table="tests_info">
+    <key name="id" to="Id" identity="True" />
+    <column name="name" to="Name"/>
+    <column name="type" to="Type"/>
+    <column name="create_time" to="CreateTime"/>
+  </map>
+
+  <insert id="Insert">
+    insert into tests_info (name,type,create_time) values (@Name,@Type,@CreateTime);
+    select last_insert_rowid();
+  </insert>
+
+  <select id="SelectById">
+    select * from tests_info where id=@id
+  </select>
+  
+</insql>

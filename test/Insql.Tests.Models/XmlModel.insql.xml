@@ -1,0 +1,7 @@
+﻿<insql type="Insql.Tests.Models.FluentModelInfo,Insql.Tests.Models">
+  <map type="Insql.Tests.Models.FluentModelInfo,Insql.Tests.Models" table="xml_model_info">
+    <key name="id" to="Id" identity="True" />
+    <column name="name" to="Name" />
+    <column name="Size" to="Size" />
+  </map>
+</insql>
