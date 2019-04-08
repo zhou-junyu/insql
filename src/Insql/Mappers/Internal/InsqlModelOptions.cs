@@ -5,14 +5,14 @@ namespace Insql.Mappers
 {
     internal class InsqlModelOptions
     {
-        public bool AnnotationMapScanEnabled { get; set; }
+        public bool IncludeAnnotationMaps { get; set; }
 
-        public List<Assembly> AnnotationMapScanAssemblies { get; set; }
+        public List<Assembly> IncludeAnnotationMapsAssemblies { get; set; }
 
-        public bool FluentMapScanEnabled { get; set; }
+        public bool IncludeFluentMaps { get; set; }
 
-        public List<Assembly> FluentMapScanAssemblies { get; set; }
+        public List<Assembly> IncludeFluentMapsAssemblies { get; set; }
 
-        public bool XmlMapEnabled { get; set; }
+        public bool ExcludeXmlMaps { get; set; }
     }
 }
