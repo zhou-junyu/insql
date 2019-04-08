@@ -12,7 +12,7 @@ namespace Insql
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {
-                options.AnnotationMapScanEnabled = true;
+                options.IncludeAnnotationMaps = true;
             });
 
             return builder;
@@ -22,8 +22,8 @@ namespace Insql
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {
-                options.AnnotationMapScanEnabled = true;
-                options.AnnotationMapScanAssemblies = assemblies.ToList();
+                options.IncludeAnnotationMaps = true;
+                options.IncludeAnnotationMapsAssemblies = assemblies.ToList();
             });
 
             return builder;

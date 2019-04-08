@@ -20,17 +20,17 @@ namespace Insql.Mappers
         {
             var optionsValue = options.Value;
 
-            if (optionsValue.AnnotationMapScanEnabled)
+            if (optionsValue.IncludeAnnotationMaps)
             {
-                this.LoadAnnotationEntityMaps(optionsValue.AnnotationMapScanAssemblies);
+                this.LoadAnnotationEntityMaps(optionsValue.IncludeAnnotationMapsAssemblies);
             }
 
-            if (optionsValue.FluentMapScanEnabled)
+            if (optionsValue.IncludeFluentMaps)
             {
-                this.LoadFluentEntityMaps(optionsValue.FluentMapScanAssemblies);
+                this.LoadFluentEntityMaps(optionsValue.IncludeFluentMapsAssemblies);
             }
 
-            if (optionsValue.XmlMapEnabled)
+            if (optionsValue.ExcludeXmlMaps)
             {
                 this.LoadXmlEntityMaps(descriptorLoader);
             }

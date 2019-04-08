@@ -12,7 +12,7 @@ namespace Insql
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {
-                options.FluentMapScanEnabled = true;
+                options.IncludeFluentMaps = true;
             });
 
             return builder;
@@ -22,8 +22,8 @@ namespace Insql
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {
-                options.FluentMapScanEnabled = true;
-                options.FluentMapScanAssemblies = assemblies.ToList();
+                options.IncludeFluentMaps = true;
+                options.IncludeFluentMapsAssemblies = assemblies.ToList();
             });
 
             return builder;

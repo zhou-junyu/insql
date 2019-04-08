@@ -11,13 +11,15 @@ namespace Insql.Tests
         [Fact]
         public void EnabledTest()
         {
-            using (var serviceProvider =  this.CreateServiceProvider(builder =>
+            var serviceProvider = this.CreateServiceProvider(builder =>
             {
                 builder.AddMapper(options =>
                 {
                     options.ExcludeXmlMaps().IncludeAnnotationMaps();
                 });
-            }))
+            });
+
+            using (serviceProvider)
             {
                 using (var serviceScope = serviceProvider.CreateScope())
                 {
