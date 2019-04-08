@@ -1,6 +1,6 @@
 # Insql documentation
 
-[![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q?svg=true)](https://ci.appveyor.com/project/rainrcn/insql)
+[![Build status](https://ci.appveyor.com/api/projects/status/92f8ydwwu5nile9q/branch/master?svg=true)](https://ci.appveyor.com/project/rainrcn/insql/branch/master)
 ![](https://img.shields.io/github/license/rainrcn/insql.svg?style=flat)
 [![GitHub stars](https://img.shields.io/github/stars/rainrcn/insql.svg?style=social)](https://github.com/rainrcn/insql)
 [![star](https://gitee.com/rainrcn/insql/badge/star.svg?theme=white)](https://gitee.com/rainrcn/insql)
@@ -172,65 +172,7 @@ public void ConfigureServices(IServiceCollection services)
 
 This is the complete use process, the example is to use the domain-driven model, you can use the situation depending on the situation. For example, UserDbContext can be injected into the Controller without the UserService.
 
-#### 4.3.2 Use only the statement parsing function example
-
-`User.insql.xml`
-
-```xml
-<insql type="Insql.Tests.Domain.Services.UserService,Insql.Tests" >
-
-<insert id="InsertUser">
-  insert into user (user_name,user_gender)
-  values (@UserName,@UserGender)
-</insert>
-
-<update id="UpdateUserSelective">
-    update user_info
-    <set>
-      <if test="UserName != null">
-        user_name=@UserName,
-      </if>
-      user_gender=@UserGender
-    </set>
-    where user_id = @UserId
-  </update>
-</insql>
-```
-
-**_Note: In the default setting, the User.insql.xml file requires the right-click property to select the `embedded assembly file` method to take effect._**
-
-`UserService.cs`
-
-```csharp
-public class UserService : IUserService
-{
-  private readonly ISqlResolver<UserService> sqlResolver;
-
-  //Inject ISqlResolver<T>, `type` in insql.xml needs to correspond to `T`
-  public UserService(ISqlResolver<UserService> sqlResolver)
-  {
-      this.sqlResolver = sqlResolver;
-  }
-
-  public void UpdateUserSelective()
-  {
-      //Parsing SQL statements
-      var resolveResult = this.sqlResolver.Resolve("UpdateUserSelective", new UserInfo
-      {
-        UserId="10000",
-        UserName="tom",
-        UserGender = UserGender.W
-      });
-
-      //Execution statement
-      //connection.Execute(resolveResult.Sql,resolveResult.Param) ...
-  }
-}
-```
-
-This allows the statement to be loaded and executed. It's that simple.
-
-#### 4.3.3 Use transaction
+#### 4.3.2 Use transaction
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -285,7 +227,7 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-#### 4.3.4 SELECT IN
+#### 4.3.3 SELECT IN
 
 For the use of SELECT IN arrays, there are two
 

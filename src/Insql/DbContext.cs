@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using Insql.Mappers;
 using Insql.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
