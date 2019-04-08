@@ -64,7 +64,18 @@ namespace Insql.Mappers
 
             var resultMaps = assemblies.SelectMany(assembly =>
             {
-                return assembly.GetTypes()
+                Type[] types;
+
+                try
+                {
+                    types = assembly.GetExportedTypes();
+                }
+                catch
+                {
+                    types = new Type[0];
+                }
+
+                return types
                 .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && type.GetCustomAttribute(typeof(TableAttribute), true) != null)
                 .Select(type => this.CreateAnnotationEntityMap(type));
             }).ToDictionary(item => item.EntityType, item => item);
@@ -132,7 +143,18 @@ namespace Insql.Mappers
 
             var resultMaps = assemblies.SelectMany(assembly =>
             {
-                return assembly.GetTypes()
+                Type[] types;
+
+                try
+                {
+                    types = assembly.GetExportedTypes();
+                }
+                catch
+                {
+                    types = new Type[0];
+                }
+
+                return types
                 .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && !type.IsGenericType && baseType != type && baseType.IsAssignableFrom(type))
                 .Select(type => (InsqlEntityBuilder)Activator.CreateInstance(type))
                 .Select(builder => builder.Build());
