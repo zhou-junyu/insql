@@ -64,15 +64,15 @@ namespace Insql.Mappers
 
             var resultMaps = assemblies.SelectMany(assembly =>
             {
-                Type[] types;
+                IEnumerable<TypeInfo> types;
 
                 try
                 {
-                    types = assembly.GetExportedTypes();
+                    types = assembly.DefinedTypes;
                 }
                 catch
                 {
-                    types = new Type[0];
+                    types = new List<TypeInfo>();
                 }
 
                 return types
@@ -143,15 +143,15 @@ namespace Insql.Mappers
 
             var resultMaps = assemblies.SelectMany(assembly =>
             {
-                Type[] types;
+                IEnumerable<TypeInfo> types;
 
                 try
                 {
-                    types = assembly.GetExportedTypes();
+                    types = assembly.DefinedTypes;
                 }
                 catch
                 {
-                    types = new Type[0];
+                    types = new List<TypeInfo>();
                 }
 
                 return types
