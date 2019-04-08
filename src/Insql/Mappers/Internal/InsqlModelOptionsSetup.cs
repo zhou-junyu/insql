@@ -8,7 +8,7 @@ namespace Insql.Mappers
         {
             options.IncludeAnnotationMaps = false;
             options.IncludeFluentMaps = false;
-            options.ExcludeXmlMaps = true;
+            options.IncludeXmlMaps = true;
         }
     }
 }

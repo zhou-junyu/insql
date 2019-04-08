@@ -9,7 +9,7 @@ namespace Insql
         {
             builder.Services.Configure<InsqlModelOptions>(options =>
             {
-                options.ExcludeXmlMaps = false;
+                options.IncludeXmlMaps = false;
             });
 
             return builder;

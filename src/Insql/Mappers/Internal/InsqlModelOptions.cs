@@ -13,6 +13,6 @@ namespace Insql.Mappers
 
         public List<Assembly> IncludeFluentMapsAssemblies { get; set; }
 
-        public bool ExcludeXmlMaps { get; set; }
+        public bool IncludeXmlMaps { get; set; }
     }
 }
