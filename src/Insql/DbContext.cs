@@ -38,15 +38,15 @@ namespace Insql
             {
                 throw new ArgumentNullException(nameof(options.Resolver));
             }
-            if (options.Dialect == null)
-            {
-                throw new ArgumentNullException(nameof(options.Dialect));
-            }
             if (options.SessionFactory == null)
             {
                 throw new ArgumentNullException(nameof(options.SessionFactory));
             }
-
+            if (options.Dialect == null)
+            {
+                throw new ArgumentNullException(nameof(options.Dialect));
+            }
+            
             this._model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
 
             this._options = options;
