@@ -120,6 +120,36 @@ namespace Insql.Tests
         }
 
         [Fact]
+        public void ExcludeOperator()
+        {
+            using (var serviceProvider = this.CreateServiceProvider(builder =>
+            {
+                builder.AddResolver(configure =>
+                {
+                    configure.AddScripter(options =>
+                    {
+                        options.ExcludeOperators = new string[] { "and" };
+                    });
+                });
+            }))
+            {
+                using (var scopeProvider = serviceProvider.CreateScope())
+                {
+                    var resolver = scopeProvider.ServiceProvider.GetRequiredService<IInsqlResolveScripter>();
+
+                    var code = @"var and = 'aa'; userId == and ";
+
+                    var result = (bool)resolver.Resolve(TypeCode.Boolean, code, new Dictionary<string, object>
+                    {
+                        { "userId","aa" }
+                    });
+
+                    Assert.True(result);
+                }
+            }
+        }
+
+        [Fact]
         public void DataParameter()
         {
             using (var serviceProvider = this.CreateServiceProvider(builder =>
