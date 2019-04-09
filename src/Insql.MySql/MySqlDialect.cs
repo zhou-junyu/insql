@@ -6,7 +6,7 @@ namespace Insql.MySql
     {
         public static MySqlDialect Instance = new MySqlDialect();
 
-        public string DbType => "MySql";
+        public string Name => "MySql";
 
         public char OpenQuote => '`';
 

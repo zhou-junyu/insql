@@ -6,7 +6,7 @@ namespace Insql.SqlServer
     {
         public static SqlServerDialect Instance = new SqlServerDialect();
 
-        public string DbType => "SqlServer";
+        public string Name => "SqlServer";
 
         public char OpenQuote => '[';
 

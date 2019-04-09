@@ -2,7 +2,7 @@
 {
     public interface IDbDialect
     {
-        string DbType { get; }
+        string Name { get; }
 
         char OpenQuote { get; }
 

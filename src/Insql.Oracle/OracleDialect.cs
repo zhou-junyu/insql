@@ -6,7 +6,7 @@ namespace Insql.Oracle
     {
         public static OracleDialect Instance = new OracleDialect();
 
-        public string DbType => "Oracle";
+        public string Name => "Oracle";
 
         public char OpenQuote => '"';
 

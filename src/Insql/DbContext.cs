@@ -160,7 +160,7 @@ namespace Insql
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this._options.Resolver.Resolve($"{sqlId}.{this._options.Dialect.DbType}", sqlParam);
+            return this._options.Resolver.Resolve($"{sqlId}.{this._options.Dialect.Name}", sqlParam);
         }
 
         protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -6,11 +6,11 @@ namespace Insql.Sqlite
     {
         public static SqliteDialect Instance = new SqliteDialect();
 
-        public string DbType => "Sqlite";
+        public string Name => "Sqlite";
 
-        public char OpenQuote => '`';
+        public char OpenQuote => '"';
 
-        public char CloseQuote => '`';
+        public char CloseQuote => '"';
 
         public char ParameterPrefix => '@';
 

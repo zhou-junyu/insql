@@ -6,7 +6,7 @@ namespace Insql.PostgreSql
     {
         public static PostgreSqlDialect Instance = new PostgreSqlDialect();
 
-        public string DbType => "PostgreSql";
+        public string Name => "PostgreSql";
 
         public char OpenQuote => '"';
 
