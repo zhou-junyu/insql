@@ -92,7 +92,7 @@ namespace Insql.Mappers
 
             IInsqlEntityMap resultMap = new InsqlEntityMap(entityType, tableAttribute.Name, tableAttribute.Schema);
 
-            var columnMaps = entityType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public).Select(propInfo =>
+            var columnMaps = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public).Select(propInfo =>
              {
                  ColumnAttribute columnAttribute = (ColumnAttribute)propInfo.GetCustomAttribute(typeof(ColumnAttribute), true);
                  KeyAttribute keyAttribute = (KeyAttribute)propInfo.GetCustomAttribute(typeof(KeyAttribute), true);
