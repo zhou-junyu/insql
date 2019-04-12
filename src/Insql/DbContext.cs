@@ -21,7 +21,7 @@ namespace Insql
 
         public virtual IDbSession Session => this.GetSession();
 
-        public IInsqlModel Model => this._model;
+        public virtual IInsqlModel Model => this._model;
 
         public IDbDialect Dialect => this._options.Dialect;
 
@@ -46,7 +46,7 @@ namespace Insql
             {
                 throw new ArgumentNullException(nameof(options.Dialect));
             }
-            
+
             this._model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
 
             this._options = options;
