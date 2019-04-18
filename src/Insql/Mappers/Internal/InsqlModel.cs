@@ -188,11 +188,11 @@ namespace Insql.Mappers
 
                 foreach (var mapElement in mapSection.Elements.Values)
                 {
-                    var propertyInfo = mapSection.Type.GetProperty(mapElement.To);
+                    var propertyInfo = mapSection.Type.GetProperty(mapElement.Property);
 
                     if (propertyInfo == null)
                     {
-                        throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.To}` property is not exist!");
+                        throw new Exception($"insql entity type : {mapSection.Type} `{mapElement.Property}` property is not exist!");
                     }
 
                     entityMap.Properties.Add(new InsqlPropertyMap(propertyInfo, mapElement.Name)

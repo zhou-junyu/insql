@@ -6,25 +6,25 @@ namespace Insql.Resolvers.Elements
     {
         public string Name { get; }
 
-        public string To { get; }
+        public string Property { get; }
 
         public bool Identity { get; set; }
 
         public InsqlMapElementType ElementType => InsqlMapElementType.Key;
 
-        public KeyMapSectionElement(string name, string to)
+        public KeyMapSectionElement(string name, string property)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
-            if (string.IsNullOrWhiteSpace(to))
+            if (string.IsNullOrWhiteSpace(property))
             {
-                throw new ArgumentNullException(nameof(to));
+                throw new ArgumentNullException(nameof(property));
             }
 
             this.Name = name;
-            this.To = to;
+            this.Property = property;
         }
     }
 }

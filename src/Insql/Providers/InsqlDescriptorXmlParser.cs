@@ -280,7 +280,7 @@ namespace Insql.Providers
                             {
                                 return new KeyMapSectionElement(
                                     xelement.Attribute(XName.Get("name", ""))?.Value,
-                                    xelement.Attribute(XName.Get("to", ""))?.Value
+                                    xelement.Attribute(XName.Get("property", ""))?.Value ?? xelement.Attribute(XName.Get("to", ""))?.Value
                                 )
                                 {
                                     Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false")
@@ -290,7 +290,7 @@ namespace Insql.Providers
                             {
                                 return new ColumnMapSectionElement(
                                     xelement.Attribute(XName.Get("name", ""))?.Value,
-                                    xelement.Attribute(XName.Get("to", ""))?.Value
+                                    xelement.Attribute(XName.Get("property", ""))?.Value ?? xelement.Attribute(XName.Get("to", ""))?.Value
                                 )
                                 {
                                     Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false")

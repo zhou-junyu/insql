@@ -6,7 +6,7 @@ namespace Insql.Resolvers.Elements
     {
         public string Name { get; }
 
-        public string To { get; }
+        public string Property { get; }
 
         public bool Identity { get; set; }
 
@@ -24,7 +24,7 @@ namespace Insql.Resolvers.Elements
             }
 
             this.Name = name;
-            this.To = to;
+            this.Property = to;
         }
     }
 }

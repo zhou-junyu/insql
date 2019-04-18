@@ -4,7 +4,7 @@
     {
         string Name { get; }
 
-        string To { get; }
+        string Property { get; }
 
         bool Identity { get; }
 
