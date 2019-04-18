@@ -1,0 +1,89 @@
+﻿<%@ CodeTemplate Language="C#" ResponseEncoding="UTF-8" TargetLanguage="C#" Debug="TRUE"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+<%@ Import Namespace="System.IO" %>
+
+<%@ Assembly src="Helper.cs" %>
+<%@ Import Namespace="Common" %>
+
+<%@ Property Name="Tables" Type="SchemaExplorer.TableSchemaCollection" Category="Context" Description="Tables" %>
+
+<%@ Property Name="QuoteOpen" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
+<%@ Property Name="QuoteClose" Type="String" Category="DbContextXml" Optional="True" Description="Quote" %>
+<%@ Property Name="SqlParamPrefix" Type="String" Default="@" Category="DbContextXml" Optional="True" Description="Sql Param Name Prefix" %>
+<%@ Property Name="SqlIdSuffix" Type="String" Category="DbContextXml" Optional="True" Description="DbContext Xml Sql Section Id Suffix" %>
+
+<%@ Property Name="ModelAssembly" Type="String" Category="Model" Description="Model Assembly" %>
+<%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
+
+<%@ Property Name="DbContextAssembly" Type="String" Category="DbContext" Description="DbContext Assembly" %>
+<%@ Property Name="DbContextNamespace" Type="String" Category="DbContext" Description="DbContext Namespace" %>
+<%@ Property Name="DbContextName" Type="String" Category="DbContext" Description="DbContext Name" %>
+
+<%@ Register Name="Model" Template="Model.cst" MergeProperties="False" ExcludeProperties="" %>
+<%@ Register Name="DbContext" Template="DbContext.cst" MergeProperties="False" ExcludeProperties="" %>
+<%@ Register Name="DbContextXml" Template="DbContextXml.cst" MergeProperties="False" ExcludeProperties="" %>
+
+<script runat="template">
+private string _path;
+[Editor(typeof(System.Windows.Forms.Design.FolderNameEditor),typeof(System.Drawing.Design.UITypeEditor))]
+public string FilePath
+{
+	get
+	{
+	return _path;
+	}
+	set
+	{
+	_path = value;
+	}
+}
+</script>
+
+<%
+//DbContext
+string dirGeneratedDbContext = this.FilePath + "\\Contexts\\";
+if(!Directory.Exists(dirGeneratedDbContext)) Directory.CreateDirectory(dirGeneratedDbContext);	
+DbContext dbc = new DbContext();
+dbc.Tables = this.Tables;
+dbc.ModelNamespace = this.ModelNamespace;
+dbc.DbContextNamespace = this.DbContextNamespace;
+dbc.DbContextName = this.DbContextName;
+dbc.OutputFile = dirGeneratedDbContext +"\\" + DbContextName + ".cs";
+dbc.Render(this.Response);
+
+//DbContext.insql.xml
+DbContextXml dbcx = new DbContextXml();
+dbcx.Tables = this.Tables;
+dbcx.QuoteOpen = this.QuoteOpen;
+dbcx.QuoteClose = this.QuoteClose;
+dbcx.SqlIdSuffix = this.SqlIdSuffix;
+dbcx.SqlParamPrefix  = this.SqlParamPrefix;
+dbcx.DbContextAssembly = this.DbContextAssembly;
+dbcx.DbContextNamespace = this.DbContextNamespace;
+dbcx.DbContextName = this.DbContextName;
+
+dbcx.ModelAssembly = this.ModelAssembly;
+dbcx.ModelNamespace = this.ModelNamespace;
+
+dbcx.OutputFile = dirGeneratedDbContext +"\\" + DbContextName + ".insql.xml";
+dbcx.Render(this.Response);
+
+foreach(TableSchema ts in Tables)
+{
+	//Model
+	string dirGeneratedModel = this.FilePath + "\\Models\\";
+	if(!Directory.Exists(dirGeneratedModel)) Directory.CreateDirectory(dirGeneratedModel);	
+	Model m = new Model();
+    m.Table = ts;
+    m.Namespace = this.ModelNamespace;
+    m.OutputFile = dirGeneratedModel +"\\" + Helper.GetModelClassName(ts) + ".cs";
+    m.Render(this.Response);
+}
+%>
