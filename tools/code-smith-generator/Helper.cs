@@ -12,12 +12,12 @@ namespace Common
     {
         public static string GetModelClassDescription(TableSchema table)
         {
-            if(!string.IsNullOrWhiteSpace(table.Description))
+            if(string.IsNullOrWhiteSpace(table.Description))
             {
-                return table.Description;
+                return table.Name;
             }
             
-            return table.Name;   
+            return $"{table.Name}\r\n {table.Description}";
         }
         
         public static string GetModelClassName(TableSchema table)
@@ -25,11 +25,20 @@ namespace Common
             return StringUtil.ToPascalCase(table.Name.ToLower());
         }
         
-        public static string GetModelClassClearName(TableSchema table)
+        public static string GetModelClassTrimName(TableSchema table,string trimStart,string trimEnd)
         {
             var className = GetModelClassName(table);
             
-            return className.EndsWith("Info") ? className.Remove(className.Length-4,4): className;
+            if(!string.IsNullOrWhiteSpace(trimStart) && className.StartsWith(trimStart))
+            {
+                className = className.Substring(trimStart.Length);    
+            }
+            if(!string.IsNullOrWhiteSpace(trimEnd) && className.EndsWith(trimEnd))
+            {
+                className = className.Remove(className.Length-trimEnd.Length,trimEnd.Length);    
+            }
+            
+            return className;
         }
     
         public static string GetModelPropertyType(ColumnSchema column)

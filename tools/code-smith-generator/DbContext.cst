@@ -15,6 +15,9 @@
 <%@ Property Name="DbContextNamespace" Type="String" Category="DbContext" Description="DbContext Namespace" %>
 <%@ Property Name="DbContextName" Type="String" Category="DbContext" Description="DbContext Name" %>
 
+<%@ Property Name="SqlIdModelTrimStart" Type="String" Category="DbContextXml" Optional="True" Description="SqlId Model Name TrimStart" %>
+<%@ Property Name="SqlIdModelTrimEnd" Type="String" Default="Info" Category="DbContextXml" Optional="True" Description="SqlId Model Name TrimEnd" %>
+
 <%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
 
 using Insql;
@@ -34,30 +37,30 @@ namespace <%=DbContextNamespace%>
         
         #region <%=Helper.GetModelClassName(tableSchema)%>
 
-        public void Insert<%=Helper.GetModelClassClearName(tableSchema)%>(<%=Helper.GetModelClassName(tableSchema)%> info)
+        public void Insert<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>(<%=Helper.GetModelClassName(tableSchema)%> info)
         {
-            this.Execute(nameof(Insert<%=Helper.GetModelClassClearName(tableSchema)%>),info);
+            this.Execute(nameof(Insert<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>),info);
         }
         
         <% if(tableSchema.Columns.Any(columnSchema=> columnSchema.IsPrimaryKeyMember)) {%>
         <% if(tableSchema.Columns.Any(columnSchema=> !columnSchema.IsPrimaryKeyMember)) {%>
-        public void Update<%=Helper.GetModelClassClearName(tableSchema)%>(<%=Helper.GetModelClassName(tableSchema)%> info)
+        public void Update<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>(<%=Helper.GetModelClassName(tableSchema)%> info)
         {
-            this.Execute(nameof(Update<%=Helper.GetModelClassClearName(tableSchema)%>),info);
+            this.Execute(nameof(Update<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>),info);
         }
         
         <%} %>
-        public void Delete<%=Helper.GetModelClassClearName(tableSchema)%>(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+        public void Delete<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=> $"{Helper.GetModelPropertyType(columnSchema)} {Helper.GetModelPropertyName(columnSchema)}")) %>)
         {
-            this.Execute(nameof(Delete<%=Helper.GetModelClassClearName(tableSchema)%>),new { <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+            this.Execute(nameof(Delete<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>),new { <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{Helper.GetModelPropertyName(columnSchema)}")) %> });
         }
         
-        public <%=Helper.GetModelClassName(tableSchema)%> Select<%=Helper.GetModelClassClearName(tableSchema)%>(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+        public <%=Helper.GetModelClassName(tableSchema)%> Select<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>(<%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
     .Select(columnSchema=>$"{Helper.GetModelPropertyType(columnSchema)} {Helper.GetModelPropertyName(columnSchema)}")) %>)
         {
-            return this.Query<<%=Helper.GetModelClassName(tableSchema)%>>(nameof(Select<%=Helper.GetModelClassClearName(tableSchema)%>),new { <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+            return this.Query<<%=Helper.GetModelClassName(tableSchema)%>>(nameof(Select<%=Helper.GetModelClassTrimName(tableSchema,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%>),new { <%= string.Join(",",tableSchema.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
                 .Select(columnSchema=>$"{Helper.GetModelPropertyName(columnSchema)}")) %> }).SingleOrDefault();
         }
         <%} %>

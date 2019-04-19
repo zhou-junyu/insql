@@ -1,0 +1,28 @@
+﻿<%@ CodeTemplate Language="C#" ResponseEncoding="UTF-8" TargetLanguage="C#" Debug="TRUE" Inherits="OutputFileCodeTemplate"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+<%@ Assembly src="Helper.cs" %>
+<%@ Import Namespace="Common" %>
+
+<%@ Property Name="Table" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table" %>
+
+<%@ Property Name="ModelAssembly" Type="String" Category="Model" Description="Model Assembly" %>
+<%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<insql type="<%=ModelNamespace%>.<%=Helper.GetModelClassName(this.Table) %>,<%= ModelAssembly%>">
+  <map table="<%=this.Table.Name%>" type="<%=ModelNamespace%>.<%=Helper.GetModelClassName(this.Table)%>,<%= ModelAssembly%>">
+   <% foreach (ColumnSchema columnSchema in this.Table.Columns.Where(c=> c.IsPrimaryKeyMember)) { %>
+   <key name="<%=columnSchema.Name%>" property="<%=Helper.GetModelPropertyName(columnSchema)%>" />
+   <%} %>
+   <% foreach (ColumnSchema columnSchema in this.Table.Columns.Where(c=> !c.IsPrimaryKeyMember)) { %>
+   <column name="<%=columnSchema.Name%>" property="<%=Helper.GetModelPropertyName(columnSchema)%>" />
+   <%} %>
+  </map>
+</insql>
