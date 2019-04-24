@@ -11,19 +11,19 @@ namespace Insql
 {
     public class DbContext : IDisposable
     {
-        private readonly object _lock = new object();
+        private readonly object sync = new object();
 
-        private readonly IInsqlModel _model;
+        private readonly IInsqlModel model;
 
-        private readonly DbContextOptions _options;
+        private readonly DbContextOptions options;
 
-        private IDbSession _session;
+        private IDbSession session;
 
         public virtual IDbSession Session => this.GetSession();
 
-        public virtual IInsqlModel Model => this._model;
+        public virtual IInsqlModel Model => this.model;
 
-        public IDbDialect Dialect => this._options.Dialect;
+        public IDbDialect Dialect => this.options.Dialect;
 
         public DbContext(DbContextOptions options)
         {
@@ -47,16 +47,16 @@ namespace Insql
                 throw new ArgumentNullException(nameof(options.Dialect));
             }
 
-            this._model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
+            this.model = options.ServiceProvider.GetRequiredService<IInsqlModel>();
 
-            this._options = options;
+            this.options = options;
         }
 
         public virtual void Dispose()
         {
-            if (this._session != null)
+            if (this.session != null)
             {
-                this._session.Dispose();
+                this.session.Dispose();
             }
         }
 
@@ -160,7 +160,7 @@ namespace Insql
 
         public virtual ResolveResult Resolve(string sqlId, object sqlParam = null)
         {
-            return this._options.Resolver.Resolve($"{sqlId}.{this._options.Dialect.Name}", sqlParam);
+            return this.options.Resolver.Resolve($"{sqlId}.{this.options.Dialect.Name}", sqlParam);
         }
 
         protected virtual void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -171,39 +171,32 @@ namespace Insql
         {
             if (!options.IsConfigured)
             {
-                var needConfigure = false;
-
-                lock (this._lock)
+                lock (this.sync)
                 {
                     if (!options.IsConfigured)
                     {
                         options.IsConfigured = true;
 
-                        needConfigure = true;
+                        this.OnConfiguring(new DbContextOptionsBuilder(options));
                     }
-                }
-
-                if (needConfigure)
-                {
-                    this.OnConfiguring(new DbContextOptionsBuilder(options));
                 }
             }
         }
 
         private IDbSession GetSession()
         {
-            if (this._session == null)
+            if (this.session == null)
             {
-                lock (this._lock)
+                lock (this.sync)
                 {
-                    if (this._session == null)
+                    if (this.session == null)
                     {
-                        this._session = this._options.SessionFactory.CreateSession();
+                        this.session = this.options.SessionFactory.CreateSession();
                     }
                 }
             }
 
-            return this._session;
+            return this.session;
         }
     }
 }
