@@ -10,6 +10,8 @@ namespace Insql.Resolvers.Elements
 
         public bool Identity { get; set; }
 
+        public bool Readonly { get; set; }
+
         public InsqlMapElementType ElementType => InsqlMapElementType.Column;
 
         public ColumnMapSectionElement(string name, string to)

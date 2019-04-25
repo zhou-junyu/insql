@@ -8,6 +8,8 @@
 
         bool Identity { get; }
 
+        bool Readonly { get; }
+
         InsqlMapElementType ElementType { get; }
     }
 

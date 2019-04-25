@@ -97,6 +97,7 @@ namespace Insql.Mappers
                  ColumnAttribute columnAttribute = (ColumnAttribute)propInfo.GetCustomAttribute(typeof(ColumnAttribute), true);
                  KeyAttribute keyAttribute = (KeyAttribute)propInfo.GetCustomAttribute(typeof(KeyAttribute), true);
                  NotMappedAttribute notMappedAttribute = (NotMappedAttribute)propInfo.GetCustomAttribute(typeof(NotMappedAttribute), true);
+                 EditableAttribute editableAttribute = (EditableAttribute)propInfo.GetCustomAttribute(typeof(EditableAttribute), true);
                  DatabaseGeneratedAttribute databaseGeneratedAttribute = (DatabaseGeneratedAttribute)propInfo.GetCustomAttribute(typeof(DatabaseGeneratedAttribute), true);
 
                  InsqlPropertyMap propertyMap = new InsqlPropertyMap(propInfo, columnAttribute?.Name);
@@ -115,6 +116,10 @@ namespace Insql.Mappers
                      {
                          propertyMap.IsIdentity = true;
                      }
+                 }
+                 if (editableAttribute != null && !editableAttribute.AllowEdit)
+                 {
+                     propertyMap.IsReadonly = true;
                  }
 
                  return propertyMap;

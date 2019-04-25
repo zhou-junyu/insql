@@ -283,7 +283,8 @@ namespace Insql.Providers
                                     xelement.Attribute(XName.Get("property", ""))?.Value ?? xelement.Attribute(XName.Get("to", ""))?.Value
                                 )
                                 {
-                                    Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false")
+                                    Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false"),
+                                    Readonly = Convert.ToBoolean((xelement.Attribute(XName.Get("readonly", ""))?.Value) ?? "false")
                                 };
                             }
                         case "column":
@@ -293,7 +294,8 @@ namespace Insql.Providers
                                     xelement.Attribute(XName.Get("property", ""))?.Value ?? xelement.Attribute(XName.Get("to", ""))?.Value
                                 )
                                 {
-                                    Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false")
+                                    Identity = Convert.ToBoolean((xelement.Attribute(XName.Get("identity", ""))?.Value) ?? "false"),
+                                    Readonly = Convert.ToBoolean((xelement.Attribute(XName.Get("readonly", ""))?.Value) ?? "false")
                                 };
                             }
                     }

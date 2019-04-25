@@ -39,5 +39,7 @@ namespace Insql.Mappers
         public bool IsIdentity { get; set; }
 
         public bool IsIgnored { get; set; }
+
+        public bool IsReadonly { get; set; }
     }
 }

@@ -10,6 +10,8 @@ namespace Insql.Mappers
 
         bool IsIgnored { get; }
 
+        bool IsReadonly { get; }
+
         string ColumnName { get; }
 
         PropertyInfo PropertyInfo { get; }

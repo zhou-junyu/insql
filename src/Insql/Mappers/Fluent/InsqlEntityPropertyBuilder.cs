@@ -49,6 +49,13 @@ namespace Insql.Mappers
             return this;
         }
 
+        public InsqlEntityPropertyBuilder Readonly()
+        {
+            this.propertyMap.IsReadonly = true;
+
+            return this;
+        }
+
         public InsqlEntityPropertyBuilder Ignore()
         {
             this.propertyMap.IsIgnored = true;
