@@ -64,19 +64,12 @@ namespace Insql.Mappers
 
             var resultMaps = assemblies.SelectMany(assembly =>
             {
-                IEnumerable<TypeInfo> types;
-
-                try
-                {
-                    types = assembly.DefinedTypes;
-                }
-                catch
-                {
-                    types = new List<TypeInfo>();
-                }
-
-                return types
-                .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && type.GetCustomAttribute(typeof(TableAttribute), true) != null)
+                return assembly.DefinedTypes.Where(type =>
+                    type.IsPublic &&
+                    type.IsClass &&
+                    !type.IsAbstract &&
+                    !type.IsGenericType &&
+                    type.GetCustomAttribute(typeof(TableAttribute), true) != null)
                 .Select(type => this.CreateAnnotationEntityMap(type));
             }).ToDictionary(item => item.EntityType, item => item);
 
@@ -148,19 +141,13 @@ namespace Insql.Mappers
 
             var resultMaps = assemblies.SelectMany(assembly =>
             {
-                IEnumerable<TypeInfo> types;
-
-                try
-                {
-                    types = assembly.DefinedTypes;
-                }
-                catch
-                {
-                    types = new List<TypeInfo>();
-                }
-
-                return types
-                .Where(type => type.IsPublic && type.IsClass && !type.IsAbstract && !type.IsGenericType && baseType != type && baseType.IsAssignableFrom(type))
+                return assembly.DefinedTypes.Where(type =>
+                    type.IsPublic &&
+                    type.IsClass &&
+                    !type.IsAbstract &&
+                    !type.IsGenericType &&
+                    baseType != type &&
+                    baseType.IsAssignableFrom(type))
                 .Select(type => (InsqlEntityBuilder)Activator.CreateInstance(type))
                 .Select(builder => builder.Build());
             }).ToDictionary(item => item.EntityType, item => item);
