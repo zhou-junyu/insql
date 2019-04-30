@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace Insql.Resolvers.Elements
@@ -32,6 +33,14 @@ namespace Insql.Resolvers.Elements
          if (value == null)
          {
             return string.Empty;
+         }
+
+         if (value is IDataParameter dataParameter)
+         {
+            if (dataParameter.Value == null)
+            {
+               return string.Empty;
+            }
          }
 
          var childrenResult = this.Children.Select(children =>

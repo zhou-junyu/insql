@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace Insql.Resolvers.Elements
@@ -29,7 +30,19 @@ namespace Insql.Resolvers.Elements
             return string.Empty;
          }
 
-         if (string.IsNullOrWhiteSpace((string)value))
+         if (value == null)
+         {
+            return string.Empty;
+         }
+
+         if (value is IDataParameter dataParameter)
+         {
+            if (string.IsNullOrWhiteSpace((string)dataParameter.Value))
+            {
+               return string.Empty;
+            }
+         }
+         else if (string.IsNullOrWhiteSpace((string)value))
          {
             return string.Empty;
          }
