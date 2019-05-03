@@ -7,11 +7,11 @@
 
 **🚀 Pursuit of simplicity, elegance, performance and quality**
 
-Insql advocates accessing the database by writing native SQL. The overall function is divided into three major blocks:
+Insql Advocate to write native The SQL way to access the database, the overall function is divided into three:
 
-- Unified management of SQL statements, using XML as the carrier of SQL statements, externally and uniformly managed SQL statements that are hard-coded in the program. Provides the ability to load SQL statements from a variety of sources and across multiple database SQL.
-- Provides a rich mapping mechanism, using the Annotation method, the Fluent method, and the XML configuration method to implement mapping of database tables to object attributes.
-- Flexible dependency injection and the use of domain-driven patterns to better manage database connections and the lifecycle of database contexts.
+- Unified management SQL statement, use XML as The vector of the SQL statement will be hard-coded in the program. SQL statements are externally and managed in a unified manner. Offer can be loaded from multiple sources SQL statements and matching across multiple databases The function of SQL .
+- Provides a rich mapping mechanism, using Annotation , Fluent , and XML Map to implement mapping of database tables to object properties.
+- Flexible dependency injection and the use of domain-driven patterns can better manage database connections and the lifecycle of database contexts.
 
 [Detailed documentation](https://rainrcn.github.io/insql/#/en/)
 
