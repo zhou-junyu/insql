@@ -105,7 +105,6 @@ public class AuthController : ControllerBase
     [HttpGet]
     public UserInfo GetUser(string userId)
     {
-        //查询用户
         return this.dbContext.GetUser(userId);
     }
 
@@ -126,7 +125,7 @@ public void ConfigureServices(IServiceCollection services)
     services.AddInsql();
 
     //将AuthDbContext添加到依赖注入容器中，默认生命周期为Scoped，一次WEB请求将创建一个DbContext对象，一个DbContext对象也将包含一条数据库连接
-    services.AddInsqlDbContext<AuthDbContext>(options =>
+    services.AddDbContext<AuthDbContext>(options =>
     {
       //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
@@ -476,7 +475,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 6.4 Fluent
+### 6.2 Fluent
 `FluentModelInfoBuilder.cs`
 ```csharp
 public class FluentModelInfoBuilder : InsqlEntityBuilder<FluentModelInfo>
@@ -815,7 +814,7 @@ public void ConfigureServices(IServiceCollection services)
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddInsqlDbContext<AuthDbContext>(options =>
+    services.AddDbContext<AuthDbContext>(options =>
     {
       //匹配哪个sql id，决定于使用何种数据库
       options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
@@ -1065,7 +1064,7 @@ namespace Insql.Domain.Contexts
 ## 14. 更新
 - 2.1.0
 
-  - 支持特性 Attribute 与 Fluent 方式数据库表与对象映射方式
+  - 支持特性 Annotation 与 Fluent 方式数据库表与对象映射方式
   - 支持增加对象的 CURD 扩展
 - 1.8.2
 

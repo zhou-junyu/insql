@@ -13,11 +13,11 @@
 
 **🚀 Pursuit of simplicity, elegance, performance and quality**
 
-Insql advocates accessing the database by writing native SQL. The overall function is divided into three major blocks:
+Insql Advocate to write native The SQL way to access the database, the overall function is divided into three:
 
-- Unified management of SQL statements, using XML as the carrier of SQL statements, externally and uniformly managed SQL statements that are hard-coded in the program. Provides the ability to load SQL statements from a variety of sources and across multiple database SQL.
-- Provides a rich mapping mechanism, using the Attribute method, the Fluent method, and the XML configuration method to implement mapping of database tables to object attributes.
-- Flexible dependency injection and the use of domain-driven patterns to better manage database connections and the lifecycle of database contexts.
+- Unified management SQL statement, use XML as The vector of the SQL statement will be hard-coded in the program. SQL statements are externally and managed in a unified manner. Offer can be loaded from multiple sources SQL statements and matching across multiple databases The function of SQL .
+- Provides a rich mapping mechanism, using Annotation , Fluent , and XML Map to implement mapping of database tables to object properties.
+- Flexible dependency injection and the use of domain-driven patterns can better manage database connections and the lifecycle of database contexts.
 
 ## 2. Installation
 
@@ -43,6 +43,7 @@ Insql advocates accessing the database by writing native SQL. The overall functi
 
 ### 4.1 Using Insql
 
+`Startup.cs`
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
@@ -50,129 +51,170 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### 4.2 Setting up Insql
+### 4.2 Sample Code
 
-When we use it normally, we can use the default configuration, and you don't need to set the following options. Detailed parameters will be explained in other sections
+#### 4.2.1 Basic usage examples
 
+`AuthDbContext.cs`
 ```csharp
-public void ConfigureServices(IServiceCollection services)
+public class AuthDbContext : DbContext
 {
-  services.AddInsql(builder =>
-  {
-      //Add an embedded assembly SQL XML configuration file
-      builder.AddEmbeddedXml();
-
-      //Add a SQL XML configuration file in the external file directory to specify the directory address
-      builder.AddExternalXml();
-
-      //Add SQL parsing filter for logging
-      builder.AddResolveFilter();
-
-      //Add a SQL parsing description provider that can be extended to load SQL XML configuration files from multiple sources, such as loading SQL XML configuration from a database. EmbeddedXml and ExternalXml are the extensions
-      builder.AddDescriptorProvider();
-
-      //Set default dynamic script parser parameters
-      builder.AddDefaultScriptResolver();
-
-      //Set default multiple database matcher parameters
-      builder.AddDefaultResolveMatcher();
-  });
-}
-```
-
-### 4.3 Sample Code
-
-#### 4.3.1 Basic usage examples
-
-`UserDbContext.insql.xml`
-
-```xml
-<insql type="Insql.Tests.Domain.Contexts.UserDbContext,Insql.Tests" >
-
-  <!--Define UserInfo type database fields to object attribute mappings-->
-  <map type="Insql.Tests.Domain.Models.UserInfo,Insql.Tests">
-    <key name="user_id" to="UserId" />
-    <column name="user_name" to="UserName" />
-    <column name="user_gender" to="UserGender" />
-  </map>
-
-  <select id="GetUser">
-    select * from user_info where user_id = @userId
-  </select>
-
-</insql>
-```
-
-**_Note: In the default setting, the User.insql.xml file requires the right-click property to select the `embedded assembly file` method to take effect._**
-
-`UserDbContext.cs`
-
-```csharp
-//`type` in insql.xml needs to correspond to `UserDbContext` type
-public class UserDbContext : DbContext
-{
-    public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
+    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     {
     }
 
     public UserInfo GetUser(int userId)
     {
-        //The sqlId parameter is "GetUser" corresponding to the sql id in insql.xml
-        //sqlParam parameter supports PlainObject and IDictionary<string,object> types
+        //The first parameter corresponds to the select id , the second data parameter supports the PlainObject and IDictionary < string, object > type
         return this.Query<UserInfo>(nameof(GetUser), new { userId }).SingleOrDefault();
     }
 }
 ```
 
-Use UserDbContext in `ValuesController.cs` or `Domain Service` for presentation convenience in the Controller.
+`AuthDbContext.insql.xml`
+```xml
+<!--type corresponds to DbContext-->
+<insql type="Insql.Tests.Domain.Contexts.AuthDbContext,Insql.Tests" >
+  <select id="GetUser">
+    select * from user_info where user_id = @userId
+  </select>
+
+  <select id="GetRoleList">
+    select * from role_info order by sort_order
+  </select>
+</insql>
+```
+**_Note: When using the default settings The AuthDbContext.insql.xml file requires the right-click property to select the `embedded assembly file` method to be searched_**
+
+`Controllers` or `Domain Services`
 
 ```csharp
-[Route("api/[controller]")]
+[Route("api/[controller]/[action]")]
 [ApiController]
-public class ValuesController : ControllerBase
+public class AuthController : ControllerBase
 {
-    private readonly UserDbContext dbContext;
+    private readonly AuthDbContext dbContext;
 
-    public UserService(UserDbContext dbContext)
+    public UserService(AuthDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<string>> Get()
+    public UserInfo GetUser(string userId)
     {
-        //select User
-        var userInfo = this.dbContext.GetUser("tome");
+        return this.dbContext.GetUser(userId);
+    }
 
-        //Can also be used like this, directly call sql through dbContext, and write the same method in DbContext
-        var roleList = this.dbContext.Query<RoleInfo>("GetRoleList");
-
-        return new string[] { "value1", "value2" };
+    [HttpGet]
+    public UserInfo GetRoleList()
+    {
+        //Can be called directly dbContext
+        return this.dbContext.Query<RoleInfo>("GetRoleList");
     }
 }
 ```
 
-`Startup.cs` Register UserDbContext
+`Startup.cs`
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    //Register Insql
     services.AddInsql();
 
-    //Register UserDbContext
-    services.AddInsqlDbContext<UserDbContext>(options =>
+    //Add AuthDbContext to the dependency injection container, the default life cycle is Scoped , a WEB request will create a DbContext object, a DbContext object will also contain a database connection
+    services.AddDbContext<AuthDbContext>(options =>
     {
-      //Select UserDbContext database connection
       //options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
 }
 ```
 
-This is the complete use process, the example is to use the domain-driven model, you can use the situation depending on the situation. For example, UserDbContext can be injected into the Controller without the UserService.
+#### 4.2.2 Example of Common Context Usage
 
-#### 4.3.2 Use transaction
+`CommonDbContext.cs`
+```csharp
+public class CommonDbContext<T> : DbContext where T : class
+{
+    public CommonDbContext(CommonDbContextOptions<T> options) : base(options)
+    {
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseResolver<T>();  //When resoving SQL , it will find those SQL statements corresponding to T type and insql type .
+
+        optionsBuilder.UseSqlite("Data Source= ./insql.tests.db");  //specify the database connectionString used
+    }
+}
+
+public class CommonDbContextOptions<T> : DbContextOptions<CommonDbContext<T>> where T : class
+{
+    public CommonDbContextOptions(IServiceProvider serviceProvider)
+    {
+        this.ServiceProvider = serviceProvider;
+    }
+}
+```
+
+`UserInfo.insql.xml`
+```xml
+<!--Type and corresponding to a T CommonDbContext -->
+<insql type="Insql.Tests.Models.UserInfo,Insql.Tests.Models" >
+  <select id="GetUser">
+    select * from user_info where user_id = @userId
+  </select>
+  <select id="GetUserList">
+    select * from user_info where user_id in @userIdList
+  </select>
+</insql>
+```
+
+**_Note: When using the default settings The AuthDbContext.insql.xml file requires the right-click property to select the `embedded assembly file` method to be searched_**
+
+`Controllers` or `Domain Services`
+
+```csharp
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class AuthController : ControllerBase
+{
+    private readonly CommonDbContext<UserInfo> userDbContext;
+
+    public UserService(CommonDbContext<UserInfo> userDbContext)
+    {
+        this.userDbContext = userDbContext;
+    }
+
+    [HttpGet]
+    public UserInfo GetUser(string userId)
+    {
+        return this.userDbContext.Query<UserInfo>("GetUser",{ userId }).SingleOrDefault();
+    }
+
+    [HttpGet]
+    public IEnumerable<UserInfo> GetUserList()
+    {
+        return this.userDbContext.Query<UserInfo>("GetUserList",{ userIdList = new string[] {'tome','jerry'} });
+    }
+}
+```
+
+`Startup.cs`
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsql();
+
+    //Add CommonDbContext to the dependency injection container
+    services.AddSingleton(typeof(CommonDbContextOptions<>));
+    services.AddScoped(typeof(CommonDbContext<>));
+}
+```
+
+#### 4.2.3 Use transaction
 
 ```csharp
 public void InsertUserList(IEnumerable<UserInfo> infoList)
@@ -227,48 +269,292 @@ public void InsertUserList(IEnumerable<UserInfo> infoList)
 }
 ```
 
-#### 4.3.3 SELECT IN
-
-For the use of SELECT IN arrays, there are two
+#### 4.2.4 SELECT IN
 
 ```csharp
   var sqlParam = new { userIdList = new string[]{ "tom","jerry" } };
 ```
 
-**1. Use each**
+**1.Use List parameter conversion function provided by Dapper**
 
 ```xml
-<select id="EachIn">
+<select id="GetUserList">
+  select * from user_info
+  where user_id in @userIdList
+</select>
+```
+When Dapper executes, it will be the original The SQL statement is converted to the following SQL , and then executed :
+
+```sql
+select * from user_info where user_id in (@userIdList1,@userIdList2)
+```
+
+**~~2.Use Each (not recommended)~~**
+
+```xml
+<select id="GetUserList">
   select * from user_info
   where user_id in
   <each name="userIdList" open="(" separator="," close=")" prefix="@"  />
 </select>
 ```
 
-After the SqlResolver is parsed, the SQL statement becomes as follows:
+After Insql Resolve , it will be the original The SQL statement is converted to the following SQL:
 
 ```sql
 select * from user_info where user_id in (@userIdList1,@userIdList2)
 ```
 
-_If you only use ISqlResolver.Resolve to parse SQL statements, it is recommended to use this method. If you use it normally, it is more convenient to use the following._
 
-**2. Use the list parameter conversion function supported by Dapper**
+#### 4.2.5 RESOLVE SQL
 
+Only use InsqlResolver to parse SQL statements
+
+`Controller.cs`
+```csharp
+[Route("api/[controller]/[action]")]
+[ApiController]
+public class ResolveController : ControllerBase
+{
+    private readonly IInsqlResolver<UserInfo> userResolver;
+
+    public UserService(IInsqlResolver<UserInfo> userResolver)
+    {
+        this.userResolver = userResolver;
+    }
+
+    [HttpGet]
+    public string GetUserSql(string userId)
+    {
+        var resolveResult = sqlResolver.Resolve("GetUser", new { userId });
+        //resolveResult = { Sql:"select....",Param:{"userId":"..."} }
+
+        return resolveResult.Sql;
+    }
+}
+```
+
+## 5. Extended usage
+
+### 5.1 Extended CURD
+
+`DbDialectExtensions.cs`
+```csharp
+public static partial class DbDialectExtensions
+{
+  public static string Quote(this IDbDialect dialect, string value)
+  {
+      return $"{dialect.OpenQuote}{value}{dialect.CloseQuote}";
+  }
+}
+```
+
+`DbContextExtensions.cs`
+```csharp
+public static partial class DbContextExtensions
+{
+  public static TEntity Select<TEntity>(this DbContext context, object keys) where TEntity : class
+  {
+      var map = context.Model.FindMap(typeof(TEntity));
+
+      if (map == null)
+      {
+        throw new Exception($"insql entity type : {typeof(TEntity)} is not mapping!");
+      }
+
+      var wcols = map.Properties.Where(p => !p.IsIgnored && p.IsKey).ToList();
+
+      var sql = $"SELECT * FROM {context.Dialect.Quote(map.Table)} " +
+          $"WHERE {string.Join(" AND ", wcols.Select(col => $"{context.Dialect.Quote(col.ColumnName)} = {context.Dialect.ParameterPrefix}{col.PropertyInfo.Name}"))}";
+
+      return context.Session.Connection.Query(sql, keys, context.Session.Transaction, true, context.Session.CommandTimeout).SingleOrDefault();
+  }
+
+  public static int Insert<TEntity>(this DbContext context, TEntity entity) where TEntity : class
+  {
+      var map = context.Model.FindMap(typeof(TEntity));
+
+      if (map == null)
+      {
+        throw new Exception($"insql entity type : {typeof(TEntity)} is not mapping!");
+      }
+
+      var cols = map.Properties.Where(p => !(p.IsIgnored || p.IsIdentity || p.IsReadonly)).ToList();
+
+      var sql = $"INSERT INTO {context.Dialect.Quote(map.Table)} " +
+          $"({string.Join(",", cols.Select(col => context.Dialect.Quote(col.ColumnName)))}) " +
+          $"VALUES ({string.Join(",", cols.Select(col => $"{context.Dialect.ParameterPrefix}{col.PropertyInfo.Name}"))})";
+
+      return context.Session.Connection.Execute(sql, entity, context.Session.Transaction, context.Session.CommandTimeout);
+  }
+
+  public static int Update<TEntity>(this DbContext context, TEntity entity) where TEntity : class
+  {
+      var map = context.Model.FindMap(typeof(TEntity));
+
+      if (map == null)
+      {
+        throw new Exception($"insql entity type : {typeof(TEntity)} is not mapping!");
+      }
+
+      var ucols = map.Properties.Where(p => !(p.IsIgnored || p.IsIdentity || p.IsKey || p.IsReadonly)).ToList();
+      var wcols = map.Properties.Where(p => !p.IsIgnored && p.IsKey).ToList();
+
+      var sql = $"UPDATE {context.Dialect.Quote(map.Table)} SET " +
+          $"{string.Join(",", ucols.Select(col => $"{context.Dialect.Quote(col.ColumnName)} = {context.Dialect.ParameterPrefix}{col.PropertyInfo.Name}"))}" +
+          $"WHERE {string.Join(" AND ", wcols.Select(col => $"{context.Dialect.Quote(col.ColumnName)} = {context.Dialect.ParameterPrefix}{col.PropertyInfo.Name}"))}";
+
+      return context.Session.Connection.Execute(sql, entity, context.Session.Transaction, context.Session.CommandTimeout);
+  }
+
+  public static int Delete<TEntity>(this DbContext context, TEntity entity) where TEntity : class
+  {
+      return context.Delete<TEntity>((object)entity);
+  }
+
+  public static int Delete<TEntity>(this DbContext context, object entity) where TEntity : class
+  {
+      var map = context.Model.FindMap(typeof(TEntity));
+
+      if (map == null)
+      {
+        throw new Exception($"insql entity type : {typeof(TEntity)} is not mapping!");
+      }
+
+      var wcols = map.Properties.Where(p => !p.IsIgnored && p.IsKey).ToList();
+
+      var sql = $"DELETE FROM {context.Dialect.Quote(map.Table)} " +
+          $"WHERE {string.Join(" AND ", wcols.Select(col => $"{context.Dialect.Quote(col.ColumnName)} = {context.Dialect.ParameterPrefix}{col.PropertyInfo.Name}"))}";
+
+      return context.Session.Connection.Execute(sql, entity, context.Session.Transaction, context.Session.CommandTimeout);
+  }
+}
+```
+**_Note: The above extension methods are not included in the library and need to be extended by themselves and require entity mapping data support_**
+
+## 6. Object mapping
+
+Support Map, Annotation, Fluent three ways object attribute mapping
+
+### 6.1 Xml
+
+`UserInfo.insql.xml`
 ```xml
-<select id="DapperIn">
-  select * from user_info
-  where user_id in @userIdList
-</select>
+<insql type="Insql.Tests.Models.UserInfo,Insql.Tests.Models" >
+  <map table="user_info" type="Insql.Tests.Models.UserInfo,Insql.Tests.Models">
+   <key name="user_id" property="UserId" />
+   <column name="user_name" property="UserName" />
+   <column name="user_gender" property="UserGender" />
+  </map>
+</insql>
+```
+Set the XML MAP mapping, this mode will be enabled by default
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsql(builder=>
+    {
+        builder.AddProvider(providerBuilder =>
+        {
+            //You can set the assembly you want to scan, if not set, scan all the assemblies in the current AppDomain by default
+            //This setting works on both the sql and map configuration sections
+            providerBuilder.AddEmbeddedXml(options =>
+            {
+                options.Assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            });
+        });
+
+        builder.AddMapper(options =>
+        {
+            //options.ExcludeXmlMaps(); //can exclude the mapping of XmlMap
+        });
+    });
+}
 ```
 
-When Dapper executes, it will change the SQL statement as follows, and then execute:
+### 6.2 Fluent
+`FluentModelInfoBuilder.cs`
+```csharp
+public class FluentModelInfoBuilder : InsqlEntityBuilder<FluentModelInfo>
+{
+    public FluentModelInfoBuilder()
+    {
+        this.Table("fluent_model_info");
 
-```sql
-select * from user_info where user_id in (@userIdList1,@userIdList2)
+        this.Property(o => o.Id).Column("id").Key().Identity();
+        this.Property(o => o.Name).Column("name");
+        this.Property(o => o.Size).Column("Size");
+        this.Property(o => o.Extra).Ignore();
+        this.Property(o => o.ReadOnlyExtra).Readonly();
+    }
+}
+```
+Set the Fluent mode mapping, it will not be enabled by default.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsql(builder=>
+    {
+        builder.AddMapper(options =>
+        {
+            //Enable Fluent mode mapping scan, scan all the assemblies in the current AppDomain by default if no parameters are set
+            //will scan and map all inheritance Entity type of InsqlEntityBuilder <T>
+            options.IncludeFluentMaps();  
+            //options.IncludeFluentMaps(assemblies..);
+        });
+    });
+}
 ```
 
-## 5. Configuration syntax
+### 6.3 Annotation
+
+`AnnotationModelInfo.cs`
+```csharp
+[Table("annotation_model_info")]
+public class AnnotationModelInfo
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("id")]
+    public int Id { get; set; }
+
+    [Column("name")]
+    public string Name { get; set; }
+
+    public int Size { get; set; }
+
+    [NotMapped]
+    public string Extra { get; set; }
+
+    [Editable(AllowEdit=false)]
+    public string ReadOnlyExtra { get; set; }
+}
+```
+
+Set Annotation mode mapping, not enabled by default
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsql(builder=>
+    {
+        builder.AddMapper(options =>
+        {
+            //Enable the mapping scan of the Annotation mode, if you do not set the parameters, the default scan all the assemblies in the current AppDomain
+            //will scan and map all the bands [Table] attribute entity type
+            options.IncludeAnnotationMaps();  
+            //options.IncludeAnnotationMaps(assemblies..);
+        });
+    });
+}
+```
+
+### 6.4 multiple mapping priorities
+It is recommended to enable only one of the methods of entity mapping. However, if multiple mapping methods are enabled at the same time, the XmlMap -> FluentMap -> AnnotationMap will override the latter for the same entity type .
+
+## 7. Configuration syntax
 
 **xxx.insql.xml** configuration syntax is similar to the configuration syntax Mybatis currently supports the following configuration section :
 
@@ -282,13 +568,15 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
   - **where**
   - **set**
   - **trim**
-  - **each**
+  - **~~each(not recommended)~~**
+  - **IfNotNull(new)**
+  - **IfNotEmpty(new)**
 - **select** = **sql**
 - **insert** = **sql**
 - **update** = **sql**
 - **delete** = **sql**
 
-### 5.1 map
+### 7.1 map
 
 `map` the configuration section is used for mapping of database table fields to object properties so that they `DbContext.Query<UserInfo>`vwill be used as long as they are queried
 
@@ -304,12 +592,14 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
 | ------------------ | -------------- | -------------------- | -------------------------------- |
 | `key`              |                |                      | Indicates the primary key column |
 |                    | `name*`        | Column name          |                                  |
-|                    | `to*`          | Object property name |                                  |
+|                    | `property*`    | Object property name |                                  |
+|                    | `identity`     | Identity column      | identity="True,False"            |
 | `column`           |                |                      | Represents a normal column       |
 |                    | `name*`        | Column name          |                                  |
-|                    | `to*`          | Object property name |                                  |
+|                    | `property*`    | Object property name |                                  |
+|                    | `readonly`     | Read-only attribute  | readonly="True,False"            |
 
-### 5.2 sql
+### 7.2 sql
 
 `sql` the configuration section is used to configure database execution statements.`select`,`insert`,`update`,`delete` with `sql` an `sql`alias that has the same functionality, just a configuration section.
 
@@ -326,30 +616,36 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
 </select>
 ```
 
-| Child element name | Attribute name    | Property description                                                                                                     | Description                                                                                                                                                                                                                                 |
-| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `include`          |                   |                                                                                                                          | Import other `sql` configuration sections                                                                                                                                                                                                   |
-|                    | `refid*`          | Configuration section to import `id`                                                                                     |                                                                                                                                                                                                                                             |
-| `bind`             |                   |                                                                                                                          | Create a new query parameter to the current parameter list, such as like fuzzy query scene                                                                                                                                                  |
-|                    | `name*`           | New parameter name created                                                                                               |                                                                                                                                                                                                                                             |
-|                    | `value*`          | Dynamic script expression, for example: '%'+userName+'%'                                                                 |                                                                                                                                                                                                                                             |
-|                    | `valueType`       | Specifies `value` the type returned, in the format System.TypeCode enumeration,value types are best specified explicitly |                                                                                                                                                                                                                                             |
-| `if`               |                   |                                                                                                                          | Determine the dynamic expression, if it is satisfied, output the internal content                                                                                                                                                           |
-|                    | `test*`           | Dynamic expression, you need to return a bool type, for example: userName != null                                        |                                                                                                                                                                                                                                             |
-| `where`            |                   |                                                                                                                          | Add the `where` sql segment at the current position , whether the output `where` depends on whether its internal child elements have valid content output, and will overwrite the beginning `and`,`or`                                      |
-| `set`              |                   |                                                                                                                          | Add the `set` sql segment at the current position , mainly used in the `update` configuration section, whether the output `set` depends on whether its internal child elements have valid content output, and will overwrite the ending `,` |
-| `trim`             |                   |                                                                                                                          | Trimming the output of the wrapped element, wrapping the child elements with the specified prefix character and suffix character                                                                                                            |
-|                    | `prefix`          | Package prefix character                                                                                                 |                                                                                                                                                                                                                                             |
-|                    | `suffix`          | Package suffix character                                                                                                 |                                                                                                                                                                                                                                             |
-|                    | `prefixOverrides` | Will overwrite the specified character at the beginning of the internal output                                           |                                                                                                                                                                                                                                             |
-|                    | `suffixOverrides` | Will override the specified character at the end of the internal output                                                  |                                                                                                                                                                                                                                             |
-| `each`             |                   |                                                                                                                          | Loop array type of query parameter for each value                                                                                                                                                                                           |
-|                    | `name*`           | Loop array parameter name                                                                                                |                                                                                                                                                                                                                                             |
-|                    | `separator`       | Separator between each value                                                                                             |                                                                                                                                                                                                                                             |
-|                    | `open`            | The left side of the package                                                                                             |                                                                                                                                                                                                                                             |
-|                    | `close`           | The right side of the package                                                                                            |                                                                                                                                                                                                                                             |
-|                    | `prefix`          | Each value name prefix                                                                                                   |                                                                                                                                                                                                                                             |
-|                    | `suffix`          | Suffix for each value name                                                                                               |                                                                                                                                                                                                                                             |
+| Child element name          | Attribute name    | Property description                                                                                                     | Description                                                                                                                                                                                                                                 |
+| --------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `include`                   |                   |                                                                                                                          | Import other `sql` configuration sections                                                                                                                                                                                                   |
+|                             | `refid*`          | Configuration section to import `id`                                                                                     |                                                                                                                                                                                                                                             |
+| `bind`                      |                   |                                                                                                                          | Create a new query parameter to the current parameter list, such as like fuzzy query scene                                                                                                                                                  |
+|                             | `name*`           | New parameter name created                                                                                               |                                                                                                                                                                                                                                             |
+|                             | `value*`          | Dynamic script expression, for example: '%'+userName+'%'                                                                 |                                                                                                                                                                                                                                             |
+|                             | `valueType`       | Specifies `value` the type returned, in the format System.TypeCode enumeration,value types are best specified explicitly |                                                                                                                                                                                                                                             |
+| `if`                        |                   |                                                                                                                          | Determine the dynamic expression, if it is satisfied, output the internal content                                                                                                                                                           |
+|                             | `test*`           | Dynamic expression, you need to return a bool type, for example: userName != null                                        |                                                                                                                                                                                                                                             |
+| `where`                     |                   |                                                                                                                          | Add the `where` sql segment at the current position , whether the output `where` depends on whether its internal child elements have valid content output, and will overwrite the beginning `and`,`or`                                      |
+| `set`                       |                   |                                                                                                                          | Add the `set` sql segment at the current position , mainly used in the `update` configuration section, whether the output `set` depends on whether its internal child elements have valid content output, and will overwrite the ending `,` |
+| `trim`                      |                   |                                                                                                                          | Trimming the output of the wrapped element, wrapping the child elements with the specified prefix character and suffix character                                                                                                            |
+|                             | `prefix`          | Package prefix character                                                                                                 |                                                                                                                                                                                                                                             |
+|                             | `suffix`          | Package suffix character                                                                                                 |                                                                                                                                                                                                                                             |
+|                             | `prefixOverrides` | Will overwrite the specified character at the beginning of the internal output                                           |                                                                                                                                                                                                                                             |
+|                             | `suffixOverrides` | Will override the specified character at the end of the internal output                                                  |                                                                                                                                                                                                                                             |
+| ~~`each(not recommended)`~~ |                   |                                                                                                                          | Loop array type of query parameter for each value                                                                                                                                                                                           |
+|                             | `name*`           | Loop array parameter name                                                                                                |                                                                                                                                                                                                                                             |
+|                             | `separator`       | Separator between each value                                                                                             |                                                                                                                                                                                                                                             |
+|                             | `open`            | The left side of the package                                                                                             |                                                                                                                                                                                                                                             |
+|                             | `close`           | The right side of the package                                                                                            |                                                                                                                                                                                                                                             |
+|                             | `prefix`          | Each value name prefix                                                                                                   |                                                                                                                                                                                                                                             |
+|                             | `suffix`          | Suffix for each value name                                                                                               |                                                                                                                                                                                                                                             |
+| `IfNotNull(new)`            |                   |                                                                                                                          | If the query parameter value exists and is not null                                                                                                                                                                                         |
+|                             | `name*`           | Query parameter name                                                                                                     |
+| `IfNotEmpty(new)`           |                   |                                                                                                                          | If the query parameter string value exists and is not an empty string                                                                                                                                                                       |
+|                             | `name*`           |
+| Query parameter name        |
+
 
 `include`,`where`,`if`,`bind`
 
@@ -416,7 +712,7 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
   </insert>
 ```
 
-`each`
+~~`each(not recommended)`~~
 
 ```xml
 <select id="EachIn">
@@ -436,7 +732,7 @@ select * from user_info where user_id in (@userIdList1,@userIdList2)
 
 _Tip: Dapper's own parameter list conversion function can also be used on select in list._
 
-## 6. Dynamic script
+## 8. Dynamic script
 
 The dynamic script syntax is JAVASCRIPT. Support for common object properties of ECMAScript 6.
 
@@ -448,7 +744,7 @@ The dynamic script syntax is JAVASCRIPT. Support for common object properties of
 
 `userGender !=null and userGender == 'W'` Part of it is a dynamic script.
 
-### 6.1 operator conversion
+### 8.1 operator conversion
 
 Because `&`, `<` these have special meaning in XML, so support for these symbols in the dynamic conversion script. The following symbol conversions are currently supported:
 
@@ -467,35 +763,36 @@ _The operator conversion function can be disabled or the conversion of some of t
 
 **_Note: Please avoid the same query parameters as the above operator name. If it is unavoidable, you can set to exclude conflicting operators. Then implement the operator with the xml transfer symbol_**
 
-### 6.2 Enumeration converted to a string
+### 8.2 Enumeration converted to a string
 
 `userGender == 'W'` `userGender` the attribute is an enumerated type, which is converted to a character-for-format by default in dynamic scripts. This conversion can be disabled, and the enum will be converted to a `number` type after disabling .
 
-### 6.3 Time type conversion
+### 8.3 Time type conversion
 
 If the query parameter contains a time type `DateTime`, it will be converted to the `Date` type in JS, because the minimum time of Date is 1970.1.1, so if there is an unassigned DateTime (0001.1.1) in the query object, or less than 1970 The DateTime of the time will be converted to 1970.1.1 by default, and the conversion only happens when the dynamic script is run, and does not affect the original value of the query parameters. If there is an unassigned `DateTime?` type in the parameter object, it will be null itself and will not be converted.
 
-### 6.4 Setting up dynamic scripts
+### 8.4 Setting up dynamic scripts
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddInsql(builder =>
     {
-        builder.AddDefaultScriptResolver(options =>
+        builder.AddResolver(configure =>
         {
-            options.IsConvertOperator = false;  //Disable operator conversion
-            options.IsConvertEnum = false; //Disable enum conversion to string
-            options.ExcludeOperators = new string[]
+            configure.AddScripter(options =>
             {
-                "eq","neq"  //Exclude eq, neq operator conversion
-            };
+                options.IsConvertEnum = false;  //Do not convert enumerations to strings
+                options.IsConvertDateTimeMin = false; //Do not convert the minimum time
+                options.IsConvertOperator = false;  //Do not convert operators
+                options.ExcludeOperators = new string[] { "eq","neq" }; //exclude operator conversion
+            });
         });
     });
 }
 ```
 
-## 7. Multiple database matching
+## 9. Multiple database matching
 
 ```xml
 <!--By default, the example uses the Sqlite database-->
@@ -515,49 +812,17 @@ public void ConfigureServices(IServiceCollection services)
 </insert>
 ```
 
-### 7.1 Set up multiple database matching
+### 9.1 Matching rule
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-  services.AddInsql(builder=>
-  {
-      builder.AddDefaultResolveMatcher(options=>
-      {
-          options.CorssDbEnabled = false; //Whether to enable multi-database matching, enabled by default
-          options.CorssDbSeparator = "@"; //Multi-database match separator, default is `.`
-      });
-  });
-}
-```
-
-_The match separator will change to the following:_
-
-```xml
-<insert id="InsertUser">
-  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-  select LAST_INSERT_ID();
-</insert>
-<!--SqlServer-->
-<insert id="InsertUser@SqlServer">
-  insert into user_info (user_name,user_gender) values (@UserName,@UserGender);
-  select SCOPE_IDENTITY();
-</insert>
-```
-
-### 7.2 Matching rule
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddInsqlDbContext<UserDbContext>(options =>
+    services.AddDbContext<UserDbContext>(options =>
     {
-      //Which SqlId to match, which database to use
+      //Which sql id to match, which database to use
       options.UseSqlServer(this.Configuration.GetConnectionString("sqlserver"));
       //options.UseSqlite(this.Configuration.GetConnectionString("sqlite"));
     });
-
-    services.AddScoped<IUserService,UserService>();
 }
 ```
 
@@ -565,58 +830,64 @@ public void ConfigureServices(IServiceCollection services)
 
 **_Currently supports matching database suffixes: `SqlServer` `Sqlite` `MySql` `Oracle` `PostgreSql`_**
 
-### 7.3 Extended database support
+### 9.2 Extended database support
 
-There is no limit to the support of other databases. As long as the database to be supported has a client library that supports .NET, it is very easy to support. Just implement the `IDbSessionFactory` interface.
+Support for other databases is no limit, as long as required to support the database that supports the .NET client library, support is very easy. Need to implement `IDbDialect` `IDbSessionFactory` interface.
 
-## 8. Multiple configuration sources
+## 10. Multiple configuration sources
 
-### 8.1 Embedding assembly file mode source
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddInsql(builder =>
-    {
-        builder.AddEmbeddedXml(options =>
-        {
-            options.Enabled = false;    //This source feature can be disabled and is enabled by default.
-            //options.Matches = "**/*.insql.xml"; //Glob file filter expression, this is the default value
-            //...
-        });
-    });
-}
-```
-
-### 8.2 External file directory mode source
+### 10.1 Embedding assembly file mode source
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddInsql(builder =>
     {
-        builder.AddExternalXml(options=>
+        builder.AddProvider(providerBuilder =>
         {
-            options.Enabled = true; //This source can be started, the default is disabled
-            options.Directory = "D:\\Insqls";   //Configure the load directory, support recursive search, subfolders will also scan, the default is the current program execution directory
-            //options.Matches = "**/*.insql.xml"; //Glob file filter expression, this is the default value
+            providerBuilder.AddEmbeddedXml(options =>
+            {
+                options.Enabled = false;    //This source feature can be disabled, the default is enabled
+                //options.Matches = "**/*.insql.xml"; //glob file filter expression, this is the default value
+                //options.Assemblies = AppDomain.CurrentDomain.GetAssemblies(); //Specify the assembly to be scanned, defaulting to the assembly in the current AppDomain .
+            });
         });
     });
 }
 ```
 
-### 8.3 Multi-configuration source merge function
+### 10.2 External file directory mode source
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddInsql(builder =>
+    {
+        builder.AddProvider(providerBuilder =>
+        {
+            providerBuilder.AddExternalXml(options=>
+            {
+                options.Enabled = true; //This source can be started , the default is disabled
+                options.Directory = "D:\\Insqls";   //Configure the load directory, support recursive search, subfolders will also scan, the default is the current program execution directory
+                //options.Matches = "**/*.insql.xml"; //glob file filter expression, this is the default value
+            });
+        });
+    });
+}
+```
+
+### 10.3 Multi-configuration source merge function
 
 `EmbeddedXml` and the `ExternalXml` mode can be enabled at the same time. For the same file with insql type, the latter will overwrite the same statement configuration with the former sqlId and the same mapping configuration with map type.
 
-## 9. Extended function
+## 11. Extended function
 
-### 9.1 Statement Parsing Filter
+### 11.1 Statement Parsing Filter
 
-Create a statement-resolved logging filter
+Create a statement-resolved logging filter that fires when the IInsqlResolver.Resolve method is called
 
 ```csharp
-public class LogResolveFilter : ISqlResolveFilter
+public class LogResolveFilter : IInsqlResolveFilter
 {
   private readonly ILogger<LogResolveFilter> logger;
 
@@ -630,7 +901,7 @@ public class LogResolveFilter : ISqlResolveFilter
       this.logger.LogInformation($"insql resolved id : {resolveContext.InsqlSection.Id} , sql : {resolveResult.Sql}");
   }
 
-  public void OnResolving(InsqlDescriptor insqlDescriptor, string dbType, string sqlId, IDictionary<string, object> sqlParam)
+  public void OnResolving(InsqlDescriptor insqlDescriptor, string sqlId, IDictionary<string, object> sqlParam)
   {
   }
 }
@@ -645,25 +916,17 @@ public void ConfigureServices(IServiceCollection services)
 {
   services.AddInsql(builder =>
   {
-      builder.AddResolveFilter<LogResolveFilter>();
+      builder.AddResolver(configure =>
+      {
+          configure.AddFilter<LogResolveFilter>();
+      });
   });
 }
 ```
 
-### 9.2 Statement Configuration Description Provider
+## 12. Tools
 
-```csharp
-public interface IInsqlDescriptorProvider
-{
-    IEnumerable<InsqlDescriptor> GetDescriptors();
-}
-```
-
-The implementation of the above interface can be achieved, the specific implementation details can refer to `EmbeddedXml` or `ExternalXml`part of the source code. The detailed implementation details will be written in the future.
-
-## 10. Tools
-
-### 10.1 Code Generator
+### 12.1 Code Generator
 
 The `tools` CodeSmith generator file is included in the source directory, and you can run these files directly after installing CodeSmith.
 
@@ -671,205 +934,138 @@ The `tools` CodeSmith generator file is included in the source directory, and yo
 
 **Generate code example: show only one data table**
 
-`UserPo.cs`
+
+`AuthRoleInfo.cs`
 
 ```csharp
-namespace Tests.Domain.Model
+namespace Insql.Domain.Models
 {
-	public class UserPo
-	{
-    /// <summary>
-    /// user_id
-    /// </summary>
-    public int UserId { get; set; }
+  /// <summary>
+  /// auth_role_info
+  /// </summary>
+	public class AuthRoleInfo
+	{   
+      /// <summary>
+      /// role_code
+      /// </summary>
+      public string RoleCode { get; set; }
 
-    /// <summary>
-    /// user_name
-    /// </summary>
-    public string UserName { get; set; }
+      /// <summary>
+      /// role_name
+      /// </summary>
+      public string RoleName { get; set; }
 
-    /// <summary>
-    /// user_gender
-    /// </summary>
-    public string UserGender { get; set; }
+      /// <summary>
+      /// role_description
+      /// </summary>
+      public string RoleDescription { get; set; }
 
-    /// <summary>
-    /// user_intro
-    /// </summary>
-    public string UserIntro { get; set; }
+      /// <summary>
+      /// sort_order
+      /// </summary>
+      public int SortOrder { get; set; }
 
-    /// <summary>
-    /// create_time
-    /// </summary>
-    public DateTime CreateTime { get; set; }
-
-    /// <summary>
-    /// last_login_time
-    /// </summary>
-    public DateTime? LastLoginTime { get; set; }
+      /// <summary>
+      /// is_default
+      /// </summary>
+      public bool IsDefault { get; set; }
 	}
 }
 ```
 
-`TestDbContext.cs`
+`AuthRoleInfo.insql.xml`
+```xml
+<insql type="Insql.Domain.Models.AuthRoleInfo,Insql.Domain">
+  <map table="auth_role_info" type="Insql.Domain.Models.AuthRoleInfo,Insql.Domain">
+   <key name="role_code" property="RoleCode" />
+   <column name="role_name" property="RoleName" />
+   <column name="role_description" property="RoleDescription" />
+   <column name="sort_order" property="SortOrder" />
+   <column name="is_default" property="IsDefault" />
+  </map>
+</insql>
+```
+
+`AuthDbContext.cs`
 
 ```csharp
-namespace Tests.Domain.Context
+namespace Insql.Domain.Contexts
 {
-  public class UserDbContext : DbContext
+  public class AuthDbContext : DbContext
   {
-    public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
-    {
-    }
+      public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
+      {
+      }
+      
+      #region AuthRoleInfo
 
-    /*
-        UserPo
-    */
-    public int SelectUserCountByKey(int UserId)
-    {
-        return this.Query<UserPo>(nameof(SelectUserCountByKey),new
-        {
-          UserId
-        }).Count();
-    }
-
-    public UserPo SelectUserByKey(int UserId)
-    {
-        return this.Query<UserPo>(nameof(SelectUserByKey),new
-        {
-          UserId
-        }).SingleOrDefault();
-    }
-
-    public void InsertUser(UserPo info)
-    {
-        this.Execute(nameof(InsertUser),info);
-    }
-
-    public void InsertUserSelective(UserPo info)
-    {
-        this.Execute(nameof(InsertUserSelective),info);
-    }
-
-    public void UpdateUserByKey(UserPo info)
-    {
-        this.Execute(nameof(UpdateUserByKey),info);
-    }
-
-    public void UpdateUserSelectiveByKey(UserPo info)
-    {
-        this.Execute(nameof(UpdateUserSelectiveByKey),info);
-    }
-    public void DeleteUserByKey(int UserId)
-    {
-        this.Execute(nameof(DeleteUserByKey),new
-        {
-          UserId
-        });
-    }
+      public void InsertRole(AuthRoleInfo info)
+      {
+          this.Execute(nameof(InsertRole),info);
+      }
+      
+      public void UpdateRole(AuthRoleInfo info)
+      {
+          this.Execute(nameof(UpdateRole),info);
+      }
+      
+      public void DeleteRole(string RoleCode)
+      {
+          this.Execute(nameof(DeleteRole),new { RoleCode });
+      }
+      
+      public AuthRoleInfo SelectRole(string RoleCode)
+      {
+          return this.Query<AuthRoleInfo>(nameof(SelectRole),new { RoleCode }).SingleOrDefault();
+      }
+      
+      #endregion
   }
 }
 ```
 
-`TestDbContext.insql.xml`
-
+`AuthDbContext.insql.xml`
 ```xml
-<insql type="Tests.Domain.Context.UserDbContext,Tests.Domain">
-  <!--
-    user
+<insql type="Insql.Domain.Contexts.AuthDbContext,Insql.Domain">
+  
+  <!-- 
+    auth_role_info
   -->
-  <map type="Tests.Domain.Model.UserPo,Tests.Domain">
-   <key name="user_id" to="UserId" />
-   <column name="user_name" to="UserName" />
-   <column name="user_gender" to="UserGender" />
-   <column name="user_intro" to="UserIntro" />
-   <column name="create_time" to="CreateTime" />
-   <column name="last_login_time" to="LastLoginTime" />
-  </map>
-
-  <select id="SelectUserCountByKey">
-    select count(*) from `user` where `user_id` = @UserId
-  </select>
-
-  <select id="SelectUserByKey">
-    select * from `user` where `user_id` = @UserId
-  </select>
-
-  <insert id="InsertUser">
-    insert into `user` (`user_id`,`user_name`,`user_gender`,`user_intro`,`create_time`,`last_login_time`) values (@UserId,@UserName,@UserGender,@UserIntro,@CreateTime,@LastLoginTime)
+  
+  <insert id="InsertRole">
+    INSERT INTO auth_role_info 
+    (role_code,role_name,role_description,sort_order,is_default) 
+    VALUES (@RoleCode,@RoleName,@RoleDescription,@SortOrder,@IsDefault)
   </insert>
-
-  <insert id="InsertUserSelective">
-    insert into `user`
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      `user_id`,
-      `user_name`,
-      `user_gender`,
-      <if test="UserIntro != null">
-        `user_intro`,
-      </if>
-      `create_time`,
-      <if test="LastLoginTime != null">
-        `last_login_time`,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      @UserId,
-      @UserName,
-      @UserGender,
-      <if test="UserIntro != null">
-        @UserIntro,
-      </if>
-      @CreateTime,
-      <if test="LastLoginTime != null">
-        @LastLoginTime,
-      </if>
-    </trim>
-  </insert>
-
-  <update id="UpdateUserByKey">
-    update `user`
-    <set>
-     `user_name` = @UserName,
-     `user_gender` = @UserGender,
-     `user_intro` = @UserIntro,
-     `create_time` = @CreateTime,
-     `last_login_time` = @LastLoginTime,
-    </set>
-    where `user_id` = @UserId
+  
+  <update id="UpdateRole">
+    UPDATE auth_role_info SET
+    role_name = @RoleName,
+    role_description = @RoleDescription,
+    sort_order = @SortOrder,
+    is_default = @IsDefault
+    WHERE role_code = @RoleCode
   </update>
-
-  <update id="UpdateUserSelectiveByKey">
-    update `user`
-    <set>
-      <if test="UserName != null">
-        `user_name` = @UserName,
-      </if>
-      <if test="UserGender != null">
-        `user_gender` = @UserGender,
-      </if>
-      <if test="UserIntro != null">
-        `user_intro` = @UserIntro,
-      </if>
-      `create_time` = @CreateTime,
-      <if test="LastLoginTime != null">
-        `last_login_time` = @LastLoginTime,
-      </if>
-    </set>
-    where `user_id` = @UserId
-  </update>
-  <delete id="DeleteUserByKey">
-    delete from `user` where `user_id` = @UserId
+  
+  <delete id="DeleteRole">
+    DELETE FROM auth_role_info WHERE role_code = @RoleCode
   </delete>
+  
+  <select id="SelectRole">
+    SELECT * FROM auth_role_info WHERE role_code = @RoleCode
+  </select>
 </insql>
 ```
 
-## 11. performance
+## 13. Performance
 
 To ask about the performance, there is no need to say more, OK will be done. :) just kidding. Because of the Dapper used for object mapping, there is no need to worry about performance. Basically, it is consistent with Dapper and has little fluctuation. A performance test may be written later.
 
-## 12. Update
+## 14. Update
+- 2.1.0
 
+  - Support feature Attribute and Fluent mode database table and object mapping mode
+  - Support for adding objects CURD extension
 - 1.8.2
 
   - Rewrite and beautify the documentation
@@ -880,8 +1076,3 @@ To ask about the performance, there is no need to say more, OK will be done. :) 
   - Supports map configuration blocks for mapping database table fields to class attribute fields. Make mapping when querying objects easier, without the need for an alias.
   - Supports SQL configuration file directory source, can load SQL configuration from specified file directory, and supports merge with embedded SQL configuration
   - Optimize dynamic script parsing for conversion of DateTime.Min
-
-## 13. Planning
-
-- Support feature Attribute and Fluent mode database table and object mapping mode
-- Increase the CURD simple extension of the object
