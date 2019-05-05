@@ -1,22 +1,54 @@
-﻿namespace Insql.Resolvers.Elements
+﻿using System;
+using System.Data;
+using System.Text.RegularExpressions;
+
+namespace Insql.Resolvers.Elements
 {
-    public class TextSectionElement : IInsqlSectionElement
-    {
-        public string Text { get; }
+   public class TextSectionElement : IInsqlSectionElement
+   {
+      private static Regex rawRegex = new Regex(@"\$\{\s*(\w+)\s*\}");
 
-        public TextSectionElement(string text)
-        {
-            this.Text = text;
-        }
+      public string Text { get; }
 
-        public string Resolve(ResolveContext context)
-        {
-            if (string.IsNullOrWhiteSpace(this.Text))
+      public TextSectionElement(string text)
+      {
+         this.Text = text;
+      }
+
+      public string Resolve(ResolveContext context)
+      {
+         if (string.IsNullOrWhiteSpace(this.Text))
+         {
+            return string.Empty;
+         }
+
+         //支持 ${} 原始值
+         return rawRegex.Replace(this.Text.Trim(), (match) =>
+         {
+            if (!match.Success || match.Groups.Count < 2)
             {
-                return string.Empty;
+               return match.Value;
             }
 
-            return this.Text.Trim();
-        }
-    }
+            var pname = match.Groups[1].Value;
+
+            if (!context.Param.TryGetValue(pname, out object pvalue))
+            {
+               throw new Exception($"${pname} param not found!");
+            }
+
+            if (pvalue == null)
+            {
+               return string.Empty;
+            }
+
+            if (pvalue is IDataParameter dataParameter)
+            {
+               return dataParameter.Value?.ToString();
+            }
+
+            return pvalue?.ToString();
+         });
+      }
+   }
 }

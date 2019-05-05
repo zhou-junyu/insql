@@ -16,4 +16,8 @@
   <select id="CDATATest">
     select * from user_info where <![CDATA[create_time >= now()]]>
   </select>
+
+  <select id="RawValueTest">
+    select * from user_info order by ${orderBy }
+  </select>
 </insql>
