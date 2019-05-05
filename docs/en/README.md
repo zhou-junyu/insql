@@ -334,6 +334,22 @@ public class ResolveController : ControllerBase
 }
 ```
 
+#### 4.2.6 Query Params
+
+1. Query parameter prefix symbols, according to the implementation of different databases client decision
+
+```sql
+select * from user_info where user_id @userId   //SqlServer,Sqlite,Postgres,MySql Use @xx
+select * from user_info where user_id :userId   //Oracle Use :xx
+```
+
+2. Raw parameter
+
+```sql
+select * from user_info order by ${ orderBy}  //The parameters of the ${xx} package will output the raw value. Note that there is a security risk of SQL injection. Be sure to check whether the original value of the output contains malicious characters.
+```
+
+
 ## 5. Extended usage
 
 ### 5.1 Extended CURD

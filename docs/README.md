@@ -336,6 +336,22 @@ public class ResolveController : ControllerBase
 }
 ```
 
+#### 4.2.6 查询参数
+
+1. 查询参数前缀符号，根据各不同数据库的实现客户端决定
+
+```sql
+select * from user_info where user_id @userId   //SqlServer,Sqlite,Postgres,MySql 会使用 @xx
+select * from user_info where user_id :userId   //Oracle 会使用 :xx
+```
+
+2. 原始值参数
+
+```sql
+select * from user_info order by ${ orderBy}  //${xx}包裹的参数将输出原始值，注意这里有SQL注入的安全风险，一定要检查输出的原始值是否含有恶意字符
+```
+
+
 ## 5. 扩展用法
 
 ### 5.1 扩展CURD
