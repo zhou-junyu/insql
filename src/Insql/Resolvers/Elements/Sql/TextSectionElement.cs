@@ -34,7 +34,7 @@ namespace Insql.Resolvers.Elements
 
             if (!context.Param.TryGetValue(pname, out object pvalue))
             {
-               throw new Exception($"${pname} param not found!");
+               return match.Value;
             }
 
             if (pvalue == null)
