@@ -339,8 +339,8 @@ public class ResolveController : ControllerBase
 1. Query parameter prefix symbols, according to the implementation of different databases client decision
 
 ```sql
-select * from user_info where user_id @userId   //SqlServer,Sqlite,Postgres,MySql Use @xx
-select * from user_info where user_id :userId   //Oracle Use :xx
+select * from user_info where user_id = @userId   //SqlServer,Sqlite,Postgres,MySql Use @xx
+select * from user_info where user_id = :userId   //Oracle Use :xx
 ```
 
 2. Raw parameter
@@ -585,8 +585,8 @@ It is recommended to enable only one of the methods of entity mapping. However, 
   - **set**
   - **trim**
   - **~~each(not recommended)~~**
-  - **IfNotNull(new)**
-  - **IfNotEmpty(new)**
+  - **ifNotNull(new)**
+  - **ifNotEmpty(new)**
 - **select** = **sql**
 - **insert** = **sql**
 - **update** = **sql**
@@ -656,9 +656,9 @@ It is recommended to enable only one of the methods of entity mapping. However, 
 |                             | `close`           | The right side of the package                                                                                            |                                                                                                                                                                                                                                             |
 |                             | `prefix`          | Each value name prefix                                                                                                   |                                                                                                                                                                                                                                             |
 |                             | `suffix`          | Suffix for each value name                                                                                               |                                                                                                                                                                                                                                             |
-| `IfNotNull(new)`            |                   |                                                                                                                          | If the query parameter value exists and is not null                                                                                                                                                                                         |
+| `ifNotNull(new)`            |                   |                                                                                                                          | If the query parameter value exists and is not null                                                                                                                                                                                         |
 |                             | `name*`           | Query parameter name                                                                                                     |
-| `IfNotEmpty(new)`           |                   |                                                                                                                          | If the query parameter string value exists and is not an empty string                                                                                                                                                                       |
+| `ifNotEmpty(new)`           |                   |                                                                                                                          | If the query parameter string value exists and is not an empty string                                                                                                                                                                       |
 |                             | `name*`           |
 | Query parameter name        |
 

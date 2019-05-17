@@ -341,8 +341,8 @@ public class ResolveController : ControllerBase
 1. 查询参数前缀符号，根据各不同数据库的实现客户端决定
 
 ```sql
-select * from user_info where user_id @userId   //SqlServer,Sqlite,Postgres,MySql 会使用 @xx
-select * from user_info where user_id :userId   //Oracle 会使用 :xx
+select * from user_info where user_id = @userId   //SqlServer,Sqlite,Postgres,MySql 会使用 @xx
+select * from user_info where user_id = :userId   //Oracle 会使用 :xx
 ```
 
 2. 原始值参数
@@ -586,8 +586,8 @@ public void ConfigureServices(IServiceCollection services)
   - **set**
   - **trim**
   - **~~each(不推荐)~~**
-  - **IfNotNull(新增)**
-  - **IfNotEmpty(新增)**
+  - **ifNotNull(新增)**
+  - **ifNotEmpty(新增)**
 - **select** = **sql**
 - **insert** = **sql**
 - **update** = **sql**
@@ -657,9 +657,9 @@ public void ConfigureServices(IServiceCollection services)
 |                    | `close`           | 包裹的右侧字符                                                          |                                                                                                                                     |
 |                    | `prefix`          | 每个值名称前缀                                                          |                                                                                                                                     |
 |                    | `suffix`          | 每个值名称后缀                                                          |                                                                                                                                     |
-| `IfNotNull(新增)`  |                   |                                                                         | 如果查询参数值存在并且不为null                                                                                                      |
+| `ifNotNull(新增)`  |                   |                                                                         | 如果查询参数值存在并且不为null                                                                                                      |
 |                    | `name*`           | 查询参数名称                                                            |
-| `IfNotEmpty(新增)` |                   |                                                                         | 如果查询参数字符串值存在并且不为空字符串                                                                                            |
+| `ifNotEmpty(新增)` |                   |                                                                         | 如果查询参数字符串值存在并且不为空字符串                                                                                            |
 |                    | `name*`           | 查询参数名称                                                            |
 
 
