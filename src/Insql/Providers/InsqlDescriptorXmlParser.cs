@@ -231,6 +231,7 @@ namespace Insql.Providers
 
                         return repeatSection;
                      }
+                  case "ifNotNull":
                   case "IfNotNull":
                      {
                         var ifNotNullSection = new IfNotNullSectionElement(xelement.Attribute(XName.Get("name", ""))?.Value);
@@ -239,6 +240,7 @@ namespace Insql.Providers
 
                         return ifNotNullSection;
                      }
+                  case "ifNotEmpty":
                   case "IfNotEmpty":
                      {
                         var ifNotEmptySection = new IfNotEmptySectionElement(xelement.Attribute(XName.Get("name", ""))?.Value);
