@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE insql PUBLIC "-//insql//DTD Insql 2.0//EN" "https://raw.githubusercontent.com/rainrcn/insql/master/tools/insql-2.dtd">
+<insql type="Insql.Domain.DemoDbContext,Insql.Domain">
+  <!-- ... -->
+</insql>
