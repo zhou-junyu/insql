@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!ELEMENT insql (map | sql | insert | update | delete | select)*>
+<!ATTLIST insql 
+  type CDATA #REQUIRED
+>
+
+<!ELEMENT map (key|column)*>
+<!ATTLIST map
+  table CDATA #IMPLIED
+  type CDATA #REQUIRED
+>
+
+<!ELEMENT key EMPTY>
+<!ATTLIST key
+name CDATA #REQUIRED
+property CDATA #REQUIRED
+identity (True|False) #IMPLIED
+>
+
+<!ELEMENT column EMPTY>
+<!ATTLIST column
+name CDATA #REQUIRED
+property CDATA #REQUIRED
+readonly (True|False) #IMPLIED
+>
+
+<!ELEMENT sql (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST sql
+id CDATA #REQUIRED
+>
+
+<!ELEMENT select (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST select
+id CDATA #REQUIRED
+>
+
+<!ELEMENT insert (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST insert
+id CDATA #REQUIRED
+>
+
+
+<!ELEMENT update (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST update
+id CDATA #REQUIRED
+>
+<!ELEMENT delete (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST delete
+id CDATA #REQUIRED
+>
+
+<!-- Dynamic -->
+
+<!ELEMENT include EMPTY>
+<!ATTLIST include
+refid CDATA #REQUIRED
+>
+
+<!ELEMENT bind EMPTY>
+<!ATTLIST bind
+ name CDATA #REQUIRED
+ value CDATA #REQUIRED
+ valueType (Object|String|Boolean|Byte|SByte|Int16|UInt16|Int32|UInt32|Int64|UInt64|Single|Double|Decimal|DateTime) #IMPLIED
+>
+
+<!ELEMENT trim (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST trim
+prefix CDATA #IMPLIED
+prefixOverrides CDATA #IMPLIED
+suffix CDATA #IMPLIED
+suffixOverrides CDATA #IMPLIED
+>
+<!ELEMENT where (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ELEMENT set (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+
+<!ELEMENT if (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST if
+test CDATA #REQUIRED
+>
+
+<!ELEMENT ifNotNull (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST ifNotNull
+name CDATA #REQUIRED
+>
+
+<!ELEMENT ifNotEmpty (#PCDATA | include | trim | where | set | if | bind |  ifNotNull | ifNotEmpty)*>
+<!ATTLIST ifNotEmpty
+name CDATA #REQUIRED
+>
