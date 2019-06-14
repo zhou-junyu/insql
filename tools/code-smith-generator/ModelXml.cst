@@ -16,6 +16,7 @@
 <%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
 
 <?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE insql PUBLIC "-//insql//DTD Insql 2.0//EN" "https://raw.githubusercontent.com/rainrcn/insql/master/tools/insql-2.dtd">
 <insql type="<%=ModelNamespace%>.<%=Helper.GetModelClassName(this.Table) %>,<%= ModelAssembly%>">
   <map table="<%=this.Table.Name%>" type="<%=ModelNamespace%>.<%=Helper.GetModelClassName(this.Table)%>,<%= ModelAssembly%>">
    <% foreach (ColumnSchema columnSchema in this.Table.Columns.Where(c=> c.IsPrimaryKeyMember)) { %>
