@@ -1,0 +1,67 @@
+﻿<%@ CodeTemplate Language="C#" ResponseEncoding="UTF-8" TargetLanguage="C#" Debug="TRUE" Inherits="OutputFileCodeTemplate"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Assembly Name="CodeSmith.BaseTemplates" %>
+<%@ Import Namespace="CodeSmith.BaseTemplates" %>
+<%@ Assembly Name="CodeSmith.CustomProperties" %>
+<%@ Import Namespace="CodeSmith.CustomProperties" %>
+
+<%@ Assembly src="Helper.cs" %>
+<%@ Import Namespace="Common" %>
+
+<%@ Property Name="Table" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table" %>
+
+<%@ Property Name="ModelAssembly" Type="String" Category="Model" Description="Model Assembly" %>
+<%@ Property Name="ModelNamespace" Type="String" Category="Model" Description="Model Namespace" %>
+
+<%@ Property Name="QuoteOpen" Type="String" Category="ModelXml" Optional="True" Description="Quote" %>
+<%@ Property Name="QuoteClose" Type="String" Category="ModelXml" Optional="True" Description="Quote" %>
+<%@ Property Name="SqlParamPrefix" Type="String" Default="@" Category="ModelXml" Optional="True" Description="Sql Param Name Prefix" %>
+<%@ Property Name="SqlIdSuffix" Type="String" Category="ModelXml" Optional="True" Description="DbContext Xml Sql Section Id Suffix" %>
+<%@ Property Name="SqlIdModelTrimStart" Type="String" Category="ModelXml" Optional="True" Description="SqlId Model Name TrimStart" %>
+<%@ Property Name="SqlIdModelTrimEnd" Type="String" Default="Info" Category="ModelXml" Optional="True" Description="SqlId Model Name TrimEnd" %>
+
+<%@ Property Name="DbContextAssembly" Type="String" Category="DbContext" Description="DbContext Assembly" %>
+<%@ Property Name="DbContextNamespace" Type="String" Category="DbContext" Description="DbContext Namespace" %>
+<%@ Property Name="DbContextName" Type="String" Category="DbContext" Description="DbContext Name" %>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE insql PUBLIC "-//insql//DTD Insql 2.0//EN" "https://raw.githubusercontent.com/rainrcn/insql/master/tools/insql-2.dtd">
+<insql type="<%=DbContextNamespace%>.<%=DbContextName %>,<%= DbContextAssembly%>">
+  <map table="<%=this.Table.Name%>" type="<%=ModelNamespace%>.<%=Helper.GetModelClassName(this.Table)%>,<%= ModelAssembly%>">
+   <% foreach (ColumnSchema columnSchema in this.Table.Columns.Where(c=> c.IsPrimaryKeyMember)) { %>
+   <key name="<%=columnSchema.Name%>" property="<%=Helper.GetModelPropertyName(columnSchema)%>" />
+   <%} %>
+   <% foreach (ColumnSchema columnSchema in this.Table.Columns.Where(c=> !c.IsPrimaryKeyMember)) { %>
+   <column name="<%=columnSchema.Name%>" property="<%=Helper.GetModelPropertyName(columnSchema)%>" />
+   <%} %>
+  </map>
+  
+  <insert id="Insert<%=Helper.GetModelClassTrimName(this.Table,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%><%=SqlIdSuffix%>">
+    INSERT INTO <%= $"{QuoteOpen}{this.Table.Name}{QuoteClose}"%> 
+    (<%= string.Join(",",this.Table.Columns.Select(columnSchema=> $"{QuoteOpen}{columnSchema.Name}{QuoteClose}")) %>) 
+    VALUES (<%= string.Join(",",this.Table.Columns.Select(columnSchema=> $"{SqlParamPrefix}{Helper.GetModelPropertyName(columnSchema)}")) %>)
+  </insert>
+  
+  <% if(this.Table.Columns.Any(columnSchema=> columnSchema.IsPrimaryKeyMember)) {%>
+  <% if(this.Table.Columns.Any(columnSchema=> !columnSchema.IsPrimaryKeyMember)) {%>
+  <update id="Update<%=Helper.GetModelClassTrimName(this.Table,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%><%=SqlIdSuffix%>">
+    UPDATE <%= $"{QuoteOpen}{this.Table.Name}{QuoteClose}"%> SET
+    <%= string.Join($",{System.Environment.NewLine}    ",this.Table.Columns.Where(columnSchema=> !columnSchema.IsPrimaryKeyMember).Select(columnSchema=> $"{QuoteOpen}{columnSchema.Name}{QuoteClose} = {SqlParamPrefix}{Helper.GetModelPropertyName(columnSchema)}")) %>
+    WHERE <%= string.Join(" AND ",this.Table.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = {SqlParamPrefix}{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </update>
+  <%} %>
+  
+  <delete id="Delete<%=Helper.GetModelClassTrimName(this.Table,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%><%=SqlIdSuffix%>">
+    DELETE FROM <%= $"{QuoteOpen}{this.Table.Name}{QuoteClose}"%> WHERE <%= string.Join(" AND ",this.Table.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = {SqlParamPrefix}{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </delete>
+  
+  <select id="Select<%=Helper.GetModelClassTrimName(this.Table,this.SqlIdModelTrimStart,this.SqlIdModelTrimEnd)%><%=SqlIdSuffix%>">
+    SELECT * FROM <%= $"{QuoteOpen}{this.Table.Name}{QuoteClose}"%> WHERE <%= string.Join(" AND ",this.Table.Columns.Where(columnSchema=> columnSchema.IsPrimaryKeyMember)
+    .Select(columnSchema=>$"{QuoteOpen}{columnSchema.Name}{QuoteClose} = {SqlParamPrefix}{Helper.GetModelPropertyName(columnSchema)}")) %>
+  </select>
+  <%} %>
+</insql>
