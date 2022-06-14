@@ -5,7 +5,7 @@
 
 **Insql is a lightweight .NET ORM framework. Object mapping is based on Dapper, and the Sql configuration is inspired by Mybatis.**
 
-**🚀 Pursuit of simplicity, elegance, performance and quality**
+> This project may not be maintained for a long time due to my work, so I suggest it be used for reference or secondary development
 
 Insql Advocate to write native The SQL way to access the database, the overall function is divided into three:
 
